@@ -1,85 +1,252 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Chat</title>
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
- 
-  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <title>Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+            background-attachment: fixed;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Header Styling --- */
+        .chat-header {
+            background: rgba(10, 0, 26, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .chat-header h4 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* --- Messages Container --- */
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        /* --- Custom Scrollbar --- */
+        #messages::-webkit-scrollbar { width: 6px; }
+        #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        /* --- Chat Bubbles --- */
+        .msg-wrap {
+            max-width: 80%;
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .text-end .msg-wrap {
+            background: linear-gradient(135deg, #ff0080, #7928ca);
+            color: white;
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+        }
+
+        .text-start .msg-wrap {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            color: white;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- Input Area --- */
+        .input-area {
+            background: rgba(10, 0, 26, 0.9);
+            padding: 15px;
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #messageInput {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            color: white;
+            padding: 12px 20px;
+            outline: none;
+        }
+
+        #messageInput:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #4EB5A9;
+            box-shadow: none;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #4EB5A9, #6157E1);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .btn-send:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        @media (max-width: 576px) {
+            .msg-wrap { max-width: 90%; }
+            .chat-header h4 { font-size: 1rem; }
+        }
+    </style>
 </head>
-<body class="container mt-4">
-  <h3>Chat with <span id="chatWith" th:text="${chatWith}"></span></h3>
 
-  <div id="messages" class="border p-3 mb-3" style="height: 400px; overflow-y: auto;">
-    <div th:each="msg : ${messages}">
-      <div th:if="${msg.sender == #authentication.name}" class="text-end mb-2">
-        <span class="badge bg-primary" th:text="${msg.content}"></span>
-      </div>
-      <div th:if="${msg.sender != #authentication.name}" class="text-start mb-2">
-        <span class="badge bg-secondary" th:text="${msg.content}"></span>
-      </div>
+<body>
+
+<div class="chat-header text-center">
+    <div class="container">
+        <h4>
+            <i class="bi bi-person-circle me-2"></i>
+            Chatting with <span style="color: #4EB5A9;" th:text="${chatWith}"></span>
+        </h4>
     </div>
-  </div>
+</div>
 
-  <form id="sendForm" class="d-flex">
-    <input type="text" id="messageInput" class="form-control me-2" placeholder="Type a message..." required>
-    <button type="submit" class="btn btn-success" style=" background: linear-gradient(#4A1780, #4A1780, #4A1780);">Send</button>
-  </form>
+<div id="messages" class="container">
+    <div th:each="msg : ${messages}" 
+         th:class="${msg.sender == #authentication.name} ? 'text-end d-flex flex-column' : 'text-start d-flex flex-column'">
+        <div class="msg-wrap">
+            <span th:text="${msg.content}"></span>
+        </div>
+    </div>
+</div>
 
-  <!-- Hidden info for JS -->
-  <input type="hidden" id="me" th:value="${#authentication.name}">
-  <input type="hidden" id="peer" th:value="${chatWith}">
+<div class="input-area">
+    <div class="container">
+        <form id="sendForm" class="d-flex align-items-center gap-2">
+            <input type="text"
+                   id="messageInput"
+                   class="form-control"
+                   placeholder="Type your message..."
+                   autocomplete="off"
+                   required>
+
+            <button type="submit" class="btn-send">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<input type="hidden" id="me" th:value="${#authentication.name}">
+<input type="hidden" id="peer" th:value="${chatWith}">
 
 <script>
-  let stompClient = null;
+    let stompClient = null;
 
-  function connectWs() {
-    const socket = new SockJS('/chat-websocket');   // ✅ must match WebSocketConfig
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        console.log("✅ Connected: " + frame);
+    function connectWebSocket() {
+        const socket = new SockJS('/chat-websocket');
+        stompClient = Stomp.over(socket);
 
-        stompClient.subscribe('/user/queue/messages', function (msg) {
-            console.log("📥 Received: ", msg.body);
-            let message = JSON.parse(msg.body);
-            appendMessage(message);
+        stompClient.connect({}, () => {
+            console.log("✅ WebSocket connected");
+
+            // ✅ Private messages
+            stompClient.subscribe('/user/queue/messages', (msg) => {
+                const message = JSON.parse(msg.body);
+
+                const me = document.getElementById('me').value;
+                const peer = document.getElementById('peer').value;
+
+                // ✅ Show only current conversation
+                if (
+                    (message.sender === me && message.receiver === peer) ||
+                    (message.sender === peer && message.receiver === me)
+                ) {
+                    appendMessage(message);
+                }
+            });
+
+            // ❌ Error messages
+            stompClient.subscribe('/user/queue/errors', (err) => {
+                alert(err.body);
+            });
         });
+    }
+
+    function appendMessage(msg) {
+        const me = document.getElementById('me').value;
+        const box = document.getElementById('messages');
+
+        const wrap = document.createElement('div');
+        wrap.className = (msg.sender === me)
+            ? 'text-end d-flex flex-column mb-2'
+            : 'text-start d-flex flex-column mb-2';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-wrap';
+        bubble.textContent = msg.content;
+
+        wrap.appendChild(bubble);
+        box.appendChild(wrap);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    document.getElementById('sendForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const peer = document.getElementById('peer').value;
+        const text = document.getElementById('messageInput').value.trim();
+
+        if (!text || !stompClient?.connected) return;
+
+        stompClient.send('/app/chat.private', {}, JSON.stringify({
+            receiver: peer,
+            content: text
+        }));
+
+        document.getElementById('messageInput').value = '';
     });
-  }
 
-  function appendMessage(msg) {
-    const me = document.getElementById('me').value;
-    const box = document.getElementById('messages');
-    const wrap = document.createElement('div');
-    wrap.className = (msg.sender === me) ? 'text-end mb-2' : 'text-start mb-2';
-
-    const badge = document.createElement('span');
-    badge.className = (msg.sender === me) ? 'badge bg-primary' : 'badge bg-secondary';
-    badge.textContent = msg.content;
-
-    wrap.appendChild(badge);
-    box.appendChild(wrap);
-    box.scrollTop = box.scrollHeight;
-  }
-
-  document.getElementById('sendForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const me   = document.getElementById('me').value;
-    const peer = document.getElementById('peer').value;
-    const text = document.getElementById('messageInput').value.trim();
-    if (!text || !stompClient || !stompClient.connected) return;
-
-    stompClient.send('/app/chat.private', {}, JSON.stringify({
-      sender: me,
-      receiver: peer,
-      content: text
-    }));
-
-    document.getElementById('messageInput').value = '';
-  });
-
-  connectWs();
+    connectWebSocket();
+    
+    // Auto-scroll to bottom on load
+    window.onload = function() {
+        const box = document.getElementById('messages');
+        box.scrollTop = box.scrollHeight;
+    };
 </script>
 
 </body>

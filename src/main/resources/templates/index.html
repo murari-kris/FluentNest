@@ -1,1063 +1,345 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Starter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FluentNest | Master English</title>
 
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-   
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="mediaquiery.css">
     <style>
-    
-    
-
-    .main-section {
-  background: linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-);
-color:white;
-
-
-}
-
-.navbar {
-  background-color: transparent !important; /* let gradient show through */
-}
-
-.hero {display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4rem 2rem;
-}
-
-.hero-text{
-
-margin-left:1rem;
-
-}
-
-
-
-.hero-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
- 
-  
-}
-
-.hero-image{
- overflow: hidden;
-}
-
-.hero-image img {
- 
-   width: 50%;
-  height: auto;
-  margin-left:25rem;
-  margin-bottom:4rem;
-  border-right: 5px solid #6157E1;
-  box-shadow: 5px 0 15px #6157E1; /* glow to the right */
-  border-radius: 12px; 
-
-  
-}
-
-.hero a{
-background-color:white;
-color:black;
-}
-    .feature-card {
-  box-shadow: 4px 4px 10px rgba(176, 219, 156, 0.5);
-  transition: transform 0.3s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-7px);
-}
-    
-  .custom-btn {
-  background-color:#B0DB9C;
-  color: white;
-  border: none;
-  margin-bottom:10rem;
-  }
-.custom-btn:hover {
-  background-color:#6157E1;
-}
-
-.slide-in-left, .slide-in-right {
-      opacity: 0;
-      transition: all 0.8s ease-in-out;
-    }
-
-    .slide-in-left {
-      transform: translateX(-100px);
-    }
-
-    .slide-in-right {
-      transform: translateX(100px);
-    }
-
-    .show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .feature-box {
-      font-size: 1.1rem;
-      padding: 1rem;
-      background-color: white;
-      border-radius: 0.5rem;
-      box-shadow:3px 4px 6px #4EB5A9;
-      margin-bottom: 1rem;
-    }
-
-    .check-icon {
-      font-size: 1.2rem;
-      margin-right: 0.5rem;
-      color: #B0DB9C;
-    }
-    .level-card {                       
-        
-  transition: transform .4s, box-shadow .4s, background-color .3s;
-}
-
-.level-card:hover {
-  transform: translateY(-8px) scale(1.04);
-  box-shadow: 0 12px 30px rgba(0,0,0,.16);
-  background-color:#B0DB9C;
-}
-
-
-.hero-section {
-  background:linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 600px;       /* scales with screen */
-  padding: 50px 20px;
-}
-
-.banner {
-  text-align: center;
-  color: white;
-  width: 50%;
-  border-radius: 1rem;
-  padding: 80px 40px;       /* larger padding for “banner feel” */
-  background:linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); /* optional: semi-transparent overlay for contrast */
-}
-
-.gradient-text {
-  background: linear-gradient(to right, #ff0080, #7928ca);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.banner h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
-}
-
-.banner h2 {
-  font-size: 20px;
-  font-weight: 400;
-  margin-bottom: 25px;
-}
-
-.start-btn {
-  padding: 15px 30px;      /* bigger button */
-  background-color: #ff0080;
-  color: white;
-  text-decoration: none;
-  border-radius: 0.5rem;
-  transition: 0.3s;
-}
-
-.start-btn:hover {
-  background-color: #7928ca;
-}
-
-/* Responsive */
-@media screen and (max-width: 1440px) {
- .banner {
-    width: 90%;
-    padding: 40px 20px;
-  }
-
-  .banner h1 {
-    font-size: 24px;
-  }
-
-  .banner h2 {
-    font-size: 16px;
-  }
-  
-  .footer-left{
-   display:none;
-  }
-  
-  /* Default footer (desktop) */
-.footer-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;   /* limit max width */
-  margin: 0 auto;      /* center it */
-  padding: 15px 20px;
-  background: #0a001a;
-  color: white;
-  border-radius: 10px; /* optional: rounded edges */
-}
-  
-/* Responsive (tablet/mobile) */
-
-
-  .footer-links ul {
-    display: flex;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    flex-wrap: wrap;   /* allow wrapping if text too long */
-    justify-content: center;
-  }
-
-  .footer-social {
-    display: flex;
-  gap: 15px;
-  justify-content: center; 
-  margin-top: 8px;
-
-  width: fit-content;   /* shrink to fit icons */
-  margin-left: auto;    /* center horizontally */
-  margin-right: auto;
-  }
-  
-  .hero {
-    padding: 3rem 1.5rem;
-  }
-
-  .hero-content {
-    flex-direction: column;  /* stack text + image */
-    text-align: center;
-  }
-
-  .hero-text {
-    margin-left: 0;
-    margin-bottom: 2rem;
-  }
-
-  .hero-image img {
-    width: 70%;   /* shrink image for tablets */
-    margin: 0 auto;
-  }
-  
-  
-  .custom-logo {
-    
-    font-size: 22px; 
-    margin-right:3.5rem; /* shrink on tablets */
-   /* smaller on tablets */
-    
-  }
-  
-  
-}
-
-@media (max-width: 576px) {
-  .hero-image img {
-    width: 90%;
-    margin-left: auto;   /* push image to the right */
-    margin-right: 0;     /* no space on right */
-    display: block;
-  }
-  
-  
-}
-
-
-
-.testimonial-section {
-background: linear-gradient(
-  to top right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-);
-      padding: 60px 20px;
-      text-align: center;
-      
-      
-    }
-
-    .testimonial-section h2 {
-      font-size: 32px;
-      margin-bottom: 30px;
-      color: #fff;
-    }
-
-    .testimonial-marquee {
-      overflow: hidden;
-      position: relative;
-     
-      padding: 20px 0;
-    }
-
-    .testimonial-track {
-      display: flex;
-      animation: scroll 25s linear infinite;
-      width: max-content;
-    }
-
-    .testimonial-card {
-      flex: 0 0 auto;
-      background: linear-gradient(
-  to top right,
-  #ff0080 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-  #7928ca 100%       
-);
-      margin: 0 15px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      min-width: 300px;
-      max-width: 300px;
-    }
-
-    .testimonial-card p {
-      font-size: 16px;
-      color: #fff;
-      font-style: italic;
-    }
-
-    .testimonial-card h4 {
-      font-size: 14px;
-      color: #fff;
-      margin-top: 10px;
-    }
-
-    @keyframes scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-
-
-.leaderboard-section {
-      padding: 60px 20px;
-      text-align: center;
-      background: linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); 
-    }
-
-    .leaderboard-section h2 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    .score-box {
-      background-color: #f5f5f5 ;
-      max-width: 500px;
-      margin: 0 auto 40px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .score-box h3 {
-      margin-bottom: 10px;
-      font-size: 22px;
-      color: #ff0080;
-      
-    }
-
-    .score-box ul {
-      list-style: none;
-      padding: 0;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .leaderboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    .leaderboard table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .leaderboard th,
-    .leaderboard td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-      font-size: 16px;
-    }
-
-    .leaderboard th {
-      background-color: #f0f4ff;
-    }
-
-    .highlight {
-      font-weight: bold;
-      color: #ff0080;
-    }
-
-.footer {
-      background: linear-gradient(
-  to top right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); 
-      color: #000;
-      padding: 40px 20px;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      
-      justify-content: space-between;
-      color:white;
-    }
-    
-    .about-text h2 span{
-   background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-left:1rem;
-    
-    
-    }
-    
-    
-    
-    section.foot {
-     background: linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-  #7928ca 100%       
-);
-      color: #f1f5f9;
-      padding: 30px 20px;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .footer-left {
-      flex: 1 1 250px;
-      margin-bottom: 20px;
-    }
-
-    .footer-left h3 {
-      font-size: 24px;
-      background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-    }
-
-    .footer-left p {
-      font-size: 15px;
-      color: #cbd5e1;
-    }
-
-    .footer-links {
-      flex: 1 1 200px;
-      margin-bottom: 20px;
-    }
-
-    .footer-links ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .footer-links ul li {
-      margin-bottom: 8px;
-    }
-
-    .footer-links ul li a {
-      color: #cbd5e1;
-      text-decoration: none;
-      font-size: 15px;
-    }
-
-    .footer-links ul li a:hover {
-      text-decoration: underline;
-    }
-
-    .footer-social {
-      flex: 1 1 150px;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .footer-social a {
-      margin: 0 10px;
-      color: #ff0080;
-      font-size: 24px;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-social a:hover {
-      color: #ffffff;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 14px;
-      color: #94a3b8;
-    }
-
-    @media (max-width: 768px) {
-      .footer-container {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-social {
-        margin-top: 10px;
-      }
-    }
-    
-    
-  .custom-logo{
-  font-size:40px;
-  color:white;
-  font-weight:bold;
- 
-   background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-left: auto;
-  
-  
-  }
-  
-  #navbarSupportedContent{
-  margin-left:40rem;
-  font-size:20px;
-  
-  
-  }
-  
-  
-
-/* All nav links (except dropdown toggle) */
-.nav-link:not(.dropdown-toggle) {
-  position: relative;
-  color: white;
-  text-decoration: none;
-  padding-bottom: 5px;
-}
-
-/* Only when clicked (active), show underline */
-.nav-link:not(.dropdown-toggle).active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background-color: white;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Optional: remove hover underline if any */
-.nav-link:not(.dropdown-toggle):hover::after {
-  content: none;
-}
-
-
-
-
-    
-  </style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary-grad: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+            --accent-grad: linear-gradient(135deg, #ff0080 0%, #7928ca 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-teal: #4EB5A9;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06000f;
+            color: #ffffff;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* --- Refined Navbar --- */
+        .navbar {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.2rem 0;
+            background: rgba(10, 0, 26, 0.7);
+        }
+
+        .custom-logo {
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: var(--accent-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        /* --- Animated Hero Section --- */
+        .main-section {
+            background: var(--primary-grad);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+            padding-top: 120px;
+            padding-bottom: 5rem;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-text h1 {
+            font-size: clamp(2.5rem, 8vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(97, 87, 225, 0.2);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        /* --- Sexy Glass Cards --- */
+        .feature-card, .level-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white !important;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-teal);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(78, 181, 169, 0.2);
+        }
+
+        /* --- Interactive Testimonials --- */
+        .testimonial-track {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+            padding: 20px 0;
+        }
+
+        .testimonial-card {
+            width: 350px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            margin: 0 15px;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- Premium Buttons --- */
+        .custom-btn-grad {
+            background: var(--accent-grad);
+            color: white !important;
+            padding: 14px 35px;
+            border-radius: 100px;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.3s all;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 25px rgba(255, 0, 128, 0.3);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .custom-btn-grad:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 0, 128, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(10, 0, 26, 0.95);
+                padding: 2rem;
+                margin-top: 15px;
+                border-radius: 25px;
+                border: 1px solid var(--glass-border);
+            }
+            .hero-text { text-align: center; margin-bottom: 4rem; }
+            .hero-image { order: -1; }
+        }
+
+        @media (max-width: 576px) {
+            .custom-btn-grad { width: 100%; text-align: center; }
+            .main-section { padding-top: 100px; }
+        }
+    </style>
 </head>
 <body>
-<section class="main-section" style="overflow: hidden;">
- 
-  <nav class="navbar navbar-expand-lg" id="nav">
-    <div class="container-fluid">
-      <a class="navbar-brand custom-logo" href="#">
-        <span style="
-  background: linear-gradient(50deg, #6157E1, #2F284F);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
- ">
-        
-          <i class="fa-brands fa-yelp"></i>
-        </span>FluentNest
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#" style="color:white;">Home</a>
-          </li>
-         
-<li class="nav-item" sec:authorize="!isAuthenticated()">
-  <a class="nav-link" th:href="@{/login}" style="color:white; margin-left:2rem">Log In</a>
-</li>
 
+<section class="main-section">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="custom-logo" href="#"><i class="fa-brands fa-yelp me-2"></i>FluentNest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars-staggered text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link px-3" href="#">Home</a></li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link px-3" th:href="@{/login}">Log In</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-center" href="#" data-bs-toggle="dropdown">
+                            <img th:src="${profileImage ?: '/img/default-user.png'}" class="rounded-circle me-2" style="width:32px; height:32px; object-fit: cover; border: 1px solid var(--neon-teal);">
+                            <span th:text="${user.username}">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg border-0" style="border-radius: 15px; background: rgba(20,0,40,0.95);">
+                            <li><a class="dropdown-item py-2" th:href="@{/profile}">My Profile</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/users}">Find People</a></li>
+                            <li><hr class="dropdown-divider opacity-10"></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item mt-3 mt-lg-0 ms-lg-3">
+                        <a th:href="@{/main}" class="custom-btn-grad text-decoration-none">Get Started</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-     aria-expanded="false" style="color:white; margin-left:2rem">
-  <th:block th:if="${u?.profileImage != null}">
-    <img th:src="@{${u.profileImage}}" 
-         alt="Profile Image"
-         style="width:50px; height:50px; border-radius:50%; object-fit:cover;"/>
-</th:block>
-
-
-   <span th:text="${user.username}"></span>
-
-  </a>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
-    <li><a class="dropdown-item" th:href="@{/users}">Find People</a></li>
-    
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#">Logout</a></li>
-  </ul>
-</li>
-
-        </ul>
-      </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-text">
+                <h1 class="mb-4">Speak English <br><span style="color:var(--neon-teal)">Without Fear</span> <br>on <span class="custom-logo">FluentNest</span></h1>
+                <p class="lead opacity-75 mb-5" style="font-weight: 300; letter-spacing: 0.5px;">Master the art of conversation through live peer calls, real-time feedback, and a community that cheers you on.</p>
+                <a th:href="@{/main}" class="custom-btn-grad text-decoration-none">Start Free Practice</a>
+            </div>
+            <div class="col-lg-6 hero-image text-center">
+                <img th:src="@{/img/main.png}" alt="FluentNest Interface" class="img-fluid">
+            </div>
+        </div>
     </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-text">
-        <h1 style="color:#4EB5A9; text-shadow: 2px 2px 10px #6157E1; ">Welcome</h1>
-        <h1 style="color:#4EB5A9; text-shadow: 2px 2px 10px #6157E1; ">to Our</h1> <h1 style="background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</h1>
-        <h2>Unlock your language potential and become </h2>
-        <h2> a confident speaker</h2>
-        <p class="lead">This website will help you improve your English fluency</p>
-        <a th:href="@{/main}" class="btn custom-btn btn-lg mt-3">Get Started</a>
-      </div>
-      <div class="hero-image">
-        <img th:src="@{/img/main.png}" alt="Hero Image">
-      </div>
-    </div>
-  </section>
 </section>
 
-   
-   <section class="py-5" style="background: linear-gradient(
-  to top right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); color:white; overflow: hidden;">
-  <div class="container">
-    <!-- Section heading -->
-    <div class="text-center mb-5">
-      <h2 class="fw-bold">Why Choose Us</h2>
-      <p class="fw">Three key features that help you speak and write better English every day.</p>
+<section class="py-5" style="background: #06000f;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase tracking-widest text-info mb-2" style="font-size: 0.7rem; font-weight: 800; letter-spacing: 3px;">Features</h6>
+            <h2 class="fw-bold h1">Engineered for Fluency</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background: rgba(78, 181, 169, 0.1);">
+                        <i class="bi bi-mic-fill fs-1 text-info"></i>
+                    </div>
+                    <h4>Global Audio</h4>
+                    <p class="opacity-50 small mb-0">Connect instantly with learners from 50+ countries. Practice talking about anything, anytime.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background: rgba(97, 87, 225, 0.1);">
+                        <i class="bi bi-camera-video-fill fs-1 text-primary"></i>
+                    </div>
+                    <h4>Face-to-Face</h4>
+                    <p class="opacity-50 small mb-0">Switch to video for interview prep or professional presentations. Master non-verbal cues.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background: rgba(255, 0, 128, 0.1);">
+                        <i class="bi bi-lightning-fill fs-1 text-warning"></i>
+                    </div>
+                    <h4>Daily Practice & Resources</h4>
+                    <p class="opacity-50 small mb-0"> Access structured lessons, vocabulary builders, and daily challenges to accelerate your learning every day.</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Feature grid -->
-    <div class="row g-4">
-      
-      <!-- Feature 1 -->
-      <div class="col-12 col-md-4">
-        <div class="text-center p-4 h-100 bg-white border rounded-4 shadow feature-card">
-          <i class="bi bi-lightning-charge-fill display-5 text-success mb-3"></i>
-          <h5 class="fw-semibold" style="color:black;">Practice Speaking with Co-learners via Audio Calls and Video Calls</h5>
-          <p class="text-muted">
-            Connect with fellow learners worldwide for real-time conversation practice. Build confidence through peer interaction.
-          </p>
-        </div>
-      </div>
-
-      <!-- Feature 2 -->
-      <div class="col-12 col-md-4">
-        <div class="text-center p-4 h-100 bg-white border rounded-4 shadow feature-card">
-          <i class="bi bi-emoji-smile-fill display-5 text-success mb-3"></i>
-          <h5 class="fw-semibold" style="color:black;">Professional Communication Practice</h5>
-          <p class="text-muted">
-            Build your confidence with mock interviews and real-time group discussions guided by mentors.
-          </p>
-        </div>
-      </div>
-
-      <!-- Feature 3 (Optional – you said "three features" but only had 2) -->
-      <div class="col-12 col-md-4">
-        <div class="text-center p-4 h-100 bg-white border rounded-4 shadow feature-card">
-          <i class="bi bi-book-fill display-5 text-success mb-3"></i>
-          <h5 class="fw-semibold" style="color:black;">Daily Practice & Resources</h5>
-          <p class="text-muted">
-            Access structured lessons, vocabulary builders, and daily challenges to accelerate your learning every day.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-   
-    
-    
-    
-    
-
-<section class="py-6" style="background: linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); overflow: hidden">
-  <div style="text-align:center; padding-top:5rem; font-weight:bold">
-    <h2 style="background: linear-gradient(to right, #ff0080, rgb(128, 0, 255));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</h2>
-    <h2 style="color:white">Features Advantages</h2>
-  </div>
-
-  <div class="container mt-5">
-    <div class="row align-items-center">
-
-      <!-- Left side: Text Features -->
-      <div class="col-md-6 slide-in-left">
-        <div class="feature-box">
-          <span class="check-icon">✅</span> Practice Spoken English via Audio Calls
-        </div>
-        <div class="feature-box">
-          <span class="check-icon">✅</span> Practice via Video Sessions
-        </div>
-        <div class="feature-box">
-          <span class="check-icon">✅</span> One-on-One Chat Practice
-        </div>
-        <div class="feature-box">
-          <span class="check-icon">✅</span> Job Interview & Group Discussion Preparation
-        </div>
-      </div>
-
-      <!-- Right side: Image -->
-      <div class="col-md-6 text-center slide-in-right" style="overflow: hidden;">
-        <img th:src="@{/img/fluent.png}"
-             alt="EngliChat Advantages"
-             class="img-fluid"
-             style="max-width:400px; box-shadow:3px 3px 3px 6px #6157E1; border-radius: 1rem; margin-top:3rem; height:500px;" />
-      </div>
-
-    </div>
-  </div>
 </section>
 
-
-<section class="py-5" style="background: linear-gradient(
-  to top right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); overflow: hidden">
-  <div class="container text-center">
-    <h2 style="color:white; margin-top:3rem">Your Fluency Journey</h2>
-    <p style="color:white;">Understand your path to English mastery</p>
-    
-    <div class="row justify-content-center align-items-center">
-      
-      <div class="col-md-3 mb-4" style="background-color:#6157E1; border-radius:1rem;">
-        <div class="p-4 bg-white rounded shadow-sm level-card beginner-card">
-          <div style="font-size: 2rem;">👶</div>
-          <h5 class="mt-2">Beginner</h5>
-          <p style="font-size: 0.95rem;">Start with basic words, daily-use phrases, and sentence formation.</p>
+<section class="py-5 overflow-hidden">
+    <div class="container-fluid px-0">
+        <h2 class="text-center mb-5 fw-bold">Success Stories</h2>
+        <div class="testimonial-track">
+            <div class="testimonial-card">
+                <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <p class="fst-italic opacity-75">"The peer calls are a game-changer! I cleared my Amazon interview thanks to daily practice here."</p>
+                <div class="d-flex align-items-center mt-3">
+                    <div class="fw-bold text-info">Rohan S.</div>
+                    <div class="ms-2 opacity-25">|</div>
+                    <div class="ms-2 small opacity-50">Software Engineer</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <p class="fst-italic opacity-75">"FluentNest makes learning addictive. The streaks and XP keep me coming back every day."</p>
+                <div class="d-flex align-items-center mt-3">
+                    <div class="fw-bold text-info">Sarah K.</div>
+                    <div class="ms-2 opacity-25">|</div>
+                    <div class="ms-2 small opacity-50">Student</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <p class="fst-italic opacity-75">"The peer calls are a game-changer! I cleared my Amazon interview thanks to daily practice here."</p>
+                <div class="d-flex align-items-center mt-3">
+                    <div class="fw-bold text-info">Rohan S.</div>
+                </div>
+            </div>
+            
+            
+              <div class="testimonial-card">
+                <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <p class="fst-italic opacity-75">"The Fluency Challenges pushed me out of my comfort zone. I went from being terrified of speaking to leading team meetings in English!"</p>
+                <div class="d-flex align-items-center mt-3">
+                    <div class="fw-bold text-info">Ananya K.</div>
+                </div>
+            </div>
+            
+            
+            
+              <div class="testimonial-card">
+                <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <p class="fst-italic opacity-75">"I love the global community here. Practicing with co-learners from around the world helped me master different accents and professional etiquette."</p>
+                <div class="d-flex align-items-center mt-3">
+                    <div class="fw-bold text-info">Vikram M.</div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      
-      <div class="col-md-1 d-none d-md-block">
-        <div style="font-size: 2rem; color: #bbb;">➔</div>
-      </div>
-
-     
-      <div class="col-md-3 mb-4" style="background-color:#6157E1;  border-radius:1rem;">
-        <div class="p-4 bg-white rounded shadow-sm level-card intermediate-card">
-          <div style="font-size: 2rem;">👦</div>
-          <h5 class="mt-2">Intermediate</h5>
-          <p style="font-size: 0.95rem;">Improve grammar, speak on topics, and have flowing conversations.</p>
-        </div>
-      </div>
-
-    
-      <div class="col-md-1 d-none d-md-block">
-        <div style="font-size: 2rem; color: #bbb;">➔</div>
-      </div>
-
-      
-      <div class="col-md-3 mb-4" style="background-color:#6157E1;  border-radius:1rem;">
-        <div class="p-4 bg-white rounded shadow-sm level-card advanced-card">
-          <div style="font-size: 2rem;">👨</div>
-          <h5 class="mt-2">Advanced</h5>
-          <p style="font-size: 0.95rem;">Master fluency, group discussions, interviews, and public speaking.</p>
-        </div>
-      </div>
     </div>
-  </div>
 </section>
 
-
-<section class="hero-section">
-  <div class="banner">
-    <div class="banner-content">
-      <h1>Welcome to <strong class="gradient-text">FluentNest</strong></h1>
-      <h2>Learn English the Fun Way with Emojis & Chat</h2>
-      <a href="#start" class="start-btn">Start Learning Now</a>
+<footer class="py-5 mt-5" style="border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);">
+    <div class="container">
+        <div class="row g-5 text-center text-lg-start">
+            <div class="col-lg-5">
+                <a class="custom-logo" href="#"><i class="fa-brands fa-yelp me-2"></i>FluentNest</a>
+                <p class="mt-4 opacity-50 pe-lg-5">Building the future of English learning through community and AI-driven conversation.</p>
+                <div class="d-flex justify-content-center justify-content-lg-start gap-4">
+                    <a href="#" class="text-white opacity-50 hover-opacity-100 fs-5"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white opacity-50 hover-opacity-100 fs-5"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-white opacity-50 hover-opacity-100 fs-5"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <h6 class="fw-bold mb-4">Platform</h6>
+                <ul class="list-unstyled opacity-50">
+                    <li class="mb-3"><a href="#" class="text-white text-decoration-none">Dashboard</a></li>
+                    <li class="mb-3"><a href="#" class="text-white text-decoration-none">Leaderboard</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Challenges</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-4 text-center">
+                <h6 class="fw-bold mb-4">Download App</h6>
+                <div class="bg-white p-3 d-inline-block rounded-4 mb-3">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://fluentnest.com" alt="QR Code" width="100">
+                </div>
+                <p class="small opacity-50">iOS & Android coming soon</p>
+            </div>
+        </div>
+        <hr class="my-5 opacity-10">
+        <p class="text-center small opacity-40 mb-0">© 2026 FluentNest. Crafted for confident speakers.</p>
     </div>
-  </div>
-</section>
+</footer>
 
-
-<section class="testimonial-section" style="overflow: hidden;">
-  <h2> What Our Learners Say</h2>
-
-  <div class="testimonial-marquee">
-    <div class="testimonial-track">
-      <div class="testimonial-card">
-        <p>“EngliChat made learning English so fun! 🌟”</p>
-        <h4>– Priya, Student</h4>
-      </div>
-      <div class="testimonial-card">
-        <p>“I love the emoji flashcards. They're super easy to remember. 😄”</p>
-        <h4>– Raj, Beginner</h4>
-      </div>
-      <div class="testimonial-card">
-        <p>“It feels like chatting with a friend while learning. 💬📚”</p>
-        <h4>– Aanya, Learner</h4>
-      </div>
-      <div class="testimonial-card">
-        <p>“Simple design, fun emojis — perfect for me! 👍❤️”</p>
-        <h4>– Mohit, College Student</h4>
-      </div>
-      <!-- Repeat for smooth loop -->
-      <div class="testimonial-card">
-        <p>“EngliChat made learning English so fun! 🌟”</p>
-        <h4>– Priya, Student</h4>
-      </div>
-      <div class="testimonial-card">
-        <p>“I love the emoji flashcards. They're super easy to remember. 😄”</p>
-        <h4>– Raj, Beginner</h4>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section class="leaderboard-section" style="overflow: hidden;">
-    <h2>🏆 Your Progress & Leaderboard</h2>
-
-    <div class="score-box" id="scoreBox">
-      <h3>🎓 Your Score</h3>
-      <ul>
-        <li>Words Learned: <span id="words">0</span></li>
-        <li>Sentences Built: <span id="sentences">0</span></li>
-        <li>Daily Streak: 🔥 <span id="streak">0</span> days</li>
-        <li>Total XP: ⭐ <span id="xp">0</span></li>
-      </ul>
-    </div>
-
-    <div class="leaderboard">
-      <h3>Top Learners This Week</h3>
-      <table>
-        <tr><th>Rank</th><th>Name</th><th>XP</th></tr>
-        <tr><td>1</td><td class="highlight">👑 Priya</td><td>620</td></tr>
-        <tr><td>2</td><td>🧠 Rahul</td><td>580</td></tr>
-        <tr><td>3</td><td>🚀 Mohit</td><td>530</td></tr>
-        <tr><td>4</td><td>🎯 Aanya</td><td>500</td></tr>
-        <tr><td>5</td><td>📚 Sneha</td><td>470</td></tr>
-      </table>
-    </div>
-  </section>
-  <footer class="footer" style="overflow: hidden;">
-    <div class="footer-container">
-     
-      
-      <div class="about-englichat">
-    <div class="about-text">
-      <h2 style="background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;"><span>About</span><Span><i class="fa-brands fa-yelp"></i></Span>FluentNest</h2>
-      <p>
-        EngliChat is a fun and friendly platform to learn English using emojis, chats, and real-life examples. 
-        Designed for beginners, it makes language learning simple, engaging, and enjoyable. 
-        Practice daily, play with words, and become confident in English—one emoji at a time!
-      </p>
-    </div>
-    <div class="about-download">
-      <div class="qr-label"> Scan to Download</div>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store" alt="QR Code">
-      <a href="https://play.google.com/store" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
-      </a>
-    </div>
-  </div>
-
-
-
-    
-      
-    </div>
-
-    
-  </footer>
-  
- <section class="foot" style="overflow: hidden;">
-    
-      <div class="footer-left" style="margin-left:6rem">
-        <h3><span style="background: linear-gradient(50deg, #6157E1, #2F284F);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  "><i class="fa-brands fa-yelp"></i></span>FluentNest</h3>
-        <p>Learn English through chats, emojis & fun. Practice daily and grow your confidence.</p>
-      </div>
-<div class="footer-container">
-     
-      <!-- Center: Links -->
-      <div class="footer-links">
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Start Learning</a></li>
-          <li><a href="#">Features</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-
-      <!-- Right: Social Icons -->
-      <div class="footer-social">
-        <a href="https://wa.me/919876543210" target="_blank" title="WhatsApp">
-          <i class="fab fa-whatsapp"></i>
-        </a>
-        <a href="https://instagram.com/yourpage" target="_blank" title="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      © 2025 EngliChat. All rights reserved.
-    </div>
-  </section>
-  
-  
-
-<script th:inline="javascript">
-
-document.addEventListener("DOMContentLoaded", () => {
-
-	  const observer = new IntersectionObserver((entries) => {
-	    entries.forEach(entry => {
-	      if (entry.isIntersecting) {
-	        
-	        entry.target.classList.add("show");
-	      } else {
-	       
-	        entry.target.classList.remove("show");
-	      }
-	    });
-	  }, { threshold: 0.6});  
-
-	  document.querySelectorAll(".slide-in-left, .slide-in-right")
-	          .forEach(el => observer.observe(el));
-	});
-	
-	
-const wordsLearned = 42;
-const sentencesBuilt = 27;
-const dailyStreak = 5;
-const totalXP = (wordsLearned * 5) + (sentencesBuilt * 10) + (dailyStreak * 15);
-
-
-document.getElementById("words").textContent = wordsLearned;
-document.getElementById("sentences").textContent = sentencesBuilt;
-document.getElementById("streak").textContent = dailyStreak;
-document.getElementById("xp").textContent = totalXP;
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const navLinks = document.querySelectorAll(".nav-link:not(.dropdown-toggle)");
-
-    navLinks.forEach(link => {
-      link.addEventListener("click", function () {
-        
-        navLinks.forEach(l => l.classList.remove("active"));
-        
-        this.classList.add("active");
-      });
-    });
-  });
-
-
-
-
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

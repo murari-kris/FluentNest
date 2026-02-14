@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Set;
@@ -24,28 +25,39 @@ public class UserController {
         this.activeUserStore = activeUserStore;
     }
 
+    // Show all users
     @GetMapping("/users")
-    public String getAllUsers(Model model) {
-        // ✅ Get current logged-in user
+    public String getAllUsers(
+            @RequestParam(value = "search", required = false) String search,
+            Model model
+    ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
 
-        // ✅ Fetch all users except admin & current user
-        List<User> users = userService.getAllUsers()
-                .stream()
-                .filter(u -> !u.getUsername().equalsIgnoreCase("admin"))
-                .filter(u -> !u.getUsername().equalsIgnoreCase(currentUser)) // exclude self
-                .toList();
+        // ✅ Fetch users (search if keyword provided)
+        List<User> users;
+        if (search != null && !search.isEmpty()) {
+            users = userService.searchUsers(search);
+        } else {
+            users = userService.getAllUsers();
+        }
 
-        // ✅ Fetch active users excluding current user
+        // Exclude admin & current user
+        users = users.stream()
+                .filter(u -> !u.getUsername().equalsIgnoreCase("admin"))
+                .filter(u -> !u.getUsername().equalsIgnoreCase(currentUser))
+                .collect(Collectors.toList());
+
+        // Active users
         Set<String> activeUsers = activeUserStore.getUsers()
                 .stream()
-                .filter(u -> !u.equalsIgnoreCase(currentUser)) // exclude self
+                .filter(u -> !u.equalsIgnoreCase(currentUser))
                 .collect(Collectors.toSet());
 
         model.addAttribute("users", users);
         model.addAttribute("activeUsers", activeUsers);
+        model.addAttribute("search", search);
 
-        return "users"; // users.html
+        return "users"; // Thymeleaf template: users.html
     }
 }

@@ -1,348 +1,296 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fluency Challenge — Start</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Fluency Challenge | FluentNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
     :root {
-      --primary: #7f56d9;
-      --secondary: #4eb5a9;
-      --bg: #f8f7ff;
-      --card: #ffffff;
-      --text: #333;
-      --muted: #666;
-      --radius: 14px;
-      --shadow: 0 8px 25px rgba(0,0,0,0.08);
+      --primary: #4EB5A9;
+      --accent: #7928ca;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: "Poppins", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+      background-attachment: fixed;
+      margin: 0; 
+      padding: 15px; 
+      color: white; 
+      min-height: 100vh;
     }
-
+    
     header {
-      text-align: center;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 40px 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease;
+      text-align: center; 
+      padding: 60px 20px; 
+      margin-bottom: 20px;
     }
 
     header h1 {
-      font-size: 2rem;
-      margin-bottom: 8px;
+        font-weight: 800;
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        letter-spacing: -1px;
+        margin-bottom: 10px;
     }
 
-    header p {
-      font-size: 1rem;
-      opacity: 0.9;
+    main { 
+        max-width: 1100px; 
+        margin: 0 auto; 
+        display: grid; 
+        grid-template-columns: 2fr 1fr; 
+        gap: 25px; 
     }
 
-    main {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
+    .card { 
+        background: var(--glass); 
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px; 
+        padding: 30px; 
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+    }
+
+    .prompt-box { 
+        background: rgba(78, 181, 169, 0.1); 
+        padding: 25px; 
+        border-radius: 18px; 
+        border-left: 5px solid var(--primary); 
+        margin: 25px 0; 
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #e0e0e0;
+    }
+
+    .timer-display { 
+        font-size: 28px; 
+        font-weight: 800; 
+        color: var(--primary); 
+        text-align: center; 
+        margin-bottom: 20px;
+        text-shadow: 0 0 15px rgba(78, 181, 169, 0.3);
+    }
+
+    input, select, textarea {
+      width: 100%; 
+      padding: 14px; 
+      margin: 8px 0 15px; 
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    textarea {
+        height: 180px;
+        resize: none;
+    }
+
+    .btn {
+      padding: 14px 25px; 
+      border-radius: 14px; 
+      border: none; 
+      font-weight: 700;
+      cursor: pointer; 
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .btn-main { 
+        background: linear-gradient(135deg, #ff0080, #7928ca); 
+        color: white; 
+        width: 100%; 
+        box-shadow: 0 10px 20px rgba(255, 0, 128, 0.2);
+    }
+
+    .btn-main:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(255, 0, 128, 0.4);
+    }
+
+    .btn-ghost { 
+        background: rgba(255, 255, 255, 0.1); 
+        color: white; 
+        border: 1px solid var(--glass-border);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+    
+    .result-popup { 
+        background: rgba(78, 181, 169, 0.15); 
+        border: 1px solid var(--primary); 
+        padding: 20px; 
+        border-radius: 18px; 
+        margin-top: 25px; 
+        display: none; 
+        text-align: center;
+        animation: slideIn 0.4s ease;
     }
 
     @media (max-width: 850px) {
       main { grid-template-columns: 1fr; }
+      header { padding: 40px 15px; }
     }
 
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      transition: transform 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-    }
-
-    h2 {
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-
-    label {
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    select, input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      margin-bottom: 14px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 15px;
-      font-family: inherit;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 150px;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      text-decoration:none;
-    }
-
-    .btn:hover {
-      background: #6b3fd1;
-    }
-
-    .btn.ghost {
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .prompt-box {
-      background: #f4efff;
-      padding: 14px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      border-left: 4px solid var(--primary);
-    }
-
-    .timer {
-      font-weight: bold;
-      color: var(--secondary);
-    }
-
-    .result {
-      margin-top: 12px;
-      background: #e8f9f6;
-      border-left: 4px solid var(--secondary);
-      border-radius: 10px;
-      padding: 10px 14px;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .link-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Fluency Challenges</h1>
-    <p>Challenge yourself with short speaking prompts and timed fluency games to build confidence.</p>
-  </header>
 
-  <main>
-    <!-- Challenge Area -->
-    <section class="card">
-      <h2>Start Challenge</h2>
-      <label for="difficulty">Difficulty</label>
-      <select id="difficulty">
-        <option value="easy">Beginner (short)</option>
-        <option value="medium">Intermediate</option>
-        <option value="hard">Advanced (long)</option>
-      </select>
+<header>
+  <h1>Speak & Type Challenge</h1>
+  <p class="opacity-75">Test your fluency and climb the leaderboard!</p>
+</header>
 
-      <label for="duration">Duration (seconds)</label>
-      <input id="duration" type="number" min="15" max="300" step="15" value="60">
+<main>
+  <section class="card">
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 150px;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--primary);">DIFFICULTY</label>
+            <select id="difficulty">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate" selected>Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+        </div>
+        <div style="width: 120px;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--primary);">SECONDS</label>
+            <input type="number" id="duration" value="60">
+        </div>
+    </div>
 
-      <button id="newPrompt" class="btn ghost">New Prompt</button>
+    <div class="prompt-box" id="promptText">Choose difficulty and hit Start!</div>
+    
+    <div class="timer-display"><i class="fa-regular fa-clock me-2"></i><span id="timeLeft">--</span>s</div>
 
-      <div class="prompt-box">
-        <div id="promptText">Click “New Prompt” or start the challenge!</div>
-      </div>
+    <div style="display: flex; gap: 12px; margin-bottom: 25px;">
+        <button id="startBtn" class="btn btn-main">Start Challenge</button>
+        <button id="submitBtn" class="btn btn-ghost" disabled>Finish Now</button>
+    </div>
 
-      <div>
-        <button id="startBtn" class="btn">Start Challenge</button>
-        <button id="submitBtn" class="btn ghost" disabled>Submit Early</button>
-        <span class="timer" id="timeLeft">--</span> sec left
-      </div>
+    <textarea id="response" placeholder="Type your summary here as you speak..." disabled></textarea>
 
-      <label for="response">Your Response</label>
-      <textarea id="response" placeholder="Type or summarize your spoken answer..." disabled></textarea>
+    <div id="resultArea" class="result-popup"></div>
+  </section>
 
-      <div id="resultArea" style="display:none" class="result"></div>
-    </section>
+  <aside>
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 1.1rem;"><i class="fa-solid fa-trophy me-2 text-warning"></i> Save Progress</h3>
+        <p class="small opacity-50 mb-4">Your score will be recorded on the global wall of fame.</p>
+        
+        <label style="font-size: 0.75rem; font-weight: 700; color: var(--primary);">PLAYER NAME</label>
+        <input type="text" id="playerName" placeholder="Your username">
+        
+        <button id="saveScore" class="btn btn-main" disabled style="margin-bottom: 12px; width: 100%;">Save Score</button>
+        <a th:href="@{/leaderboard}" class="btn btn-ghost" style="width: 100%; box-sizing: border-box;">
+            <i class="fa-solid fa-ranking-star"></i> Leaderboard
+        </a>
+    </div>
+  </aside>
+</main>
 
-    <!-- Info & Leaderboard -->
-    <aside class="card">
-      <h2>How It Works</h2>
-      <p style="font-size:14px;color:var(--muted)">Choose difficulty → Start timer → Speak aloud while typing a summary. When time’s up, your WPM is calculated.</p>
-
-      <hr style="margin:15px 0;border:none;border-top:1px solid #eee;">
-
-      <h2>Save Score</h2>
-      <input id="playerName" placeholder="Enter your name to save score">
-      <div class="link-row">
-        <button id="saveScore" class="btn ghost" disabled>Save to Leaderboard</button>
-        <a th:href="@{/leaderboard}" class="btn">View Leaderboard</a>
-        <a th:href="@{/main}" class="btn ghost">Back to Home</a>
-      </div>
-    </aside>
-  </main>
-
-  <footer>© 2025 FluentNest • Speak confidently every day 🌱</footer>
-
-  <script th:inline="javascript">
-  // Prompts dataset
-  const prompts = {
-    easy: [
-      "Introduce yourself in 30 seconds.",
-      "Describe your favourite food.",
-      "Talk about your morning routine."
-    ],
-    medium: [
-      "Explain why teamwork is important at work.",
-      "Describe a problem you solved recently and the steps you took.",
-      "Discuss the advantages of learning online."
-    ],
-    hard: [
-      "Argue for or against the idea that universities should be free for all citizens.",
-      "Describe a complex project you managed and how you measured success.",
-      "Discuss the long-term effects of AI on employment and education."
-    ]
-  };
-
-  const difficultyEl = document.getElementById('difficulty');
-  const durationEl = document.getElementById('duration');
-  const newPromptBtn = document.getElementById('newPrompt');
-  const promptTextEl = document.getElementById('promptText');
-  const startBtn = document.getElementById('startBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const responseEl = document.getElementById('response');
-  const timeLeftEl = document.getElementById('timeLeft');
-  const resultArea = document.getElementById('resultArea');
-  const playerNameEl = document.getElementById('playerName');
-  const saveBtn = document.getElementById('saveScore');
-
-  let currentPrompt = "";
-  let timer = null;
-  let timeRemaining = 0;
-  let started = false;
-  let lastScore = null;
-
-  function choosePrompt() {
-    const diff = difficultyEl.value;
-    const list = prompts[diff] || prompts.easy;
-    currentPrompt = list[Math.floor(Math.random() * list.length)];
-    promptTextEl.textContent = currentPrompt;
-  }
-
-  newPromptBtn.addEventListener('click', choosePrompt);
-
-  startBtn.addEventListener('click', () => {
-    if (started) return;
-    if (!currentPrompt) choosePrompt();
-    const duration = Math.max(15, Math.min(300, parseInt(durationEl.value) || 60));
-    timeRemaining = duration;
-    timeLeftEl.textContent = timeRemaining;
-    responseEl.disabled = false;
-    responseEl.value = "";
-    responseEl.focus();
-    startBtn.disabled = true;
-    submitBtn.disabled = false;
-    saveBtn.disabled = true;
-    resultArea.style.display = 'none';
-    started = true;
-
-    timer = setInterval(() => {
-      timeRemaining--;
-      timeLeftEl.textContent = timeRemaining;
-      if (timeRemaining <= 0) finishChallenge();
-    }, 1000);
-  });
-
-  submitBtn.addEventListener('click', () => {
-    if (started) finishChallenge();
-  });
-
-  function finishChallenge() {
-    started = false;
-    clearInterval(timer);
-    startBtn.disabled = false;
-    submitBtn.disabled = true;
-    responseEl.disabled = true;
-
-    const text = (responseEl.value || "").trim();
-    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-    const durationSet = parseInt(durationEl.value) || 60;
-    const elapsed = durationSet - Math.max(0, timeRemaining);
-    const timeUsed = elapsed > 0 ? elapsed : durationSet;
-    const wpm = Math.round(words / (timeUsed / 60));
-
-    lastScore = {
-      name: playerNameEl.value.trim() || "Anonymous",
-      wpm,
-      words,
-      duration: timeUsed,
-      prompt: currentPrompt,
-      difficulty: difficultyEl.value,
-      date: new Date().toISOString()
+<script>
+    const prompts = {
+        Beginner: ["Your favorite food.", "Describe your room.", "Your last holiday."],
+        Intermediate: ["Importance of exercise.", "Pros of social media.", "Describe your dream job."],
+        Advanced: ["Climate change solutions.", "AI in healthcare.", "Universal Basic Income."]
     };
 
-    resultArea.style.display = 'block';
-    resultArea.innerHTML = `
-      <strong>✅ Result:</strong><br>
-      Words typed: <strong>${words}</strong><br>
-      Time used: <strong>${timeUsed}s</strong><br>
-      WPM: <strong>${wpm}</strong>
-    `;
-    saveBtn.disabled = false;
-  }
+    let timer, timeRemaining, started = false, lastScore = null;
 
-  saveBtn.addEventListener('click', () => {
-    if (!lastScore) return;
+    const startBtn = document.getElementById('startBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const responseEl = document.getElementById('response');
+    const timeLeftEl = document.getElementById('timeLeft');
+    const resultArea = document.getElementById('resultArea');
+    const saveBtn = document.getElementById('saveScore');
 
-    const key = 'fluent_challenge_scores';
-    const scores = JSON.parse(localStorage.getItem(key) || '[]');
+    startBtn.onclick = () => {
+        const diff = document.getElementById('difficulty').value;
+        document.getElementById('promptText').innerText = prompts[diff][Math.floor(Math.random()*3)];
+        
+        timeRemaining = parseInt(document.getElementById('duration').value) || 60;
+        timeLeftEl.innerText = timeRemaining;
+        
+        responseEl.disabled = false;
+        responseEl.value = "";
+        responseEl.focus();
+        
+        startBtn.disabled = true;
+        submitBtn.disabled = false;
+        saveBtn.disabled = true;
+        resultArea.style.display = 'none';
+        started = true;
 
-    scores.push(lastScore);
-    scores.sort((a, b) => b.wpm - a.wpm);
+        timer = setInterval(() => {
+            timeRemaining--;
+            timeLeftEl.innerText = timeRemaining;
+            if (timeRemaining <= 0) finish();
+        }, 1000);
+    };
 
-    localStorage.setItem(key, JSON.stringify(scores));
+    submitBtn.onclick = finish;
 
-    alert('✅ Score saved successfully! Redirecting to Leaderboard...');
-    saveBtn.disabled = true;
+    function finish() {
+        started = false;
+        clearInterval(timer);
+        startBtn.disabled = false;
+        submitBtn.disabled = true;
+        responseEl.disabled = true;
 
-    // ✅ Redirect using Thymeleaf
-    setTimeout(() => {
-      window.location.href = /*[[ @{/leaderboard} ]]*/ '/leaderboard';
-    }, 800);
-  });
+        const words = responseEl.value.trim().split(/\s+/).filter(x => x).length;
+        const totalTime = parseInt(document.getElementById('duration').value);
+        const wpm = Math.round(words / (totalTime / 60));
+
+        lastScore = {
+            name: document.getElementById('playerName').value || "Guest",
+            difficulty: document.getElementById('difficulty').value,
+            wpm: wpm,
+            words: words,
+            duration: totalTime,
+            date: new Date().toISOString()
+        };
+
+        resultArea.style.display = 'block';
+        resultArea.innerHTML = `<i class="fa-solid fa-circle-check fs-4 mb-2"></i><br><strong>Excellent!</strong> You typed ${words} words at <strong>${wpm} WPM</strong>.`;
+        saveBtn.disabled = false;
+    }
+
+    saveBtn.onclick = () => {
+        const scores = JSON.parse(localStorage.getItem('fluent_challenge_scores') || '[]');
+        scores.push(lastScore);
+        scores.sort((a, b) => b.wpm - a.wpm);
+        localStorage.setItem('fluent_challenge_scores', JSON.stringify(scores));
+        alert("Score saved! Go check the leaderboard.");
+        saveBtn.disabled = true;
+    };
 </script>
-
 </body>
 </html>

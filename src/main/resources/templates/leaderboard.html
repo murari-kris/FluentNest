@@ -1,219 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fluency Challenge — Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard | FluentNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <style>
-    :root {
-      --primary: #7f56d9;
-      --secondary: #4eb5a9;
-      --bg: #f8f7ff;
-      --card: #ffffff;
-      --text: #333;
-      --muted: #666;
-      --radius: 14px;
-      --shadow: 0 8px 25px rgba(0,0,0,0.08);
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+    :root { 
+        --primary: #4EB5A9; 
+        --accent: #7928ca; 
+        --glass: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: "Poppins", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
-      -webkit-font-smoothing: antialiased;
+    body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+        background-attachment: fixed;
+        margin: 0; 
+        padding: 15px; 
+        color: white;
+        min-height: 100vh;
     }
-
+    
     header {
-      text-align: center;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 40px 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease;
+      text-align: center; 
+      padding: 60px 20px; 
+      margin-bottom: 20px;
     }
 
     header h1 {
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
-
-    header p {
-      font-size: 1rem;
-      opacity: 0.9;
+        font-weight: 800;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: -1px;
+        margin: 0;
     }
 
     main {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      animation: fadeIn 1s ease;
+      max-width: 900px; 
+      margin: 0 auto; 
+      background: var(--glass); 
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 40px 30px; 
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4); 
+      position: relative;
     }
 
-    h2 {
-      color: var(--primary);
-      margin-bottom: 16px;
-      text-align: center;
+    table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    
+    th { 
+        text-align: left; 
+        padding: 15px; 
+        font-size: 11px; 
+        color: var(--primary); 
+        text-transform: uppercase; 
+        letter-spacing: 1.5px;
+        font-weight: 800;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 16px;
+    td { 
+        padding: 15px; 
+        background: rgba(255, 255, 255, 0.03);
+        border-top: 1px solid var(--glass-border);
+        border-bottom: 1px solid var(--glass-border);
     }
 
-    th, td {
-      padding: 12px 10px;
-      text-align: center;
-      border-bottom: 1px solid #eee;
+    /* Rounding the rows */
+    td:first-child { border-left: 1px solid var(--glass-border); border-radius: 15px 0 0 15px; }
+    td:last-child { border-right: 1px solid var(--glass-border); border-radius: 0 15px 15px 0; }
+
+    .rank-medal { font-size: 22px; filter: drop-shadow(0 0 8px currentColor); }
+    .gold { color: #FFD700; } 
+    .silver { color: #E5E4E2; } 
+    .bronze { color: #CD7F32; }
+    
+    .wpm-badge { 
+        background: linear-gradient(135deg, rgba(78, 181, 169, 0.2), rgba(121, 40, 202, 0.2));
+        color: #fff; 
+        padding: 6px 14px; 
+        border-radius: 10px; 
+        font-weight: 800; 
+        border: 1px solid var(--primary);
     }
 
-    th {
-      background: #f2edff;
-      color: var(--primary);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 13px;
+    .name-text { font-weight: 700; color: white; font-size: 1.05rem; }
+
+    .actions { 
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 15px; 
+        margin-top: 40px; 
     }
 
-    tr:hover td {
-      background: #f9f6ff;
+    .btn { 
+        padding: 14px 30px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        cursor: pointer; 
+        border: none; 
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        transition: 0.3s;
     }
 
-    td {
-      font-size: 15px;
+    .btn-main { 
+        background: linear-gradient(135deg, #ff0080, #7928ca); 
+        color: white; 
+        box-shadow: 0 10px 20px rgba(255, 0, 128, 0.2);
     }
 
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 30px;
+    .btn-main:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255, 0, 128, 0.4);
     }
 
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-block;
-      transition: all 0.2s ease;
+    .btn-outline { 
+        background: rgba(255, 59, 48, 0.1); 
+        border: 1px solid rgba(255, 59, 48, 0.3); 
+        color: #ff6b6b; 
     }
 
-    .btn:hover {
-      background: #6b3fd1;
+    .btn-outline:hover {
+        background: #ff3b30;
+        color: white;
     }
 
-    .btn.ghost {
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @media (max-width: 600px) {
+        th:nth-child(5), td:nth-child(5) { display: none; } /* Hide words count on phones */
+        main { padding: 25px 15px; }
+        .btn { width: 100%; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Fluency Leaderboard</h1>
-    <p>See where you rank among other FluentNest challengers!</p>
-  </header>
 
-  <main>
-    <h2>Top Performers</h2>
-    <table id="leaderboard">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Name</th>
-          <th>Difficulty</th>
-          <th>WPM</th>
-          <th>Words</th>
-          <th>Time (s)</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboardBody">
-        <tr><td colspan="7" class="empty">Loading leaderboard...</td></tr>
-      </tbody>
-    </table>
+<header>
+  <h1><i class="fa-solid fa-crown" style="color: #FFD700; margin-right: 10px;"></i>Leaderboard</h1>
+  <p class="opacity-75">The fastest thinkers in the FluentNest community</p>
+</header>
 
-    <div class="actions">
-      <a th:href="@{/main}" class="btn ghost">Back to Home</a>
-      <a th:href="@{challenge}" class="btn">Start New Challenge</a>
-      <button id="clearScores" class="btn ghost">Clear Leaderboard</button>
-    </div>
-  </main>
+<main>
+  <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Level</th>
+            <th>Speed</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+  </div>
 
-  <footer>© 2025 FluentNest • Keep practicing to climb higher 🚀</footer>
+  <div class="actions">
+    <a th:href="@{/challenge}" class="btn btn-main">Take the Challenge</a>
+    <button onclick="clearAll()" class="btn btn-outline">Clear History</button>
+  </div>
+</main>
 
- <script th:inline="javascript">
-  const leaderboardBody = document.getElementById('leaderboardBody');
-  const clearBtn = document.getElementById('clearScores');
+<script>
+    function load() {
+        const scores = JSON.parse(localStorage.getItem('fluent_challenge_scores') || '[]');
+        const body = document.getElementById('boardBody');
+        
+        if(scores.length === 0) {
+            body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:60px; opacity: 0.5;">No records found. Be the first to set a score!</td></tr>';
+            return;
+        }
 
-  function loadLeaderboard() {
-    const key = 'fluent_challenge_scores';
-    const raw = localStorage.getItem(key);
-    const data = raw ? JSON.parse(raw) : [];
+        body.innerHTML = scores.slice(0, 10).map((s, i) => {
+            let rankHtml = `<span style="opacity: 0.5; font-weight: 800;">#${i + 1}</span>`;
+            if(i === 0) rankHtml = '<i class="fa-solid fa-medal rank-medal gold"></i>';
+            if(i === 1) rankHtml = '<i class="fa-solid fa-medal rank-medal silver"></i>';
+            if(i === 2) rankHtml = '<i class="fa-solid fa-medal rank-medal bronze"></i>';
 
-    if (!data.length) {
-      leaderboardBody.innerHTML = '<tr><td colspan="7" class="empty">No scores yet. Start your first challenge!</td></tr>';
-      return;
+            return `
+                <tr>
+                    <td>${rankHtml}</td>
+                    <td class="name-text">${s.name}</td>
+                    <td><span style="font-size: 0.85rem; opacity: 0.8;">${s.difficulty}</span></td>
+                    <td><span class="wpm-badge">${s.wpm} <small style="font-size: 0.6rem;">WPM</small></span></td>
+                    <td><span style="font-weight: 600;">${s.words}</span></td>
+                </tr>
+            `;
+        }).join('');
     }
 
-    leaderboardBody.innerHTML = data
-      .slice(0, 20)
-      .map((entry, i) => `
-        <tr>
-          <td><strong>${i + 1}</strong></td>
-          <td>${entry.name}</td>
-          <td>${entry.difficulty}</td>
-          <td style="color:#4eb5a9;font-weight:600">${entry.wpm}</td>
-          <td>${entry.words}</td>
-          <td>${entry.duration}</td>
-          <td>${new Date(entry.date).toLocaleString()}</td>
-        </tr>
-      `)
-      .join('');
-  }
-
-  clearBtn.addEventListener('click', () => {
-    if (confirm("Are you sure you want to clear all leaderboard scores?")) {
-      localStorage.removeItem('fluent_challenge_scores');
-      loadLeaderboard();
+    function clearAll() {
+        if(confirm("This will permanently delete your local score history. Continue?")) {
+            localStorage.removeItem('fluent_challenge_scores');
+            load();
+        }
     }
-  });
-
-  loadLeaderboard();
+    load();
 </script>
-
 </body>
 </html>

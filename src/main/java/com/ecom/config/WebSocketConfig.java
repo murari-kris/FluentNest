@@ -12,23 +12,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Existing chat endpoint
         registry.addEndpoint("/chat-websocket")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
-
-        // 👇 New endpoint for WebRTC signaling
-        registry.addEndpoint("/signal-websocket")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        // 👇 Enable a simple broker for broadcasting messages to all clients
-        config.enableSimpleBroker("/topic");
-
-        // 👇 Prefix for messages bound for @MessageMapping methods (controllers)
-        config.setApplicationDestinationPrefixes("/app");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/queue", "/topic");
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.setUserDestinationPrefix("/user");
     }
 }

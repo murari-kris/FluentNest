@@ -1,280 +1,212 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English for Professionals | FluentNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FluentNest Academy | Professional Lessons</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
+    :root {
+      --primary: #4A1780;
+      --secondary: #7928ca;
+      --bg: #f3f7f9;
+      --gold: #D4AF37;
+      --linkedin: #0077b5;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #f3f7f9 0%, #eaf6fc 100%);
-      color: #222;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
+      background: var(--bg);
+      margin: 0; padding: 0; color: #222;
     }
 
     header {
-     background: linear-gradient(180deg, #4A1780, #7928ca);
-      color: white;
-      text-align: center;
-      padding: 25px 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      color: white; text-align: center; 
+      padding: 60px 15px 80px; /* Added bottom padding to create space */
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.9rem;
-    }
+    header h1 { margin: 0; font-size: clamp(1.5rem, 6vw, 2.2rem); }
 
     .container {
-      max-width: 900px;
-      margin: 50px auto;
+      max-width: 800px; 
+      margin: -40px auto 40px; /* Controls the overlap depth */
       background: white;
-      border-radius: 18px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      padding: 40px 50px;
-      animation: fadeIn 0.8s ease;
-      position: relative;
+      border-radius: 24px; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      padding: 40px clamp(20px, 5vw, 40px); 
+      position: relative; 
+      width: 92%;
+      min-height: 400px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    .progress-bar {
+      position: absolute; top: 0; left: 0; height: 6px;
+      background: var(--secondary); width: 0%; transition: 0.5s;
+      border-radius: 24px 24px 0 0;
     }
 
-    .progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 5px;
-      background: #7928ca;
-      width: 0%;
-      transition: width 0.5s ease;
-      border-top-left-radius: 18px;
-      border-top-right-radius: 18px;
+    h2 { color: var(--primary); font-size: clamp(1.3rem, 5vw, 1.8rem); margin-top: 10px; }
+    
+    .quiz-option {
+      display: block; width: 100%; padding: 18px; margin: 12px 0;
+      border: 2px solid #eee; border-radius: 14px; cursor: pointer;
+      text-align: left; background: white; font-size: 1rem; font-family: inherit;
     }
 
-    h2 {
-      color: #4A1780;
-      margin-top: 0;
-    }
-
-    p, li {
-      font-size: 1.1rem;
-      line-height: 1.7;
-      text-align: justify;
-    }
-
-    ul {
-      margin: 10px 0 25px 25px;
-    }
-
-    .highlight {
-      background: #EDE3F8;
-      border-left: 5px solid  #4A1780;
-      border-radius: 10px;
-      padding: 18px 20px;
-      margin: 25px 0;
-    }
-
-    .dialogue {
-      background: #EDE3F8;
-      border-left: 4px solid  #4A1780;
-      padding: 15px;
-      border-radius: 10px;
-      margin: 20px 0;
-    }
+    .quiz-option.correct { border-color: #28a745; background: #e8f9ed; }
+    .quiz-option.wrong { border-color: #dc3545; background: #f9e8e8; }
 
     .btn {
-     background: linear-gradient(180deg, #4A1780, #7928ca);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 25px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s;
-      display: inline-block;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      color: white; border: none; border-radius: 14px;
+      padding: 14px 28px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
     }
 
-    .btn:hover {
-      background: #7928ca;
-      transform: translateY(-2px);
-    }
+    .btn-ghost { background: #f0f0f0; color: #444; }
+    .btn-linkedin { background: var(--linkedin); }
 
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 40px;
-    }
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 40px; gap: 15px; }
 
-    #startScreen {
+    /* Certificate Styles */
+    #certificate {
+      background: #fff; border: 6px double var(--gold);
+      padding: 30px; border-radius: 10px; margin-bottom: 25px;
       text-align: center;
-      padding: 80px 20px;
     }
 
-    #startScreen h2 {
-      font-size: 1.8rem;
-      color: #7928ca;
+    @media (max-width: 600px) {
+      header { padding: 40px 15px 60px; }
+      .container { margin-top: -30px; padding: 30px 20px; }
+      .nav-buttons { flex-direction: column-reverse; }
+      .btn { width: 100%; justify-content: center; }
     }
 
-    #startBtn {
-      font-size: 1.1rem;
-      padding: 15px 35px;
-      margin-top: 25px;
-      background: linear-gradient(180deg, #4A1780, #7928ca);
-      border-radius: 10px;
+    /* Print logic for Certificate Fix */
+    @media print {
+      @page { margin: 15mm; }
+      body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body * { visibility: hidden; }
+      #certificate, #certificate * { visibility: visible; }
+      #certificate { 
+        position: absolute; left: 0; top: 0; width: 100%; 
+        border: 5pt double var(--gold) !important; 
+        padding: 50px;
+      }
     }
 
-    #startBtn:hover {
-      background: #7928ca;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px 0;
-      color: #555;
-      font-size: 0.9rem;
-      background: #f8fbfc;
-      margin-top: 50px;
-    }
-
-    .fade {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.4s ease;
-    }
-
-    .show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .lesson-count {
-      color: #555;
-      font-weight: 500;
-      text-align: right;
-      margin-bottom: 15px;
-    }
+    footer { text-align: center; padding: 20px; font-size: 0.85rem; color: #888; }
   </style>
 </head>
 <body>
-  <header>
-    <h1><span style="background: linear-gradient(to right, #ff0080, rgb(128, 0, 255));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</span>: English for Professionals</h1>
-  </header>
 
-  <!-- Start Screen -->
-  <div class="container" id="startScreen">
-    <h2>Ready to Level Up Your Professional English?</h2>
-    <p>Learn to communicate effectively and confidently in meetings, interviews, and business calls.  
-    Improve your etiquette and fluency, one step at a time!</p>
-    <button id="startBtn" class="btn">Start Lesson</button>
-  </div>
+<header>
+    <h1>FluentNest Academy</h1>
+</header>
 
-  <!-- Lesson Container -->
-  <div class="container fade" id="lessonContainer" style="display:none;">
-    <div class="progress" id="progressBar"></div>
-    <div class="lesson-count" id="lessonCount"></div>
-    <h2 id="lessonTitle"></h2>
-    <div id="lessonContent"></div>
-
-    <div class="nav-buttons">
-      <button class="btn" id="prevLesson">⬅ Previous</button>
-      <button class="btn" id="nextLesson">Next ➡</button>
+<div class="container" id="mainContainer">
+    <div class="progress-bar" id="progress"></div>
+    <div id="contentArea">
+        <div id="startScreen" style="text-align: center; padding: 20px 0;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 3.5rem; color: var(--secondary); margin-bottom: 15px;"></i>
+            <h2>Master Professional English</h2>
+            <p>Advance your career by mastering essential office communication and professional etiquette.</p>
+            <button class="btn" onclick="startLessons()" style="margin-top:25px;">
+                Begin Learning <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
     </div>
-  </div>
 
-  <footer>© 2025 FluentNest — Learn, Grow, Communicate Better.</footer>
+    <div class="nav-buttons" id="navButtons" style="display: none;">
+        <button class="btn btn-ghost" id="prevBtn" onclick="changeLesson(-1)">Previous</button>
+        <button class="btn" id="nextBtn" onclick="changeLesson(1)">Next</button>
+    </div>
+</div>
 
-  <script>
+<footer>© 2026 FluentNest — Empowering Professional Communication</footer>
+
+<script>
     const lessons = [
-      {
-        title: "Office Etiquette",
-        content: `
-          <div class="highlight">
-            <p>Good manners and clear communication are key to making a professional impression.  
-            Office etiquette includes respecting others’ space, tone, and time.</p>
-          </div>
-          <ul>
-            <li>Greet colleagues politely with a smile.</li>
-            <li>Be punctual for meetings.</li>
-            <li>Keep your workspace clean and organized.</li>
-          </ul>
-        `
-      },
-      {
-        title: "Client Communication",
-        content: `
-          <p>Building trust with clients begins with professional tone, clarity, and confidence. Always confirm details and appreciate their time.</p>
-          <div class="dialogue">
-            <p><strong>You:</strong> "Good morning, Ms. Taylor. I’d like to confirm our delivery timeline for next week."</p>
-            <p><strong>Client:</strong> "Thanks! I appreciate the update."</p>
-          </div>
-        `
-      },
-      {
-        title: "Handling Feedback",
-        content: `
-          <p>Feedback is an opportunity for growth. Learn to receive it positively and give it constructively.</p>
-          <div class="highlight">
-            <ul>
-              <li>Start with appreciation.</li>
-              <li>Focus on solutions, not blame.</li>
-              <li>Thank the person for their input.</li>
-            </ul>
-          </div>
-        `
-      }
+        { title: "Office Etiquette", content: "<p>Always be punctual and respect shared spaces. Use active listening during conversations.</p><ul><li>Be on time for all meetings.</li><li>Respect shared office resources.</li></ul>" },
+        { title: "Client Communication", content: "<p>Clarity is key. Use professional greetings and always confirm next steps.</p><div style='background:#f4f0fa; padding:15px; border-radius:12px; border-left: 4px solid var(--secondary);'><strong>Example:</strong> 'I will send the proposal by EOD.'</div>" },
+        { title: "Handling Feedback", content: "<p>See feedback as growth. Respond with 'Thank you for the input' instead of getting defensive.</p>" }
     ];
 
-    let currentLesson = 0;
-    const startScreen = document.getElementById("startScreen");
-    const lessonContainer = document.getElementById("lessonContainer");
-    const lessonTitle = document.getElementById("lessonTitle");
-    const lessonContent = document.getElementById("lessonContent");
-    const nextBtn = document.getElementById("nextLesson");
-    const prevBtn = document.getElementById("prevLesson");
-    const progressBar = document.getElementById("progressBar");
-    const lessonCount = document.getElementById("lessonCount");
+    const quizData = [
+        { q: "What is the best way to respond to constructive criticism?", a: ["Defend your actions", "Say thank you and ask for details", "Ignore it"], correct: 1 },
+        { q: "What does 'punctuality' mean in a professional setting?", a: ["Being exactly on time", "Showing up whenever", "Working late"], correct: 0 }
+    ];
 
-    function loadLesson(index) {
-      const lesson = lessons[index];
-      lessonTitle.textContent = lesson.title;
-      lessonContent.innerHTML = lesson.content;
-      lessonContainer.classList.remove("show");
-      setTimeout(() => lessonContainer.classList.add("show"), 200);
+    let currentStep = 0, quizIndex = 0;
+    const contentArea = document.getElementById('contentArea'), navButtons = document.getElementById('navButtons');
+    const progress = document.getElementById('progress'), nextBtn = document.getElementById('nextBtn'), prevBtn = document.getElementById('prevBtn');
 
-      // Update progress bar and count
-      progressBar.style.width = ((index + 1) / lessons.length) * 100 + "%";
-      lessonCount.textContent = `Lesson ${index + 1} of ${lessons.length}`;
+    function startLessons() {
+        document.getElementById('startScreen').style.display = 'none';
+        navButtons.style.display = 'flex';
+        render();
     }
 
-    document.getElementById("startBtn").addEventListener("click", () => {
-      startScreen.style.display = "none";
-      lessonContainer.style.display = "block";
-      loadLesson(currentLesson);
-    });
+    function render() {
+        if (currentStep < lessons.length) {
+            const lesson = lessons[currentStep];
+            contentArea.innerHTML = `<h2>${lesson.title}</h2>${lesson.content}`;
+            nextBtn.innerHTML = currentStep === lessons.length - 1 ? 'Start Quiz' : 'Next';
+            prevBtn.style.visibility = currentStep === 0 ? "hidden" : "visible";
+            progress.style.width = ((currentStep + 1) / (lessons.length + 1)) * 100 + "%";
+        } else { startQuiz(); }
+    }
 
-    nextBtn.addEventListener("click", () => {
-      if (currentLesson < lessons.length - 1) {
-        currentLesson++;
-        loadLesson(currentLesson);
-      } else {
-        alert("🎉 You’ve completed all lessons! Great job!");
-      }
-    });
+    function changeLesson(dir) { currentStep += dir; render(); }
 
-    prevBtn.addEventListener("click", () => {
-      if (currentLesson > 0) {
-        currentLesson--;
-        loadLesson(currentLesson);
-      }
-    });
-  </script>
+    function startQuiz() {
+        navButtons.style.display = 'none';
+        const q = quizData[quizIndex];
+        contentArea.innerHTML = `<h2 style="text-align:center">Quiz</h2><p style="text-align:center">${q.q}</p>` + 
+            q.a.map((opt, i) => `<button class="quiz-option" onclick="checkAnswer(${i})">${opt}</button>`).join('');
+        progress.style.width = "100%";
+    }
+
+    function checkAnswer(idx) {
+        const options = document.querySelectorAll('.quiz-option');
+        if (idx === quizData[quizIndex].correct) {
+            options[idx].classList.add('correct');
+            setTimeout(() => {
+                quizIndex++;
+                if (quizIndex < quizData.length) startQuiz();
+                else showFinal();
+            }, 1000);
+        } else { options[idx].classList.add('wrong'); }
+    }
+
+    function shareToLinkedIn() {
+        const text = encodeURIComponent("I just earned my Professional English Certificate on FluentNest! 🎓🚀");
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&summary=${text}`, '_blank');
+    }
+
+    function showFinal() {
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        contentArea.innerHTML = `
+            <div id="certificate">
+                <i class="fa-solid fa-award" style="font-size: 3rem; color: var(--gold); margin-bottom: 10px;"></i>
+                <h3 style="color: var(--primary); margin:0;">CERTIFICATE OF COMPLETION</h3>
+                <p>Recognizing</p>
+                <h2 style="border-bottom: 2px solid #eee; display: inline-block; padding: 0 15px;">FluentNest Student</h2>
+                <p>for mastering</p>
+                <h4 style="color: var(--secondary); margin:5px 0;">Professional English Communication</h4>
+                <p style="font-size: 0.7rem; color: #888; margin-top: 15px;">Issued on ${today}</p>
+            </div>
+            <div class="nav-buttons" style="flex-direction: column; gap: 10px;">
+                <button class="btn btn-linkedin" onclick="shareToLinkedIn()"><i class="fa-brands fa-linkedin"></i> Share Achievement</button>
+                <button class="btn" onclick="window.print()" style="background: var(--gold);"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+                <button class="btn btn-ghost" onclick="location.reload()">Restart</button>
+            </div>`;
+    }
+</script>
 </body>
 </html>

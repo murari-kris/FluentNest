@@ -1,299 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grammar Lessons | FluentNest</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Lessons | FluentNest</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family: 'Poppins', sans-serif;
+}
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #fff;
-      color: #333;
-    }
+body {
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9fa;
+  color: #333;
+}
 
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #4A1780, #7928ca);
-      color: white;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    }
+/* SIDEBAR & OVERLAY */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 998;
+}
 
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 24px;
-      letter-spacing: 1px;
-    }
+.sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, #4A1780, #7928ca);
+  color: #fff;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
 
-    .nav-links a {
-      display: block;
-      text-decoration: none;
-      color: white;
-      background: rgba(255,255,255,0.1);
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-weight: 500;
-      transition: background 0.3s ease;
-      cursor: pointer;
-    }
+.sidebar h2 {
+  font-size: 24px;
+  margin-bottom: 40px;
+  text-align: center;
+  letter-spacing: 1px;
+}
 
-    .nav-links a:hover, .nav-links a.active {
-      background: rgba(255,255,255,0.3);
-    }
+.nav-links a {
+  display: block;
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 400;
+  transition: 0.3s;
+}
 
-    .sidebar-footer {
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.8;
-    }
+.nav-links a.active, .nav-links a:hover {
+  background: #fff;
+  color: #4A1780;
+  transform: translateX(5px);
+  font-weight: 600;
+}
 
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      padding: 30px;
-      transition: margin-left 0.3s ease;
-    }
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  max-width: 1200px;
+}
 
-    header {
-      background: linear-gradient(to right, #7928ca, #4A1780);
-      color: white;
-      text-align: center;
-      padding: 35px 20px;
-      font-size: 36px;
-      font-weight: 700;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-    }
+header {
+  background: linear-gradient(135deg, #7928ca, #4A1780);
+  color: #fff;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 32px;
+  font-weight: 600;
+  border-radius: 20px;
+  margin-bottom: 40px;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(121, 40, 202, 0.2);
+}
 
-    .intro {
-      text-align: center;
-      margin-bottom: 50px;
-    }
+.menu-toggle {
+  display: none;
+}
 
-    .intro h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #4A1780;
-    }
+/* LESSON CARDS */
+.intro { text-align: center; margin-bottom: 50px; }
+.intro h2 { color: #4A1780; font-size: 28px; margin-bottom: 10px; }
+.intro p { color: #666; font-size: 1.1rem; }
 
-    .intro p {
-      color: #555;
-      font-size: 17px;
-      max-width: 750px;
-      margin: 0 auto;
-    }
+.lessons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
 
-    .lessons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 25px;
-    }
+.card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border-top: 6px solid #7928ca;
+  transition: 0.3s ease;
+}
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 25px;
-      transition: 0.3s;
-      border-top: 5px solid #7928ca;
-    }
+.card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+.card h3 { margin-bottom: 15px; color: #4A1780; font-size: 20px; }
+.card p { color: #555; line-height: 1.6; }
 
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-    }
+.example {
+  background: #F3E9FF;
+  margin-top: 20px;
+  padding: 15px;
+  border-left: 5px solid #7928ca;
+  border-radius: 8px;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #4A1780;
+}
 
-    .card h3 {
-      color: #4A1780;
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+  }
+  .sidebar.active { left: 0; }
+  .sidebar-overlay.active { display: block; }
+  
+  .main-content { padding: 20px; }
+  
+  header {
+    font-size: 24px;
+    padding: 30px 10px;
+    border-radius: 0;
+    margin: -20px -20px 30px -20px;
+  }
 
-    .example {
-      background: #F3E9FF;
-      border-left: 4px solid #C59AF3;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
-    .btn-container {
-      text-align: center;
-      margin-top: 60px;
-    }
+  .menu-toggle span {
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 10px;
+  }
 
-    .btn {
-      text-decoration: none;
-      background: linear-gradient(to right, #4A1780, #7928ca);
-      color: white;
-      padding: 14px 28px;
-      border-radius: 8px;
-      margin: 10px;
-      display: inline-block;
-      font-weight: 600;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      padding: 20px;
-      color: #555;
-      font-size: 15px;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .menu-toggle {
-        display: block;
-      }
-
-      .sidebar {
-        position: fixed;
-        left: -270px;
-        top: 0;
-        height: 100%;
-        z-index: 999;
-      }
-
-      .sidebar.active {
-        left: 0;
-      }
-
-      .main-content {
-        margin-left: 0;
-        width: 100%;
-      }
-    }
-  </style>
+  .lessons { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-  <button class="menu-toggle"></button>
+<div class="sidebar-overlay" id="overlay"></div>
 
-  <aside class="sidebar" id="sidebar">
-    <div>
-      <h2><span style="background: linear-gradient(to right, #ff0080, rgb(128, 0, 255));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</span></h2>
-      <div class="nav-links">
-        <a class="active" data-section="beginner">Beginner Lessons</a>
-        <a data-section="intermediate">Intermediate Lessons</a>
-        <a data-section="advanced">Advanced Lessons</a>
-        <a data-section="quizzes">Quizzes & Tests</a>
-      </div>
+<aside class="sidebar" id="sidebar">
+  <div>
+    <h2>FluentNest</h2>
+    <div class="nav-links">
+      <a class="active" data-section="beginner">Beginner</a>
+      <a data-section="intermediate">Intermediate</a>
+      <a data-section="advanced">Advanced</a>
     </div>
-    <div class="sidebar-footer">
-      © 2025 FluentNest
-    </div>
-  </aside>
+  </div>
+  <div style="font-size: 0.8rem; opacity: 0.7;">© 2026 FluentNest Mastery</div>
+</aside>
 
-  <main class="main-content">
-    <header>Grammar Lessons</header>
+<main class="main-content">
+  <header>
+    <button class="menu-toggle" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+    Grammar Lessons
+  </header>
 
-    <div class="intro">
-      <h2 id="intro-title">Enhance Your English Grammar Skills</h2>
-      <p id="intro-desc">Master English grammar step-by-step through interactive lessons, real-life examples, and practical applications to strengthen your communication skills.</p>
-    </div>
+  <div class="intro">
+    <h2 id="intro-title">Beginner Lessons</h2>
+    <p id="intro-desc">Start your journey with foundational English rules.</p>
+  </div>
 
-    <div class="lessons" id="lesson-container">
-      <!-- JS will load cards here -->
-    </div>
+  <div class="lessons" id="lesson-container"></div>
+</main>
 
-    <div class="btn-container">
-      <a href="/lesson" class="btn">Start Lesson</a>
-      <a href="/quiz" class="btn">Take Quiz</a>
-      <a href="/main" class="btn" style="background:linear-gradient(to right, #4EB5A9, #A4DDD6); color:#000;">Back to Main</a>
-    </div>
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
 
-    <footer>© 2025 FluentNest | Learn English with Confidence</footer>
-  </main>
+const toggleSidebar = () => {
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+};
 
-  <script>
-    // Sidebar toggle (for mobile)
-    const menuBtn = document.querySelector('.menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    menuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+menuBtn.onclick = toggleSidebar;
+overlay.onclick = toggleSidebar;
 
-    // Lesson data
-    const lessonsData = {
-      beginner: [
-        { title: "Nouns and Pronouns", text: "Learn the basics of identifying people, places, and things.", example: "Example: John is a good boy. He loves football." },
-        { title: "Simple Tenses", text: "Understand how to express actions in the past, present, and future.", example: "Example: I eat breakfast at 8 a.m." }
-      ],
-      intermediate: [
-        { title: "Prepositions", text: "Master words that show relationships between nouns and other words.", example: "Example: The book is on the table." },
-        { title: "Conjunctions", text: "Learn how to join sentences and ideas effectively.", example: "Example: I like coffee and tea." }
-      ],
-      advanced: [
-        { title: "Conditionals", text: "Discuss possibilities and hypothetical situations with ease.", example: "Example: If I had studied harder, I would have passed." },
-        { title: "Clauses & Modifiers", text: "Enhance sentence clarity and complexity.", example: "Example: The man who lives next door is a doctor." }
-      ],
-      quizzes: [
-        { title: "Grammar Test 1", text: "Test your understanding of basic grammar rules.", example: "Sample Question: Choose the correct form — 'He ___ playing.'" },
-        { title: "Advanced Challenge", text: "Check your command of tenses, voices, and conditionals.", example: "Sample Question: Convert: ‘They built a house’ to passive voice." }
-      ]
-    };
+const lessonsData = {
+  beginner: [
+    { title: "Nouns & Pronouns", text: "Learn to identify entities and how to use pronouns like 'He', 'She', and 'They' to avoid repetition.", example: "Ex: Sarah is a doctor. She works at the hospital." },
+    { title: "The Power of Articles", text: "Master 'A', 'An', and 'The'. Learn when to be specific and when to be general.", example: "Ex: I saw a movie. The movie was fantastic!" },
+    { title: "Simple Present Tense", text: "Use this for habits, facts, and daily routines.", example: "Ex: The sun rises in the east." },
+    { title: "Adjectives & Adverbs", text: "Add color to your speech by describing nouns and actions.", example: "Ex: He runs quickly (adverb) in his red (adjective) shoes." },
+    { title: "Plurals & Possessives", text: "Learn how to talk about multiple items and ownership.", example: "Ex: The teachers' room is full of books." }
+  ],
+  intermediate: [
+    { title: "Present Continuous", text: "Describe actions happening right now or future plans.", example: "Ex: I am meeting my friend at 5 PM." },
+    { title: "Modal Verbs", text: "Express possibility, permission, or obligation using 'Can', 'Should', and 'Must'.", example: "Ex: You must wear a helmet while riding." },
+    { title: "Active vs Passive", text: "Focus on the action or the receiver of the action.", example: "Ex: The letter was sent by the manager." },
+    { title: "Comparatives", text: "Compare two things using 'better', 'more', or '-er' endings.", example: "Ex: This laptop is faster than my old one." },
+    { title: "Prepositions of Place", text: "Master 'In', 'At', and 'On' for locations.", example: "Ex: I'll meet you at the station, in the waiting room." }
+  ],
+  advanced: [
+    { title: "The Third Conditional", text: "Talk about imaginary past situations and their hypothetical results.", example: "Ex: If I had known, I would have helped you." },
+    { title: "Reported Speech", text: "How to tell someone what another person said without quoting them directly.", example: "Ex: She told me that she had already finished." },
+    { title: "Gerunds vs Infinitives", text: "Decide whether to use 'Running' or 'To run' after specific verbs.", example: "Ex: I enjoy swimming, but I want to learn to dive." },
+    { title: "Relative Clauses", text: "Combine sentences to provide more information about a noun.", example: "Ex: The car, which I bought last year, is very reliable." },
+    { title: "Mixed Conditionals", text: "Combine past events with present results.", example: "Ex: If I had won the lottery, I would be rich now." }
+  ]
+};
 
-    // Update content based on sidebar selection
-    const lessonContainer = document.getElementById('lesson-container');
-    const introTitle = document.getElementById('intro-title');
-    const introDesc = document.getElementById('intro-desc');
-    const navLinks = document.querySelectorAll('.nav-links a');
+const container = document.getElementById("lesson-container");
+const introTitle = document.getElementById("intro-title");
+const introDesc = document.getElementById("intro-desc");
+const links = document.querySelectorAll(".nav-links a");
 
-    function loadLessons(section) {
-      lessonContainer.innerHTML = '';
-      const data = lessonsData[section];
+function loadLessons(section){
+  container.innerHTML = "";
+  introTitle.textContent = section.charAt(0).toUpperCase() + section.slice(1) + " Lessons";
+  introDesc.textContent = `Mastering ${section} level grammar with FluentNest.`;
 
-      introTitle.textContent = section.charAt(0).toUpperCase() + section.slice(1) + " Lessons";
-      introDesc.textContent = `Explore ${section} grammar concepts and improve your English step-by-step.`;
+  lessonsData[section].forEach((l, index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animation = `fadeIn 0.3s ease forwards ${index * 0.1}s`;
+    card.innerHTML = `
+      <h3>${l.title}</h3>
+      <p>${l.text}</p>
+      <div class="example">${l.example}</div>
+    `;
+    container.appendChild(card);
+  });
+  
+  // Scroll to top on mobile when changing sections
+  if(window.innerWidth < 900) window.scrollTo({top: 0, behavior: 'smooth'});
+}
 
-      data.forEach(item => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.innerHTML = `
-          <h3>${item.title}</h3>
-          <p>${item.text}</p>
-          <div class="example">${item.example}</div>
-        `;
-        lessonContainer.appendChild(card);
-      });
-    }
+links.forEach(l => {
+  l.onclick = (e) => {
+    e.preventDefault();
+    links.forEach(x => x.classList.remove("active"));
+    l.classList.add("active");
+    loadLessons(l.dataset.section);
+    if(sidebar.classList.contains('active')) toggleSidebar();
+  }
+});
 
-    // Click event for sidebar
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        const section = link.dataset.section;
-        loadLessons(section);
-      });
-    });
-
-    // Default load
-    loadLessons("beginner");
-  </script>
+loadLessons("beginner");
+</script>
 
 </body>
 </html>

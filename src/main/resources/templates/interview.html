@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Mock Interview Practice | FluentNest</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* ---------- GENERAL ---------- */
@@ -14,34 +13,26 @@
       font-family: "Poppins", sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #ffffff;
+      background-color: #f8f7ff;
       color: #333;
       line-height: 1.6;
       scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent; /* Clean touch for Redmi */
     }
 
     /* ---------- HEADER ---------- */
     header {
       text-align: center;
-      padding: 50px 20px 40px;
+      padding: 60px 20px 50px;
       background: linear-gradient(to right, #4A1780, #7928ca);
       color: #fff;
-      border-bottom-left-radius: 50px;
-      border-bottom-right-radius: 50px;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
       position: relative;
     }
 
-    header h1 {
-      font-size: 40px;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
-    }
-
-    header p {
-      font-size: 18px;
-      opacity: 0.9;
-      margin-bottom: 25px;
-    }
+    header h1 { font-size: clamp(24px, 8vw, 40px); margin-bottom: 10px; letter-spacing: 0.5px; }
+    header p { font-size: clamp(14px, 4vw, 18px); opacity: 0.9; margin-bottom: 25px; padding: 0 10px; }
 
     .btn {
       display: inline-block;
@@ -54,256 +45,231 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    .start-btn {
-      background: #fff;
-      color: #4A1780;
-    }
-
-    .start-btn:hover {
-      background: #EDE2F8;
-      color: #7928ca;
-      transform: scale(1.05);
-    }
-
+    .start-btn { background: #fff; color: #4A1780; }
+    
     .home-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      border: 2px solid white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
       position: absolute;
-      left: 30px;
-      top: 30px;
-      padding: 8px 20px;
-      font-size: 15px;
+      left: 20px;
+      top: 20px;
+      padding: 6px 15px;
+      font-size: 13px;
+      border-radius: 15px;
+      text-decoration:none;
     }
 
-    .home-btn:hover {
-      background: white;
-      color: #4A1780;
-    }
-
-    /* ---------- LAYOUT ---------- */
+    /* ---------- LAYOUT (FIXED LAPTOP OVERLAP) ---------- */
     .main-layout {
       display: flex;
-      max-width: 1300px;
-      margin: 50px auto;
+      max-width: 1200px;
+      margin: 40px auto;
       padding: 0 20px;
-      gap: 25px;
+      gap: 30px;
+      align-items: flex-start;
     }
 
-    /* ---------- SIDEBAR ---------- */
+    /* ---------- ROADMAP SIDEBAR (STABILIZED) ---------- */
     .sidebar {
-      width: 260px;
-      background: #f8f5ff;
-      border-radius: 15px;
+      flex: 0 0 260px; /* Lock width on laptop */
+      background: #ffffff;
+      border-radius: 20px;
       padding: 20px;
-      height: fit-content;
       position: sticky;
-      top: 100px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      top: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      z-index: 100;
     }
 
-    .sidebar h3 {
-      color: #4A1780;
-      font-size: 20px;
-      margin-bottom: 15px;
-      text-align: center;
-    }
+    .sidebar h3 { color: #4A1780; font-size: 18px; margin-bottom: 15px; text-align: center; }
+    .sidebar nav { display: flex; flex-direction: column; gap: 8px; }
 
     .sidebar a {
-      display: block;
-      color: #333;
-      background: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #444;
+      background: #fdfbff;
+      padding: 12px;
+      border-radius: 10px;
       text-decoration: none;
       font-weight: 500;
-      border-left: 4px solid #7928ca;
-      transition: all 0.3s;
+      border-left: 3px solid #7928ca;
+      transition: 0.3s;
     }
 
-    .sidebar a:hover {
-      background: #EDE2F8;
-      color: #4A1780;
-      transform: translateX(4px);
-    }
+    .sidebar a:hover { background: #f0e6ff; transform: translateX(5px); }
 
-    /* ---------- MAIN CONTENT ---------- */
-    .content {
-      flex: 1;
-    }
+    /* ---------- CONTENT ---------- */
+    .content { flex: 1; min-width: 0; }
 
     .section {
       background: #fff;
-      border-radius: 15px;
-      padding: 25px 30px;
-      margin-bottom: 35px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
 
-    .section:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    }
+    .section h2 { color: #4A1780; font-size: 22px; margin-bottom: 15px; border-left: 5px solid #7928ca; padding-left: 15px; }
 
-    .section h2 {
-      color: #4A1780;
-      font-size: 24px;
-      margin-bottom: 15px;
-      border-left: 4px solid #7928ca;
-      padding-left: 10px;
-    }
-
-    ul {
+    ul { padding: 0; margin: 0; }
+    ul li {
       list-style: none;
-      padding: 0;
-    }
-
-    li {
       background: #f9f9f9;
       margin-bottom: 10px;
-      padding: 12px 15px;
-      border-left: 4px solid #7928ca;
-      border-radius: 6px;
-      transition: background 0.3s;
+      padding: 14px 18px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
     }
+    ul li::before { content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #00d1b2; font-size: 14px; }
 
-    li:hover {
-      background: #EDE2F8;
+    /* STAR Method */
+    .star-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2x2 on mobile */
+      gap: 10px;
+      margin-top: 20px;
     }
-
-    .tip {
-      background: #f8f5ff;
-      border-left: 4px solid #7928ca;
-      padding: 12px 15px;
-      margin-bottom: 12px;
-      border-radius: 6px;
-    }
-
-    .tip i {
-      color: #9A6ED0;
-      margin-right: 8px;
-    }
-
-    /* ---------- FOOTER ---------- */
-    footer {
+    .star-box {
+      background: #f4f0ff;
+      padding: 15px;
+      border-radius: 12px;
       text-align: center;
-      padding: 25px;
-      color: #777;
-      border-top: 1px solid #eee;
-      margin-top: 40px;
+      border-bottom: 3px solid #00d1b2;
     }
+    .star-box strong { display: block; font-size: 18px; color: #7928ca; }
 
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 900px) {
-      .main-layout {
-        flex-direction: column;
-      }
-
+    /* ---------- REDMI / MOBILE RESPONSIVE ---------- */
+    @media (max-width: 992px) {
+      .main-layout { flex-direction: column; margin-top: 15px; padding: 0 15px; }
+      
       .sidebar {
-        width: 100%;
-        position: static;
+        flex: none;
+        width: 100vw;
+        position: sticky;
+        top: 0;
+        left: 0;
+        margin: 0 -15px 20px -15px;
+        border-radius: 0;
+        padding: 10px 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       }
 
-      .home-btn {
-        position: static;
-        display: inline-block;
-        margin-bottom: 10px;
+      .sidebar h3 { display: none; }
+      .sidebar nav { 
+        flex-direction: row; 
+        padding: 0 15px; 
+        gap: 8px;
+        display: inline-flex;
       }
+
+      .sidebar a {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        border: 1px solid #7928ca;
+        background: #fff;
+      }
+
+      .home-btn { position: relative; top: 0; left: 0; margin-bottom: 10px; }
+      .section { padding: 20px; }
     }
+
+    @media (min-width: 993px) {
+      .star-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    footer { text-align: center; padding: 30px; color: #888; font-size: 13px; }
   </style>
 </head>
 
 <body>
   <header>
-    <a th:href="@{/main}" class="btn home-btn"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
-    <h1>Mock Interview Practice</h1>
-    <p>Sharpen your interview skills with GD topics, HR rounds, and technical mock sessions.</p>
-    <a href="#" class="btn start-btn">🎙️ Start Mock Session</a>
+    <a href="/main" class="home-btn"><i class="fa-solid fa-arrow-left"></i> Home</a>
+    <h1>Mock Interview Hub</h1>
+    <p>Your complete guide to GD, HR, and Technical interviews.</p>
+    <a th:href="@{/video}" class="btn start-btn">🎙️ Start Mock Session</a>
   </header>
 
   <div class="main-layout">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h3>Quick Navigation</h3>
-      <a href="#gd"><i class="fa-solid fa-users"></i> Group Discussion</a>
-      <a href="#hr"><i class="fa-solid fa-user-tie"></i> HR Questions</a>
-      <a href="#tech"><i class="fa-solid fa-laptop-code"></i> Technical Round</a>
-      <a href="#soft"><i class="fa-solid fa-comments"></i> Communication</a>
-      <a href="#tips"><i class="fa-solid fa-lightbulb"></i> Interview Tips</a>
-    </div>
+    <aside class="sidebar">
+      <h3>Roadmap</h3>
+      <nav>
+        <a href="#gd"><i class="fa-solid fa-users"></i> GD Topics</a>
+        <a href="#hr"><i class="fa-solid fa-user-tie"></i> HR Round</a>
+        <a href="#tech"><i class="fa-solid fa-code"></i> Technical</a>
+        <a href="#star"><i class="fa-solid fa-star"></i> STAR Method</a>
+        <a href="#tips"><i class="fa-solid fa-lightbulb"></i> Tips</a>
+      </nav>
+    </aside>
 
-    <!-- Main Content -->
-    <div class="content">
+    <main class="content">
       <div class="section" id="gd">
-        <h2>Group Discussion Topics</h2>
+        <h2>Group Discussion</h2>
         <ul>
-          <li>Impact of Artificial Intelligence on Employment</li>
-          <li>Remote Work: Boon or Bane?</li>
+          <li>Impact of AI on the 2026 Job Market</li>
+          <li>Remote Work: Professionalism or Procrastination?</li>
           <li>Is Social Media Making Us Less Social?</li>
           <li>Should Coding Be Mandatory for Everyone?</li>
-          <li>Green Energy vs Fossil Fuels</li>
-          <li>Should Companies Implement a 4-Day Work Week?</li>
         </ul>
       </div>
 
+      <div class="section" id="star">
+        <h2>The STAR Method</h2>
+        
+        <div class="star-grid">
+          <div class="star-box"><strong>S</strong> Situation</div>
+          <div class="star-box"><strong>T</strong> Task</div>
+          <div class="star-box"><strong>A</strong> Action</div>
+          <div class="star-box"><strong>R</strong> Result</div>
+        </div>
+      </div>
+
       <div class="section" id="hr">
-        <h2>Common HR Interview Questions</h2>
+        <h2>HR Round Questions</h2>
         <ul>
-          <li>Tell me about yourself.</li>
+          <li>Walk me through your resume.</li>
           <li>Why should we hire you?</li>
-          <li>What are your strengths and weaknesses?</li>
-          <li>Describe a challenge you faced and how you handled it.</li>
+          <li>What is your biggest failure and what did you learn?</li>
           <li>Where do you see yourself in five years?</li>
-          <li>Why do you want to work for our company?</li>
         </ul>
       </div>
 
       <div class="section" id="tech">
-        <h2>Technical Interview Practice</h2>
+        <h2>Technical Practice</h2>
         <ul>
-          <li>Explain OOP and its main principles.</li>
-          <li>Difference between GET and POST in HTTP.</li>
-          <li>What is polymorphism in Java?</li>
-          <li>Describe normalization and database keys.</li>
-          <li>Explain dependency injection in Spring Boot.</li>
+          <li>Explain Object-Oriented Programming (OOP)</li>
+          <li>How does a CDN improve website performance?</li>
+          <li>Difference between SQL and NoSQL databases.</li>
+          <li>Explain the concept of Big O notation.</li>
         </ul>
       </div>
-
-      <div class="section" id="soft">
-        <h2>Communication & Soft Skills</h2>
-        <ul>
-          <li>Practice confident self-introduction.</li>
-          <li>Maintain positive body language.</li>
-          <li>Enhance pronunciation and clarity.</li>
-          <li>Participate in mock HR roleplays.</li>
-        </ul>
-      </div>
-
-      <div class="section" id="tips">
-        <h2>Interview Tips for Success</h2>
-        <div class="tip"><i class="fa-solid fa-check"></i> Research the company before appearing for the interview.</div>
-        <div class="tip"><i class="fa-solid fa-check"></i> Dress professionally and maintain eye contact.</div>
-        <div class="tip"><i class="fa-solid fa-check"></i> Always carry a copy of your resume and portfolio.</div>
-        <div class="tip"><i class="fa-solid fa-check"></i> Be honest about your experience and skills.</div>
-        <div class="tip"><i class="fa-solid fa-check"></i> Ask insightful questions about the company or role.</div>
-        <div class="tip"><i class="fa-solid fa-check"></i> Practice mock interviews with a timer for realism.</div>
-      </div>
-    </div>
+    </main>
   </div>
 
   <footer>
-    © 2025 FluentNest | Mock Interview Practice Portal
+    © 2026 FluentNest Mastery | Practice. Perfect. Succeed.
   </footer>
 
   <script>
-    // Smooth scroll for sidebar links
     document.querySelectorAll('.sidebar a').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
-        target.scrollIntoView({ behavior: 'smooth' });
+        const offset = window.innerWidth < 992 ? 80 : 20;
+        window.scrollTo({
+          top: target.offsetTop - offset,
+          behavior: 'smooth'
+        });
       });
     });
   </script>

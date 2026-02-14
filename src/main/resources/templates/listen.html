@@ -1,112 +1,299 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Listen & Repeat | FluentNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FluentNest | Master the Art of Speech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.5);
+      --success: #10b981;
+      --error: #ef4444;
+      --text: #f8fafc;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: "Poppins", sans-serif;
-      background: #EDE3F8;
-      color: #2E1065;
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+      background-attachment: fixed;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       margin: 0;
-      padding: 0;
+      padding: 20px; /* Space for mobile edges */
     }
 
-    .container {
-      max-width: 750px;
-      margin: 60px auto;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 40px;
-    }
-
-    h1 {
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 30px; /* Adjusted for mobile */
+      width: 100%;
+      max-width: 480px;
       text-align: center;
-      color: #4A1780;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s ease;
     }
 
-    .activity {
-      text-align: center;
-      margin-top: 30px;
+    /* Desktop Padding */
+    @media (min-width: 768px) {
+      .glass-card { padding: 50px; }
     }
 
-    .btn {
-      background: #8E4DD8;
-      color: #fff;
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      background: var(--accent);
+      margin-bottom: 15px;
+    }
+
+    h1 { font-weight: 400; margin: 0; font-size: 1.2rem; opacity: 0.7; }
+    
+    .streak-container {
+        font-size: 1rem;
+        color: #fbbf24;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    #word-display {
+      font-size: 2.2rem; /* Scaled down for mobile */
+      font-weight: 800;
+      margin: 20px 0 30px 0;
+      background: linear-gradient(to bottom right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      word-wrap: break-word;
+      line-height: 1.1;
+    }
+
+    @media (min-width: 400px) {
+      #word-display { font-size: 3rem; }
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: white;
       border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      font-size: 1rem;
+      padding: 20px;
+      border-radius: 18px;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
-      margin: 10px;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px -5px var(--accent-glow);
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .btn:hover {
-      background: #4A1780;
-      transform: scale(1.05);
+    .btn-main:active { transform: scale(0.95); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
     }
 
-    #result {
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      flex: 1;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:active { background: rgba(255,255,255,0.15); }
+
+    #status-msg {
       margin-top: 25px;
-      font-weight: bold;
-      color: #4A1780;
+      font-size: 0.9rem;
+      min-height: 24px;
+      opacity: 0.9;
     }
 
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      color: #555;
-      font-size: 0.9rem;
+    /* Animations */
+    .pulse { animation: pulse-animation 1.5s infinite; }
+    @keyframes pulse-animation {
+      0% { box-shadow: 0 0 0 0px var(--accent-glow); }
+      70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+      100% { box-shadow: 0 0 0 0px rgba(139, 92, 246, 0); }
+    }
+
+    .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1> Listen & Repeat</h1>
-    <div class="activity">
-      <p>Click “Listen” to hear the word, then “Speak” to repeat it.</p>
-      <h2 id="word">Confidence</h2>
-      <button class="btn" onclick="playWord()">🔊 Listen</button>
-      <button class="btn" onclick="startRecognition()">🎙️ Speak</button>
-      <p id="result"></p>
+
+  <div class="glass-card" id="card">
+    <div class="streak-container">🔥 Streak: <span id="streak">0</span></div>
+    <div id="level-badge" class="badge">Professional</div>
+    <h1>Can you say...</h1>
+    <div id="word-display">Ready?</div>
+
+    <div class="controls">
+      <button class="btn-main" id="speak-btn" onclick="startRecognition()">🎙️ Tap to Speak</button>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="playWord()">🔊 Listen</button>
+        <button class="btn-secondary" onclick="skipWord()">Skip ⏭️</button>
+      </div>
     </div>
+
+    <div id="status-msg">Tap the mic and speak clearly.</div>
   </div>
 
-  <footer>© 2025 FluentNest — Listen & Repeat</footer>
-
   <script>
-    const words = ["Confidence", "Fluency", "Professional", "Communication", "Accent"];
-    let index = 0;
+    const wordBank = {
+        professional: [
+            "Collaboration", "Infrastructure", "Synergistic", "Methodology", 
+            "Entrepreneurial", "Strategic", "Multiculturalism", "Implementation",
+            "Sustainability", "Accountability", "Optimization"
+        ],
+        academic: [
+            "Epistemology", "Paradigm", "Metamorphosis", "Juxtaposition", 
+            "Circumlocution", "Phenomenon", "Idiosyncrasy", "Inevitability",
+            "Pragmatism", "Hypothetical", "Philosophical"
+        ],
+        genius: [
+            "Sesquipedalian", "Antidisestablishmentarianism", "Otorhinolaryngological", 
+            "Pneumonoultramicroscopicsilicovolcanoconiosis", "Floccinaucinihilipilification",
+            "Honorificabilitudinitatibus", "Psychoneuroendocrinology", "Spectrophotofluorometrically"
+        ]
+    };
+
+    let streak = 0;
+    let currentWord = "";
+    let currentDifficulty = "professional";
+
+    const wordDisplay = document.getElementById('word-display');
+    const statusMsg = document.getElementById('status-msg');
+    const badge = document.getElementById('level-badge');
+    const streakDisplay = document.getElementById('streak');
+    const card = document.getElementById('card');
+
+    function getRandomWord() {
+        if (streak >= 10) currentDifficulty = "genius";
+        else if (streak >= 5) currentDifficulty = "academic";
+        else currentDifficulty = "professional";
+
+        const words = wordBank[currentDifficulty];
+        badge.innerText = currentDifficulty;
+        
+        let newWord;
+        do {
+            newWord = words[Math.floor(Math.random() * words.length)];
+        } while (newWord === currentWord);
+        
+        currentWord = newWord;
+        wordDisplay.innerText = currentWord;
+    }
 
     function playWord() {
-      const utter = new SpeechSynthesisUtterance(words[index]);
-      utter.lang = 'en-US';
-      speechSynthesis.speak(utter);
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(currentWord);
+        utter.lang = 'en-US';
+        utter.rate = 0.85;
+        window.speechSynthesis.speak(utter);
     }
 
     function startRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.start();
-
-      recognition.onresult = (event) => {
-        const spoken = event.results[0][0].transcript;
-        document.getElementById("result").innerText = 
-          `You said: "${spoken}"`;
-
-        if (spoken.toLowerCase().includes(words[index].toLowerCase())) {
-          document.getElementById("result").innerText += " ✅ Correct!";
-          index = (index + 1) % words.length;
-          document.getElementById("word").innerText = words[index];
-        } else {
-          document.getElementById("result").innerText += " ❌ Try again!";
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            statusMsg.innerText = "Speech not supported on this browser.";
+            return;
         }
-      };
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        
+        const btn = document.getElementById('speak-btn');
+        btn.innerText = "Listening...";
+        btn.classList.add('pulse');
+
+        recognition.start();
+
+        recognition.onresult = (event) => {
+            btn.innerText = "🎙️ Tap to Speak";
+            btn.classList.remove('pulse');
+            
+            const spoken = event.results[0][0].transcript.toLowerCase().trim().replace(/[^a-z]/g, "");
+            const target = currentWord.toLowerCase().replace(/[^a-z]/g, "");
+
+            // Logic: if spoken word is contained in target or vice versa
+            if (spoken === target || (spoken.length > 4 && target.includes(spoken))) {
+                handleSuccess(spoken);
+            } else {
+                handleFailure(spoken);
+            }
+        };
+
+        recognition.onerror = () => {
+            btn.innerText = "🎙️ Tap to Speak";
+            btn.classList.remove('pulse');
+            statusMsg.innerText = "Didn't catch that. Try again!";
+        };
     }
+
+    function handleSuccess(spoken) {
+        streak++;
+        streakDisplay.innerText = streak;
+        statusMsg.style.color = "var(--success)";
+        statusMsg.innerText = `Perfect! Correct pronunciation.`;
+        
+        card.style.borderColor = "var(--success)";
+        setTimeout(() => {
+            card.style.borderColor = "rgba(255, 255, 255, 0.1)";
+            getRandomWord();
+            statusMsg.style.color = "var(--text)";
+            statusMsg.innerText = "Ready for the next one?";
+        }, 1200);
+    }
+
+    function handleFailure(spoken) {
+        streak = 0;
+        streakDisplay.innerText = streak;
+        statusMsg.style.color = "var(--error)";
+        statusMsg.innerText = `Heard "${spoken || 'nothing'}". Try again!`;
+        card.classList.add('shake');
+        setTimeout(() => card.classList.remove('shake'), 500);
+    }
+
+    function skipWord() {
+        streak = 0;
+        streakDisplay.innerText = streak;
+        getRandomWord();
+        statusMsg.innerText = "Word skipped. Streak reset.";
+    }
+
+    getRandomWord();
   </script>
 </body>
 </html>

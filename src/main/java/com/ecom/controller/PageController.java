@@ -1,14 +1,7 @@
 package com.ecom.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import com.ecom.model.User;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PageController {
@@ -32,6 +25,8 @@ public class PageController {
     public String vocabularyPage() {
         return "vocabulary"; // corresponds to templates/quiz.html
     }
+    
+   
     
     @GetMapping("interview")
     public String interviewPage() {
@@ -79,6 +74,14 @@ public class PageController {
         return "listen"; // corresponds to templates/quiz.html
     }
     
+    
+    @GetMapping("/audio")
+    public String audioForm() {
+        return "Audio";   // Audio.html
+    }
+    
+    
+   
     
     
 }

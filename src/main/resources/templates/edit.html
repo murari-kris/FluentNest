@@ -1,86 +1,158 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit Profile | EngliChat</title>
+    <title>Edit Profile | FluentNest</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        .hidden-file { display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 35%, #0a001a 70%, #7928ca 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .edit-card {
+            max-width: 750px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+
+        .profile-img-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #4EB5A9;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+
+        .img-upload-label:hover .profile-img-preview {
+            filter: brightness(0.7);
+            border-color: #ff0080;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white !important;
+            padding: 12px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #4EB5A9;
+            box-shadow: 0 0 15px rgba(78, 181, 169, 0.3);
+            outline: none;
+        }
+
+        .form-select option { background: #0a001a; color: white; }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4EB5A9;
+            margin-bottom: 8px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #ff0080, #7928ca);
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            padding: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 0, 128, 0.4);
+        }
+
+        .hint-text { font-size: 0.8rem; opacity: 0.6; }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5" style="max-width:800px; background:#fff; padding:20px; border-radius:10px;">
-    <h2 class="mb-4 text-center">Edit Profile</h2>
+<div class="container">
+    <div class="edit-card">
+        <h2 class="mb-5 text-center fw-800" style="letter-spacing: -1px;">Customize Profile</h2>
 
-    <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data">
-        <div class="text-center mb-3">
-            <label for="imageInput">
-                <img th:if="${profile.profileImage != null}"
-                     th:src="@{${profile.profileImage}}"
-                     alt="Profile Image"
-                     style="width:150px;height:150px;border-radius:50%;" />
-            </label>
-            <input id="imageInput" class="hidden-file" type="file" name="imageFile" accept="image/*" />
-        </div>
+        <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data">
+            
+            <div class="text-center mb-5">
+                <label for="imageInput" class="img-upload-label" style="cursor:pointer;">
+                    <img th:src="${profile.profileImage != null ? profile.profileImage : '/images/default-avatar.png'}"
+                         class="profile-img-preview">
+                    <p class="mt-3 hint-text"><i class="bi bi-camera-fill me-1"></i> Tap to change photo</p>
+                </label>
+                <input id="imageInput" type="file" name="imageFile" hidden>
+            </div>
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Full Name</label>
-            <input id="name" type="text" class="form-control" name="name"
-                   th:value="${profile.name}" required />
-        </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" name="name" th:value="${profile.name}" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Native Language</label>
+                    <input type="text" class="form-control" name="nativeLanguage" th:value="${profile.nativeLanguage}" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>English Level</label>
+                    <select class="form-select" name="englishLevel" required>
+                        <option value="beginner" th:selected="${profile.englishLevel == 'beginner'}">Beginner</option>
+                        <option value="intermediate" th:selected="${profile.englishLevel == 'intermediate'}">Intermediate</option>
+                        <option value="advanced" th:selected="${profile.englishLevel == 'advanced'}">Advanced</option>
+                        <option value="native" th:selected="${profile.englishLevel == 'native'}">Native Speaker</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Availability</label>
+                    <input type="text" class="form-control" name="availability" th:value="${profile.availability}" placeholder="e.g. Weekends, 6pm-9pm" />
+                </div>
+                <div class="col-12 mb-3">
+                    <label>Profession / Study</label>
+                    <input type="text" class="form-control" name="profession" th:value="${profile.profession}" />
+                </div>
+                <div class="col-12 mb-3">
+                    <label>Languages to Practice</label>
+                    <input type="text" class="form-control" name="practiceLanguages" th:value="${profile.practiceLanguages}" />
+                </div>
+                <div class="col-12 mb-3">
+                    <label>Favorite Topics</label>
+                    <input type="text" class="form-control" name="favoriteTopics" th:value="${profile.favoriteTopics}" />
+                </div>
+                <div class="col-12 mb-4">
+                    <label>Your Goals</label>
+                    <textarea class="form-control" name="goals" rows="3" th:text="${profile.goals}"></textarea>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label for="nativeLanguage" class="form-label">Native Language</label>
-            <input id="nativeLanguage" type="text" class="form-control" name="nativeLanguage"
-                   th:value="${profile.nativeLanguage}" required />
-        </div>
-
-        <div class="mb-3">
-            <label for="englishLevel" class="form-label">English Level</label>
-            <select id="englishLevel" class="form-select" name="englishLevel" required>
-                <option value="" disabled th:selected="${profile.englishLevel == null}">Select level</option>
-                <option value="beginner" th:selected="${profile.englishLevel == 'beginner'}">Beginner</option>
-                <option value="intermediate" th:selected="${profile.englishLevel == 'intermediate'}">Intermediate</option>
-                <option value="advanced" th:selected="${profile.englishLevel == 'advanced'}">Advanced</option>
-                <option value="native" th:selected="${profile.englishLevel == 'native'}">Native Speaker</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="practiceLanguages" class="form-label">Languages to Practice</label>
-            <input id="practiceLanguages" type="text" class="form-control" name="practiceLanguages"
-                   th:value="${profile.practiceLanguages}" placeholder="English, Spanish, etc." />
-        </div>
-
-        <div class="mb-3">
-            <label for="profession" class="form-label">Profession / Study</label>
-            <input id="profession" type="text" class="form-control" name="profession"
-                   th:value="${profile.profession}" />
-        </div>
-
-        <div class="mb-3">
-            <label for="favoriteTopics" class="form-label">Favorite Topics</label>
-            <input id="favoriteTopics" type="text" class="form-control" name="favoriteTopics"
-                   th:value="${profile.favoriteTopics}" />
-        </div>
-
-        <div class="mb-3">
-            <label for="goals" class="form-label">Your Goals</label>
-            <textarea id="goals" class="form-control" name="goals" rows="3"
-                      th:text="${profile.goals}"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="availability" class="form-label">Availability</label>
-            <input id="availability" type="text" class="form-control" name="availability"
-                   th:value="${profile.availability}" />
-        </div>
-
-        <button type="submit" class="btn btn-success w-100">Save Changes</button>
-    </form>
+            <button type="submit" class="btn save-btn w-100 text-white">
+                Update Profile
+            </button>
+        </form>
+    </div>
 </div>
 
 </body>

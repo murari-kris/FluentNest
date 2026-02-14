@@ -2,276 +2,166 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Start Conversation Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FluentNest | Professional Practice Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #F9F7FF;
-      margin: 0;
-      display: flex;
-      height: 100vh;
-      color: #333;
-    }
-
-    /* Sidebar */
+    /* PRESERVED STYLES */
+    body { font-family: 'Poppins', sans-serif; background: #F9F7FF; margin: 0; display: flex; height: 100vh; color: #333; }
+    
     .sidebar {
-      width: 230px;
-    background: linear-gradient(180deg, #4A1780, #7928ca);
-      color: white;
-      padding: 30px 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-    }
-
-    .sidebar h2 {
-      font-size: 22px;
-      margin-bottom: 20px;
+      width: 280px; flex-shrink: 0; background: linear-gradient(180deg, #4A1780, #7928ca);
+      color: white; padding: 30px 20px; display: flex; flex-direction: column; transition: 0.3s ease; z-index: 2000;
     }
 
     .level-btn {
-      width: 100%;
-      text-align: left;
-      padding: 12px 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      width: 100%; text-align: left; padding: 14px 18px; margin: 8px 0; border: none;
+      border-radius: 12px; background: rgba(255, 255, 255, 0.1); color: white;
+      font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px;
     }
 
-    .level-btn:hover,
-    .level-btn.active {
-      background: white;
-      color: #4A1780;
+    .level-btn.active { background: #ffffff; color: #4A1780; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+
+    .mobile-nav-bar {
+      display: none; width: 100%; background: #4A1780; color: white; padding: 15px 20px;
+      position: fixed; top: 0; left: 0; z-index: 3000; box-sizing: border-box; align-items: center; justify-content: space-between;
     }
 
-    /* Main Content */
-    .content {
-      flex: 1;
-      padding: 40px;
-      overflow-y: auto;
+    .content { flex: 1; padding: 40px; overflow-y: auto; }
+    .container-max { max-width: 900px; margin: 0 auto; }
+
+    /* CONTENT STYLING */
+    .category-title { color: #7928ca; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px; opacity: 0.8; }
+    .dialogue { background: white; border-radius: 18px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(74, 23, 128, 0.06); border: 1px solid #EEE; }
+    .dialogue h3 { color: #4A1780; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+    .line { margin: 15px 0; padding-left: 10px; border-left: 3px solid #EDE2F8; }
+    .person { font-weight: 700; color: #7928ca; display: block; font-size: 13px; text-transform: uppercase; }
+    .text { font-size: 16px; display: block; margin-top: 2px; }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 900px) {
+      .mobile-nav-bar { display: flex; }
+      .sidebar { position: fixed; left: -100%; top: 0; height: 100vh; }
+      .sidebar.active { left: 0; }
+      .content { padding: 80px 20px 20px; }
+      .close-menu { display: block !important; margin-bottom: 20px; font-size: 24px; cursor: pointer; align-self: flex-end;}
     }
-
-    .content h1 {
-      color: #4A1780;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .intro, .goal-box {
-      background: #EDE2F8;
-      padding: 15px 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border-left: 5px solid #B18BE0;
-    }
-
-    .goal-box ul {
-      margin-left: 20px;
-      line-height: 1.6;
-    }
-
-    .dialogue {
-      background: white;
-      border: 1px solid #E1D3F3;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 15px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    .dialogue h3 {
-      color: #9A6ED0;
-      margin-bottom: 10px;
-    }
-
-    .dialogue p {
-      margin: 6px 0;
-      font-size: 15px;
-    }
-
-    .dialogue strong {
-      color: #4A1780;
-    }
-
-    .tip-box {
-      background: #EAF8F6;
-      border-left: 5px solid #4EB5A9;
-      padding: 15px 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-    }
-
-    .tip-box h4 {
-      color: #3D9E91;
-      margin-bottom: 10px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .home-link {
-      display: inline-block;
-      padding: 10px 18px;
-      background: #9A6ED0;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      transition: 0.3s;
-      margin-top: 25px;
-    }
-
-    .home-link:hover {
-      background: #B08BE1;
-    }
-
-    /* Responsive */
-    @media (max-width: 800px) {
-      body {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
-        border-radius: 0;
-      }
-
-      .level-btn {
-        text-align: center;
-        font-size: 14px;
-        margin: 5px;
-      }
-    }
+    .close-menu { display: none; }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Practice Levels</h2>
-    <button class="level-btn active" data-level="beginner">Beginner</button>
-    <button class="level-btn" data-level="intermediate">Intermediate</button>
-    <button class="level-btn" data-level="advanced">Advanced</button>
+
+  <div class="mobile-nav-bar">
+    <div class="hamburger" id="hamburger-open"><i class="fa-solid fa-bars"></i></div>
+    <div style="font-weight: 600;">FluentNest Practice</div>
+    <div></div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="close-menu" id="hamburger-close"><i class="fa-solid fa-xmark"></i></div>
+    <h2 style="font-size: 22px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px;">Levels</h2>
+    <nav>
+      <button class="level-btn active" data-level="beginner"><i class="fa-solid fa-seedling"></i> Beginner</button>
+      <button class="level-btn" data-level="intermediate"><i class="fa-solid fa-route"></i> Intermediate</button>
+      <button class="level-btn" data-level="advanced"><i class="fa-solid fa-mountain"></i> Advanced</button>
+    </nav>
   </div>
 
   <div class="content">
-    <h1>🗣️ Start Your Conversation Practice</h1>
+    <div class="container-max">
+      <h1 id="level-heading">Beginner Conversations</h1>
+      <p style="color: #666; margin-bottom: 30px;">Practice these scripts aloud to improve your flow and pronunciation.</p>
 
-    <div class="intro">
-      <p>Welcome! Practice daily conversations and build confidence in speaking English naturally. Choose your level from the sidebar to begin interactive dialogues.</p>
+      <div id="dialogues-container">
+        </div>
+
+      <a href="/main" style="display: inline-block; margin-top: 40px; color: #4A1780; text-decoration: none; font-weight: 600;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+      </a>
     </div>
-
-    <div class="goal-box">
-      <h3> Learning Goals</h3>
-      <ul>
-        <li>Speak confidently in day-to-day scenarios.</li>
-        <li>Understand sentence tone and emotion.</li>
-        <li>Develop spontaneous English thinking.</li>
-        <li>Polish professional and polite speaking style.</li>
-      </ul>
-    </div>
-
-    <div id="dialogues"></div>
-
-    <div class="tip-box">
-      <h4>💡 Speaking Tips</h4>
-      <ul>
-        <li>Don’t rush—speak slowly and clearly.</li>
-        <li>Use mirror practice to improve confidence.</li>
-        <li>Think in English, not in your native language.</li>
-        <li>Listen to podcasts and mimic pronunciation.</li>
-      </ul>
-    </div>
-
-    <a th:href="@{/main}" class="home-link">⬅ Back to Home</a>
   </div>
 
   <script>
-    const dialoguesContainer = document.getElementById("dialogues");
-    const buttons = document.querySelectorAll(".level-btn");
+    const container = document.getElementById("dialogues-container");
+    const heading = document.getElementById("level-heading");
+    const sidebar = document.getElementById("sidebar");
 
-    const dialogues = {
+    const data = {
       beginner: [
-        {
-          title: "🏠 At Home",
-          lines: [
-            { person: "Mom", text: "Did you make your bed today?" },
-            { person: "You", text: "Yes, I did it after breakfast." },
-          ]
-        },
-        {
-          title: "🛒 At the Market",
-          lines: [
-            { person: "Shopkeeper", text: "What would you like today?" },
-            { person: "You", text: "Two kilos of apples, please." },
-          ]
-        }
+        { title: "Greeting a New Neighbor", category: "Social", lines: [
+            { p: "Neighbor", t: "Hi there! I just moved in next door. I'm Sarah." },
+            { p: "You", t: "Nice to meet you, Sarah! I'm [Your Name]. Welcome to the building!" }
+        ]},
+        { title: "Ordering Coffee", category: "Daily Life", lines: [
+            { p: "Barista", t: "Hello! What can I get started for you today?" },
+            { p: "You", t: "I'd like a medium latte with oat milk, please." },
+            { p: "Barista", t: "Sure thing. Anything to eat with that?" },
+            { p: "You", t: "No, just the coffee. Thank you!" }
+        ]},
+        { title: "Asking for Directions", category: "Travel", lines: [
+            { p: "You", t: "Excuse me, do you know where the nearest metro station is?" },
+            { p: "Stranger", t: "Yes, go straight for two blocks and turn left. You can't miss it." }
+        ]}
       ],
       intermediate: [
-        {
-          title: "🏢 Office Talk",
-          lines: [
-            { person: "Boss", text: "How’s the report going?" },
-            { person: "You", text: "Almost done, I’ll submit it by noon." },
-          ]
-        },
-        {
-          title: "📞 Phone Conversation",
-          lines: [
-            { person: "Friend", text: "Can we reschedule our meeting?" },
-            { person: "You", text: "Sure, let’s meet tomorrow at 11." },
-          ]
-        }
+        { title: "Requesting Feedback", category: "Workplace", lines: [
+            { p: "Manager", t: "Do you have a moment to discuss the project?" },
+            { p: "You", t: "Yes, I was actually going to ask for your thoughts on the latest draft." },
+            { p: "Manager", t: "It's looking good, but we need to focus more on the budget section." }
+        ]},
+        { title: "Making Weekend Plans", category: "Social", lines: [
+            { p: "Friend", t: "Are you up for a hike this Saturday?" },
+            { p: "You", t: "That sounds great! What time were you thinking of heading out?" },
+            { p: "Friend", t: "How about 8 AM? We can beat the heat." }
+        ]},
+        { title: "Returning an Item", category: "Shopping", lines: [
+            { p: "Clerk", t: "How can I help you today?" },
+            { p: "You", t: "I'd like to return this shirt. It's a bit too small." },
+            { p: "Clerk", t: "No problem. Do you have the receipt with you?" }
+        ]}
       ],
       advanced: [
-        {
-          title: "💼 Job Interview",
-          lines: [
-            { person: "Interviewer", text: "Tell me about a challenge you overcame." },
-            { person: "You", text: "Once I managed a short-deadline project successfully with teamwork." },
-          ]
-        },
-        {
-          title: "🌍 Travel Discussion",
-          lines: [
-            { person: "Tourist", text: "What’s the best place to visit nearby?" },
-            { person: "You", text: "The city museum—it’s full of local culture!" },
-          ]
-        }
+        { title: "Handling a Disagreement", category: "Professional", lines: [
+            { p: "Colleague", t: "I strongly disagree with the new marketing direction." },
+            { p: "You", t: "I hear your concerns. Could you elaborate on which specific data points you're worried about?" },
+            { p: "Colleague", t: "Mainly the user acquisition costs—they seem unrealistic." }
+        ]},
+        { title: "Discussing Current Events", category: "Intellectual", lines: [
+            { p: "Friend", t: "What's your take on the rapid integration of AI in education?" },
+            { p: "You", t: "It’s a double-edged sword. While it personalizes learning, it might reduce critical thinking if not monitored." }
+        ]}
       ]
     };
 
-    function displayDialogues(level) {
-      dialoguesContainer.innerHTML = "";
-      dialogues[level].forEach(d => {
-        const div = document.createElement("div");
-        div.className = "dialogue";
-        div.innerHTML = `<h3>${d.title}</h3>` +
-          d.lines.map(l => `<p><strong>${l.person}:</strong> ${l.text}</p>`).join("");
-        dialoguesContainer.appendChild(div);
-      });
+    function render(level) {
+      heading.innerText = level.charAt(0).toUpperCase() + level.slice(1) + " Practice";
+      container.innerHTML = data[level].map(d => `
+        <div class="category-title">${d.category}</div>
+        <div class="dialogue">
+          <h3><i class="fa-solid fa-comment-dots"></i> ${d.title}</h3>
+          ${d.lines.map(l => `
+            <div class="line">
+              <span class="person">${l.p}</span>
+              <span class="text">${l.t}</span>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
     }
 
-    displayDialogues("beginner");
+    render("beginner");
 
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
+    // Hamburger Logic
+    document.getElementById("hamburger-open").onclick = () => sidebar.classList.add("active");
+    document.getElementById("hamburger-close").onclick = () => sidebar.classList.remove("active");
+
+    document.querySelectorAll(".level-btn").forEach(btn => {
+      btn.onclick = () => {
         document.querySelector(".level-btn.active").classList.remove("active");
         btn.classList.add("active");
-        displayDialogues(btn.dataset.level);
-      });
+        render(btn.dataset.level);
+        if(window.innerWidth <= 900) sidebar.classList.remove("active");
+      };
     });
   </script>
 </body>

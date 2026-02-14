@@ -1,251 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Improve Vocabulary | FluentNest</title>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f8fb;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vocabulary Practice | FluentNest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary:#7928ca; --secondary:#4A1780; --accent: #00d1b2; 
+            --bg: #f8f9fd; --card-bg: #ffffff; --text: #2D3748; --border: #edf2f7;
+        }
 
-    header {
-       background: linear-gradient(
-  to top right,
-#7928ca 0%,        
-#7928ca 30%,       
-#7928ca  70%,      
- #4A1780  100%       
-);
-      color: white;
-      text-align: center;
-      padding: 5px 10px;
-    }
-    
+        [data-theme="dark"] {
+            --bg: #1a202c; --card-bg: #2d3748; --text: #f7fafc; --border: #4a5568;
+        }
 
-    
-    
-    
+        * { box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+        body { font-family:'Poppins',sans-serif; background: var(--bg); margin:0; color: var(--text); overflow-x: hidden; }
+        
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color:#fff; text-align:center; padding: 50px 20px 70px; }
+        
+        .nav-container { max-width: 1200px; margin: -30px auto 0; padding: 0 15px; }
+        .nav-bar { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 18px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    header h1 {
-      font-size: 36px;
-      margin-top: 2rem;
-    }
+        .nav-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        
+        .controls-group { display: flex; gap: 10px; align-items: center; }
 
-    header p {
-      font-size: 18px;
-      margin-top: 10px;
-      color: #eaf6ff;
-    }
-   
-     .nav {
-       background: linear-gradient(
-  to top right,
- #4A1780   0%,        
- #7928ca  30%,       
-#7928ca 70%,      
-  #7928ca 100%       
-);
-      color: white;
-      text-align: center;
-      padding: 5px 10px;
-      
-      display:flex;
-     
-      
-    }
-    
- 
-    
-    .nav a{
-   display: inline-block;       /* allows padding and hover effect */
-  padding: 5px 10px;           /* small but clean spacing */
-  background-color: #ffff;   /* teal background */
-  color:#7928ca;                /* white text */
-  text-decoration: none;       /* removes underline */
-  border-radius: 5px;          /* smooth corners */
-  font-size: 16px;
-  font-weight: bold;
-  transition: background-color 0.3s;
+        .icon-btn {
+            background: none; border: 1px solid var(--border); font-size: 1rem; cursor: pointer;
+            color: var(--primary); width: 35px; height: 35px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    text-decoration: none;
-      
-     
-      
-    }
-    
-    .nav a:hover {
-  background-color:  #4A1780 ;   /* slightly darker teal on hover */
-}
-    
+        .search-wrapper { position: relative; width: 100%; }
+        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #a0aec0; }
+        .search-input {
+            width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px;
+            border: 2px solid var(--border); background: var(--bg); color: var(--text);
+            font-size: 16px; outline: none;
+        }
 
+        .stat-pill { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 10px; font-weight: 700; background: rgba(255, 152, 0, 0.1); color: #ff9800; border: 1px solid #ffe082; }
+        
+        .container { max-width:1200px; margin: 30px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 25px; }
+        
+        .leaderboard-card { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border); }
+        .leader-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        
+        .flashcards { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 18px; border: 1px solid var(--border); text-align: center; }
+        .word { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        
+        .meaning { 
+            font-size: 0.9rem; opacity: 0.8; line-height: 1.4; margin-bottom: 15px; 
+            padding: 10px; background: rgba(0,0,0,0.03); border-radius: 8px;
+        }
+        .hidden-meaning { filter: blur(5px); user-select: none; pointer-events: none; }
 
-    .container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 20px;
-    }
+        .test-action-btn { 
+            background: none; border: 1px dashed var(--primary); color: var(--primary);
+            padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; margin-bottom: 10px;
+        }
+        
+        .learn-btn { width:100%; padding:12px; border:none; border-radius:12px; background: var(--primary); color:white; font-weight:600; cursor:pointer; }
+        .learn-btn.disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        .learn-btn.learned { background: var(--border); color: #a0aec0; }
 
-    section {
-      margin-bottom: 60px;
-    }
-
-    section h2 {
-      text-align: center;
-      color: #4A1780;
-      font-size: 26px;
-      margin-bottom: 25px;
-    }
-
-    .flashcards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    }
-
-    .word {
-      font-size: 20px;
-      color:#7928ca ;
-      font-weight: 600;
-    }
-
-    .meaning {
-      margin: 8px 0;
-      color: #333;
-      font-size: 16px;
-    }
-
-    .example {
-      font-style: italic;
-      color: #555;
-      font-size: 15px;
-    }
-
-    footer {
-      background: #7928ca;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      margin-top: 60px;
-    }
-  </style>
+        @media (min-width: 768px) {
+            .nav-bar { flex-direction: row; padding: 12px 25px; }
+            .container { display: grid; grid-template-columns: 1fr 320px; align-items: start; }
+            .flashcards { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+            .leaderboard-card { position: sticky; top: 20px; }
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>Improve Your Vocabulary</h1>
-    <p>Learn topic-based vocabulary with examples to improve your English fluency!</p>
-    
-  </header>
-  
-  <div class="nav">
-  
-      <a href="/main">← Home</a>
-     </div>
+<header>
+    <h1>Vocabulary Builder</h1>
+    <p>Practice makes perfect. Reach the top! 🏆</p>
+</header>
 
-  <div class="container">
+<div class="nav-container">
+    <div class="nav-bar">
+        <div class="nav-top-row">
+            <a href="/" style="color:var(--primary); text-decoration:none; font-weight:700;"><i class="fa-solid fa-house"></i> Home</a>
+            <div class="controls-group">
+                <button class="icon-btn" id="testModeBtn" onclick="toggleTestMode()" title="Flashcard Mode">
+                    <i class="fa-solid fa-eye-slash"></i>
+                </button>
+                <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="stat-pill"><i class="fa-solid fa-star"></i> <span id="userXpDisplay">0</span> XP</div>
+            </div>
+        </div>
+        
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="search-input" id="wordSearch" placeholder="Search words..." onkeyup="filterWords()">
+        </div>
+    </div>
+</div>
 
-    <!-- 1️⃣ Daily Use Vocabulary -->
+<div class="container">
+    <aside class="leaderboard-card">
+        <h3 style="margin:0 0 15px; font-size: 1.1rem;"><i class="fa-solid fa-trophy" style="color:gold"></i> Rankings</h3>
+        <div id="leaderboardList" style="font-size: 0.9rem;">Loading...</div>
+    </aside>
+
     <section>
-      <h2>Daily Use Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Polite</p><p class="meaning">Showing good manners.</p><p class="example">Always be polite to your elders.</p></div>
-        <div class="card"><p class="word">Delicious</p><p class="meaning">Having a pleasant taste.</p><p class="example">The food smells delicious!</p></div>
-        <div class="card"><p class="word">Hurry</p><p class="meaning">To move or act with speed.</p><p class="example">I was in a hurry to reach school.</p></div>
-        <div class="card"><p class="word">Borrow</p><p class="meaning">To take something for a short time.</p><p class="example">Can I borrow your umbrella?</p></div>
-        <div class="card"><p class="word">Neighbor</p><p class="meaning">A person living nearby.</p><p class="example">Our neighbor invited us to dinner.</p></div>
-        <div class="card"><p class="word">Decide</p><p class="meaning">To make a choice after thinking.</p><p class="example">I can’t decide which movie to watch.</p></div>
-      </div>
+        <div class="flashcards" id="flashcards"></div>
     </section>
+</div>
 
-    <!-- 2️⃣ Medical Related Vocabulary -->
-    <section>
-      <h2> Medical Related Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Prescription</p><p class="meaning">A doctor's written order for medicine.</p><p class="example">The doctor gave me a prescription.</p></div>
-        <div class="card"><p class="word">Symptom</p><p class="meaning">A sign of a disease.</p><p class="example">Coughing is a symptom of cold.</p></div>
-        <div class="card"><p class="word">Diagnosis</p><p class="meaning">Finding out what illness someone has.</p><p class="example">The diagnosis confirmed malaria.</p></div>
-        <div class="card"><p class="word">Surgery</p><p class="meaning">A medical operation.</p><p class="example">He had knee surgery last week.</p></div>
-        <div class="card"><p class="word">Injection</p><p class="meaning">A shot of medicine given through a needle.</p><p class="example">He got an injection for pain relief.</p></div>
-        <div class="card"><p class="word">Recovery</p><p class="meaning">A return to health.</p><p class="example">She made a fast recovery after the flu.</p></div>
-      </div>
-    </section>
+<script th:inline="javascript">
+    const loggedInUser = /*[[${#authentication.name}]]*/ "Guest";
+    let isTestMode = false;
 
-    <!-- 3️⃣ Office Related Vocabulary -->
-    <section>
-      <h2>Office Related Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Deadline</p><p class="meaning">A time limit for finishing work.</p><p class="example">We must meet the project deadline.</p></div>
-        <div class="card"><p class="word">Colleague</p><p class="meaning">A person you work with.</p><p class="example">My colleague helped with my report.</p></div>
-        <div class="card"><p class="word">Promotion</p><p class="meaning">Advancement to a higher position.</p><p class="example">He got a promotion last month.</p></div>
-        <div class="card"><p class="word">Meeting</p><p class="meaning">A gathering for discussion.</p><p class="example">We have a team meeting every Monday.</p></div>
-        <div class="card"><p class="word">Agenda</p><p class="meaning">A list of topics to discuss.</p><p class="example">Budget review is on today's agenda.</p></div>
-        <div class="card"><p class="word">Presentation</p><p class="meaning">A talk to share information.</p><p class="example">Her presentation was excellent.</p></div>
-      </div>
-    </section>
+    const words = [
+        { id: 1, word: "Adapt", meaning: "To adjust to new conditions.", xp: 10 },
+        { id: 2, word: "Eloquent", meaning: "Fluent or persuasive in speaking.", xp: 15 },
+        { id: 3, word: "Resilient", meaning: "Recovering quickly from difficulties.", xp: 15 },
+        { id: 4, word: "Pragmatic", meaning: "Practical and realistic approach.", xp: 10 },
+        { id: 5, word: "Diligent", meaning: "Showing care in one's work.", xp: 15 },
+        { id: 6, word: "Vibrant", meaning: "Full of energy and life.", xp: 10 },
+        { id: 7, word: "Meticulous", meaning: "Showing great attention to detail.", xp: 20 },
+        { id: 8, word: "Candid", meaning: "Truthful and straightforward.", xp: 10 }
+    ];
 
-    <!-- 4️⃣ Travel Related Vocabulary -->
-    <section>
-      <h2> Travel Related Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Destination</p><p class="meaning">The place you are going to.</p><p class="example">Paris is my dream destination.</p></div>
-        <div class="card"><p class="word">Luggage</p><p class="meaning">Bags used for traveling.</p><p class="example">Keep your luggage near you.</p></div>
-        <div class="card"><p class="word">Passport</p><p class="meaning">An official document for travel.</p><p class="example">Don’t forget to bring your passport.</p></div>
-        <div class="card"><p class="word">Boarding Pass</p><p class="meaning">A ticket that lets you board a flight.</p><p class="example">Show your boarding pass at the gate.</p></div>
-        <div class="card"><p class="word">Tourist</p><p class="meaning">A person traveling for pleasure.</p><p class="example">The city was full of tourists.</p></div>
-        <div class="card"><p class="word">Journey</p><p class="meaning">The act of traveling from one place to another.</p><p class="example">Our journey was long but enjoyable.</p></div>
-      </div>
-    </section>
+    // Theme & Mode Logic
+    function toggleTheme() {
+        const targetTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', targetTheme);
+        localStorage.setItem('theme', targetTheme);
+        document.querySelector('#themeBtn i').className = targetTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
 
-    <!-- 5️⃣ Education Related Vocabulary -->
-    <section>
-      <h2> Education Related Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Assignment</p><p class="meaning">Work given to students.</p><p class="example">I completed my English assignment.</p></div>
-        <div class="card"><p class="word">Lecture</p><p class="meaning">A talk given by a teacher.</p><p class="example">Today's lecture was about grammar.</p></div>
-        <div class="card"><p class="word">Scholarship</p><p class="meaning">Money given for studying.</p><p class="example">She received a scholarship for college.</p></div>
-        <div class="card"><p class="word">Exam</p><p class="meaning">A test of knowledge.</p><p class="example">The math exam was difficult.</p></div>
-        <div class="card"><p class="word">Notebook</p><p class="meaning">A book for writing notes.</p><p class="example">I wrote all my lessons in the notebook.</p></div>
-        <div class="card"><p class="word">Teacher</p><p class="meaning">A person who helps others learn.</p><p class="example">Our teacher explained the topic clearly.</p></div>
-      </div>
-    </section>
+    function toggleTestMode() {
+        isTestMode = !isTestMode;
+        document.getElementById('testModeBtn').classList.toggle('active');
+        renderWords(words);
+    }
 
-    <!-- 6️⃣ Emotional & Personality Vocabulary -->
-    <section>
-      <h2> Emotional & Personality Vocabulary</h2>
-      <div class="flashcards">
-        <div class="card"><p class="word">Confident</p><p class="meaning">Sure of oneself.</p><p class="example">She is confident about her skills.</p></div>
-        <div class="card"><p class="word">Honest</p><p class="meaning">Truthful and sincere.</p><p class="example">He is an honest employee.</p></div>
-        <div class="card"><p class="word">Generous</p><p class="meaning">Willing to give or share.</p><p class="example">My friend is very generous.</p></div>
-        <div class="card"><p class="word">Curious</p><p class="meaning">Eager to know or learn something.</p><p class="example">Children are naturally curious.</p></div>
-        <div class="card"><p class="word">Calm</p><p class="meaning">Not easily upset or excited.</p><p class="example">He remained calm during the storm.</p></div>
-        <div class="card"><p class="word">Grateful</p><p class="meaning">Thankful and appreciative.</p><p class="example">I’m grateful for your help.</p></div>
-      </div>
-    </section>
+    function revealMeaning(btn, id) {
+        document.getElementById(`meaning-${id}`).classList.remove('hidden-meaning');
+        document.getElementById(`learn-btn-${id}`).classList.remove('disabled');
+        btn.style.display = 'none';
+    }
 
-  </div>
+    // Standard Logic
+    async function fetchLeaderboard() {
+        try {
+            const response = await fetch('/api/leaderboard');
+            const users = await response.json();
+            renderLeaderboard(users);
+        } catch (err) { console.error(err); }
+    }
 
-  <footer>
-    <p>© 2025 FluentNest | Expand your vocabulary every day</p>
-  </footer>
+    function renderLeaderboard(users) {
+        const list = document.getElementById('leaderboardList');
+        users.sort((a, b) => b.xp - a.xp);
+        list.innerHTML = users.map((u, i) => `
+            <div class="leader-item">
+                <span>${i+1}. <strong>${u.username === loggedInUser ? 'You' : u.username}</strong></span>
+                <span style="color:var(--primary); font-weight:700">${u.xp} XP</span>
+            </div>
+        `).join('');
+        const me = users.find(u => u.username === loggedInUser);
+        if(me) document.getElementById('userXpDisplay').innerText = me.xp;
+    }
 
+    async function learnWord(btn, xpValue) {
+        if (btn.classList.contains('learned') || btn.classList.contains('disabled')) return;
+        try {
+            const response = await fetch('/api/user/update-xp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ xpValue: xpValue })
+            });
+            if (response.ok) {
+                btn.classList.add('learned');
+                btn.innerHTML = 'Learned';
+                fetchLeaderboard();
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    function filterWords() {
+        const query = document.getElementById('wordSearch').value.toLowerCase();
+        renderWords(words.filter(w => w.word.toLowerCase().includes(query)));
+    }
+
+    function renderWords(items) {
+        document.getElementById('flashcards').innerHTML = items.map(w => `
+            <div class="card">
+                <div class="word">${w.word}</div>
+                <div id="meaning-${w.id}" class="meaning ${isTestMode ? 'hidden-meaning' : ''}">${w.meaning}</div>
+                ${isTestMode ? `<button class="test-action-btn" onclick="revealMeaning(this, ${w.id})">Show Meaning</button>` : ''}
+                <button id="learn-btn-${w.id}" class="learn-btn ${isTestMode ? 'disabled' : ''}" onclick="learnWord(this, ${w.xp})">Learn +${w.xp} XP</button>
+            </div>
+        `).join('');
+    }
+
+    // Initialization
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelector('#themeBtn i').className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
+    window.onload = () => { renderWords(words); fetchLeaderboard(); };
+</script>
 </body>
 </html>

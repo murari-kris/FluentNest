@@ -1,5 +1,7 @@
 package com.ecom.model;
 
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,7 +17,14 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String password;
+    
+    
 
+    @Column(nullable = true)
+    private Integer xp = 0; // Rename from totalXp to xp
+
+    public Integer getXp() { return xp; }
+    public void setXp(Integer xp) { this.xp = xp; }
     // ✅ Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -31,4 +40,8 @@ public class User {
     // getters and setters
     public String getProfileImage() { return profileImage; }
     public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+    
+   
+    
+    
 }

@@ -1,90 +1,200 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Practice Words | FluentNest</title>
+  <title>FluentNest | Mobile Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #8E4DD8;
+      --secondary: #4A1780;
+      --bg: #F3F0F8;
+      --white: #ffffff;
+      --shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: "Poppins", sans-serif;
-      background: #EDE3F8;
+      background-color: var(--bg);
       color: #2E1065;
       margin: 0;
-      padding: 0;
+      padding: 10px; /* Reduced for mobile */
+      display: flex;
+      justify-content: center;
     }
 
     .container {
-      max-width: 700px;
-      margin: 60px auto;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 30px 40px;
+      width: 100%;
+      max-width: 800px;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 25px;
+      margin: 20px auto;
     }
 
-    h1 {
+    /* Header adjustments for mobile */
+    .header-box {
       text-align: center;
-      color: #4A1780;
+      margin-bottom: 25px;
     }
 
-    .word-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 25px;
+    h1 { 
+      font-size: 1.8rem; 
+      color: var(--secondary); 
+      margin: 0;
+    }
+
+    p { font-size: 0.9rem; color: #666; }
+
+    /* Category headers */
+    .category-title {
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 30px 0 15px 0;
+      display: block;
+    }
+
+    /* RESPONSIVE GRID */
+    .word-grid {
+      display: grid;
+      /* On small mobile: 1 column. On tablets+: 2 columns */
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .word-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      .container { padding: 40px; }
+      h1 { font-size: 2.2rem; }
     }
 
     .word-item {
-      background: #F6F0FB;
-      border-left: 5px solid #8E4DD8;
-      padding: 10px 15px;
-      border-radius: 8px;
+      background: #faf8ff;
+      border: 1px solid #eee;
+      padding: 15px 20px;
+      border-radius: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: all 0.2s ease;
     }
 
+    .word-item:active { /* Mobile touch feedback */
+      transform: scale(0.97);
+      background: #f0e6fa;
+    }
+
+    .word-text {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--secondary);
+      max-width: 65%;
+      word-break: break-word;
+    }
+
+    /* Larger buttons for touch */
     .btn {
-      background: #8E4DD8;
+      background: var(--primary);
       color: #fff;
       border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
+      padding: 10px 18px;
+      border-radius: 10px;
       cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
       transition: 0.3s;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .btn:hover {
-      background: #4A1780;
-    }
+    .btn:hover { background: var(--secondary); }
 
     footer {
       text-align: center;
-      margin-top: 30px;
-      color: #555;
-      font-size: 0.9rem;
+      padding: 20px;
+      color: #888;
+      font-size: 0.8rem;
     }
+
+    /* Smooth scroll for the whole page */
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>🗣️ Practice Words</h1>
-    <div class="word-list">
-      <div class="word-item"><span>Professional</span> <button class="btn" onclick="speak('Professional')">Play</button></div>
-      <div class="word-item"><span>Communication</span> <button class="btn" onclick="speak('Communication')">Play</button></div>
-      <div class="word-item"><span>Interview</span> <button class="btn" onclick="speak('Interview')">Play</button></div>
-      <div class="word-item"><span>Presentation</span> <button class="btn" onclick="speak('Presentation')">Play</button></div>
-      <div class="word-item"><span>Pronunciation</span> <button class="btn" onclick="speak('Pronunciation')">Play</button></div>
+    <div class="header-box">
+      <h1>🗣️ Vocabulary Lab</h1>
+      <p>Tap "Listen" to master pronunciation</p>
     </div>
+
+    <div id="master-list">
+        </div>
+
+    <footer>© 2026 FluentNest • Responsive Learning</footer>
   </div>
 
-  <footer>© 2025 FluentNest — Practice Words</footer>
-
   <script>
+    const vocabulary = {
+        "Executive Words": [
+            "Accountability", "Benchmarking", "Consolidation", "Differentiation", 
+            "Incentivization", "Profitability", "Sustainability", "Restructuring"
+        ],
+        "Academic Elite": [
+            "Cognitive", "Dichotomy", "Epistemology", "Juxtaposition", 
+            "Metamorphosis", "Paradigm", "Quintessential", "Sovereignty"
+        ],
+        "The Tongue Twisters": [
+            "Anemone", "Colonel", "Deteriorate", "Mischievous", 
+            "Otorhinolaryngology", "Phenomenon", "Quinoa", "Specificities"
+        ]
+    };
+
+    const container = document.getElementById('master-list');
+
+    for (const [category, words] of Object.entries(vocabulary)) {
+        const catHeader = document.createElement('div');
+        catHeader.className = 'category-title';
+        catHeader.innerText = category;
+        container.appendChild(catHeader);
+
+        const grid = document.createElement('div');
+        grid.className = 'word-grid';
+        
+        words.forEach(word => {
+            const item = document.createElement('div');
+            item.className = 'word-item';
+            item.innerHTML = `
+                <span class="word-text">${word}</span>
+                <button class="btn" onclick="speak('${word}')">Listen 🔊</button>
+            `;
+            grid.appendChild(item);
+        });
+        
+        container.appendChild(grid);
+    }
+
     function speak(word) {
-      const utter = new SpeechSynthesisUtterance(word);
-      utter.lang = 'en-US';
-      speechSynthesis.speak(utter);
+        window.speechSynthesis.cancel(); // Stop current speech if clicking rapidly
+        const utter = new SpeechSynthesisUtterance(word);
+        utter.lang = 'en-US';
+        utter.rate = 0.85; 
+        window.speechSynthesis.speak(utter);
     }
   </script>
 </body>

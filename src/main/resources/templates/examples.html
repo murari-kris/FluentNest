@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>View Conversation Examples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>View Conversation Examples | FluentNest</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ---------- GLOBAL ---------- */
     body {
       font-family: 'Poppins', sans-serif;
       background: #F9F7FF;
@@ -12,262 +16,265 @@
       display: flex;
       height: 100vh;
       color: #333;
+      overflow: hidden;
     }
 
-    /* Sidebar */
+    /* ---------- SIDEBAR (LAPTOP) ---------- */
     .sidebar {
-      width: 240px;
-       background: linear-gradient(180deg, #4A1780, #7928ca);
+      width: 280px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #4A1780, #7928ca);
       color: white;
-      padding: 30px 15px;
+      padding: 30px 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
+      border-top-right-radius: 30px;
+      border-bottom-right-radius: 30px;
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2000;
+      box-shadow: 5px 0 20px rgba(74, 23, 128, 0.1);
     }
 
     .sidebar h2 {
-      font-size: 22px;
+      font-size: 20px;
       margin-bottom: 25px;
+      text-align: center;
+      letter-spacing: 1px;
     }
 
     .category-btn {
       width: 100%;
       text-align: left;
-      padding: 12px 15px;
-      margin: 8px 0;
+      padding: 14px 18px;
+      margin: 6px 0;
       border: none;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+
+    .category-btn i { width: 20px; text-align: center; }
 
     .category-btn:hover,
     .category-btn.active {
       background: white;
       color: #4A1780;
+      transform: translateX(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* Main Content */
+    /* ---------- MOBILE NAV ---------- */
+    .mobile-header {
+      display: none;
+      width: 100%;
+      background: #4A1780;
+      color: white;
+      padding: 15px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 3000;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hamburger { font-size: 24px; cursor: pointer; }
+
+    /* ---------- CONTENT AREA ---------- */
     .content {
       flex: 1;
       padding: 40px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
+
+    .container-max { max-width: 850px; margin: 0 auto; }
 
     .content h1 {
       color: #4A1780;
-      text-align: center;
-      margin-bottom: 20px;
+      font-size: clamp(24px, 5vw, 32px);
+      margin-bottom: 10px;
     }
 
     .intro {
       background: #EDE2F8;
-      padding: 15px 20px;
-      border-radius: 10px;
-      margin-bottom: 25px;
-      border-left: 5px solid #B18BE0;
-    }
-
-    .example {
-      background: white;
-      border: 1px solid #E1D3F3;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 15px 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    .example h3 {
-      color: #9A6ED0;
-      margin-bottom: 10px;
-    }
-
-    .example p {
-      margin: 6px 0;
+      padding: 18px 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border-left: 6px solid #B18BE0;
       font-size: 15px;
     }
 
-    .example strong {
-      color: #4A1780;
+    /* Example Card Styling */
+    .example {
+      background: white;
+      border: 1px solid #E1D3F3;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(74, 23, 128, 0.04);
+      animation: slideUp 0.4s ease-out;
     }
 
+    .example h3 {
+      color: #7928ca;
+      margin-top: 0;
+      font-size: 19px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-line {
+      margin: 15px 0;
+      padding: 10px 15px;
+      border-radius: 10px;
+      background: #fdfbff;
+      border: 1px solid #f0eaff;
+    }
+
+    .chat-line strong { color: #4A1780; display: block; font-size: 13px; text-transform: uppercase; }
+    .chat-line span { font-size: 16px; display: block; margin-top: 4px; }
+
     .home-link {
-      display: inline-block;
-      padding: 10px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 25px;
       background: #9A6ED0;
       color: #fff;
       text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
+      border-radius: 12px;
+      font-weight: 600;
       transition: 0.3s;
-      margin-top: 25px;
+      margin-top: 20px;
     }
 
-    .home-link:hover {
-      background: #B08BE1;
-    }
+    .home-link:hover { background: #4A1780; transform: translateY(-2px); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Responsive */
-    @media (max-width: 800px) {
-      body {
-        flex-direction: column;
-      }
-
+    /* ---------- MOBILE RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+      body { flex-direction: column; height: auto; overflow: auto; }
+      .mobile-header { display: flex; }
+      
       .sidebar {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100vh;
+        width: 280px;
         border-radius: 0;
       }
 
-      .category-btn {
-        text-align: center;
-        font-size: 14px;
-        margin: 5px;
-      }
+      .sidebar.active { left: 0; }
+
+      .close-menu { display: block !important; align-self: flex-end; font-size: 28px; margin-bottom: 20px; cursor: pointer; }
+
+      .content { padding: 80px 20px 40px; }
     }
+    .close-menu { display: none; }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Examples</h2>
-    <button class="category-btn active" data-cat="daily">Daily Life</button>
-    <button class="category-btn" data-cat="office">Office</button>
-    <button class="category-btn" data-cat="restaurant">Restaurant</button>
-    <button class="category-btn" data-cat="travel">Travel</button>
-    <button class="category-btn" data-cat="medical">Medical</button>
+
+  <div class="mobile-header">
+    <div class="hamburger" id="nav-open"><i class="fa-solid fa-bars"></i></div>
+    <div style="font-weight: 600;">FluentNest Examples</div>
+    <div></div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="close-menu" id="nav-close"><i class="fa-solid fa-xmark"></i></div>
+    <h2>Categories</h2>
+    <button class="category-btn active" data-cat="daily"><i class="fa-solid fa-sun"></i> Daily Life</button>
+    <button class="category-btn" data-cat="office"><i class="fa-solid fa-building"></i> Office</button>
+    <button class="category-btn" data-cat="restaurant"><i class="fa-solid fa-utensils"></i> Restaurant</button>
+    <button class="category-btn" data-cat="travel"><i class="fa-solid fa-plane"></i> Travel</button>
+    <button class="category-btn" data-cat="medical"><i class="fa-solid fa-stethoscope"></i> Medical</button>
   </div>
 
   <div class="content">
-    <h1>View Conversation Examples</h1>
+    <div class="container-max">
+      <h1>Conversation Examples</h1>
 
-    <div class="intro">
-      <p>Explore real-world English conversations from various situations. Learn natural phrases, tone, and expressions to communicate fluently anywhere you go.</p>
+      <div class="intro">
+        <p>Learn natural phrases and the correct tone for real-world situations. Select a category from the menu to start exploring.</p>
+      </div>
+
+      <div id="examples-container"></div>
+
+      <a href="/main" class="home-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
     </div>
-
-    <div id="examples"></div>
-
-    <a th:href="@{/main}" class="home-link">⬅ Back to Home</a>
   </div>
 
   <script>
-    const examplesContainer = document.getElementById("examples");
+    const container = document.getElementById("examples-container");
     const buttons = document.querySelectorAll(".category-btn");
+    const sidebar = document.getElementById("sidebar");
+
+    // Hamburger Toggles
+    document.getElementById("nav-open").onclick = () => sidebar.classList.add("active");
+    document.getElementById("nav-close").onclick = () => sidebar.classList.remove("active");
 
     const examples = {
       daily: [
-        {
-          title: "🏠 Talking About Weather",
-          lines: [
-            { person: "A", text: "It’s really hot today, isn’t it?" },
-            { person: "B", text: "Yes, I wish it would rain soon." },
-          ]
-        },
-        {
-          title: "📞 Phone Call with a Friend",
-          lines: [
-            { person: "Friend", text: "Hey, are you free this weekend?" },
-            { person: "You", text: "Yes! Let’s meet for lunch on Sunday." },
-          ]
-        }
+        { title: "🏠 Small Talk: Weather", lines: [{ p: "A", t: "It’s really hot today, isn’t it?" }, { p: "B", t: "Yes, I heard it might rain later this evening." }] },
+        { title: "📞 Phone Call with Friend", lines: [{ p: "Friend", t: "Hey, are you free this weekend?" }, { p: "You", t: "I’m busy on Saturday, but Sunday works for me!" }] }
       ],
       office: [
-        {
-          title: "💼 Meeting with Manager",
-          lines: [
-            { person: "Manager", text: "Can you update me on the project progress?" },
-            { person: "You", text: "Sure! We’ve completed 80% of the tasks." },
-          ]
-        },
-        {
-          title: "👩‍💻 Small Talk with Colleague",
-          lines: [
-            { person: "You", text: "How was your weekend?" },
-            { person: "Colleague", text: "Pretty relaxing, I watched some movies!" },
-          ]
-        }
+        { title: "💼 Project Update", lines: [{ p: "Manager", t: "How's the final draft coming along?" }, { p: "You", t: "It's almost ready. I'm just double-checking the numbers now." }] },
+        { title: "☕ Breakroom Chat", lines: [{ p: "Colleague", t: "Have you tried the new cafe downstairs?" }, { p: "You", t: "Not yet! Is the coffee any good?" }] }
       ],
       restaurant: [
-        {
-          title: "🍽️ Ordering Food",
-          lines: [
-            { person: "Waiter", text: "What would you like to order?" },
-            { person: "You", text: "I’ll have a grilled sandwich and lemonade, please." },
-          ]
-        },
-        {
-          title: "💵 Asking for the Bill",
-          lines: [
-            { person: "You", text: "Excuse me, can I get the check, please?" },
-            { person: "Waiter", text: "Sure, I’ll bring it right away." },
-          ]
-        }
+        { title: "🍽️ Ordering Meal", lines: [{ p: "Waiter", t: "Are you ready to order?" }, { p: "You", t: "Yes, I'll have the pasta carbonara and a side salad." }] },
+        { title: "💳 Payment", lines: [{ p: "You", t: "Could we have the bill, please?" }, { p: "Waiter", t: "Certainly, would you like to pay by card or cash?" }] }
       ],
       travel: [
-        {
-          title: "🚌 At the Bus Station",
-          lines: [
-            { person: "You", text: "What time does the next bus to Delhi leave?" },
-            { person: "Agent", text: "At 6:30 PM, from platform 3." },
-          ]
-        },
-        {
-          title: "🏨 Hotel Check-in",
-          lines: [
-            { person: "Receptionist", text: "Do you have a reservation?" },
-            { person: "You", text: "Yes, under the name Krishna Murari." },
-          ]
-        }
+        { title: "🚌 Transit Inquiry", lines: [{ p: "You", t: "Does this bus go to the city center?" }, { p: "Driver", t: "Yes, it's about a 20-minute ride from here." }] },
+        { title: "🏨 Check-in", lines: [{ p: "Reception", t: "Welcome! Can I have your ID and reservation number?" }, { p: "You", t: "Of course, here they are. Is breakfast included?" }] }
       ],
       medical: [
-        {
-          title: "🏥 At the Clinic",
-          lines: [
-            { person: "Doctor", text: "What seems to be the problem?" },
-            { person: "You", text: "I’ve been having a sore throat for three days." },
-          ]
-        },
-        {
-          title: "💊 At the Pharmacy",
-          lines: [
-            { person: "Pharmacist", text: "Here’s your medicine, take it twice a day." },
-            { person: "You", text: "Thank you! Should I take it before or after meals?" },
-          ]
-        }
+        { title: "🏥 Consultation", lines: [{ p: "Doctor", t: "Tell me about your symptoms." }, { p: "You", t: "I've had a persistent headache and a slight fever since yesterday." }] },
+        { title: "💊 Pharmacy", lines: [{ p: "Pharmacist", t: "Take one tablet every six hours with water." }, { p: "You", t: "Okay, thank you. Do I need to finish the whole pack?" }] }
       ]
     };
 
-    function displayExamples(category) {
-      examplesContainer.innerHTML = "";
-      examples[category].forEach(e => {
-        const div = document.createElement("div");
-        div.className = "example";
-        div.innerHTML = `<h3>${e.title}</h3>` +
-          e.lines.map(l => `<p><strong>${l.person}:</strong> ${l.text}</p>`).join("");
-        examplesContainer.appendChild(div);
-      });
+    function display(cat) {
+      container.innerHTML = examples[cat].map(e => `
+        <div class="example">
+          <h3>${e.title}</h3>
+          ${e.lines.map(l => `
+            <div class="chat-line">
+              <strong>Person ${l.p}</strong>
+              <span>${l.t}</span>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
     }
 
-    displayExamples("daily");
+    display("daily");
 
     buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.onclick = () => {
         document.querySelector(".category-btn.active").classList.remove("active");
         btn.classList.add("active");
-        displayExamples(btn.dataset.cat);
-      });
+        display(btn.dataset.cat);
+        if(window.innerWidth <= 900) sidebar.classList.remove("active");
+      };
     });
   </script>
 </body>

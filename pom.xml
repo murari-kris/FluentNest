@@ -103,21 +103,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        
+        <dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20231013</version>
+</dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- ✅ Spring Boot Plugin with mainClass specified -->
+            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.2.4</version>
-                <configuration>
-                    <mainClass>com.ecom.ShoppingCartApplication</mainClass>
-                </configuration>
             </plugin>
 
-            <!-- Stable Surefire Plugin -->
+            <!-- ✅ Stable Surefire Plugin (fix test run issues) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

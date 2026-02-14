@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Practice Chat</title>
+    <style>
+ :root {
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --blue: #3498db;
+    --bg: #000;
+    --panel: #1a1a1a;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0; /* Shorthand for top, left, right, bottom: 0 */
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    z-index: 1000;
+}
+
+/* Force the body to stay within the screen limits */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    position: fixed; /* Prevents scrolling on mobile when keyboard is up */
+}
+
+#container {
+    display: none; /* Controlled by JS */
+    flex-direction: column;
+    width: 100vw;
+    height: 100%;
+}
+
+/* VIDEO AREA: Stays consistent at the top */
+#videoArea {
+    height: 40vh; /* Fixed height on mobile so chat has room */
+    position: relative;
+    background: #111;
+    display: flex;
+    flex-direction: row; /* Side-by-side videos on mobile to save vertical space */
+}
+
+video {
+    width: 50%; /* Local and Remote side-by-side */
+    height: 100%;
+    object-fit: cover;
+    background: #222;
+    border: 1px solid #000;
+}
+
+/* CHAT AREA: Flex-grow to fill remaining space */
+#chatArea {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border-top: 2px solid #333;
+    overflow: hidden; /* Important for internal scroll */
+}
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch; /* Smooth scroll for mobile */
+}
+
+.bubble {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+.me { align-self: flex-end; background: var(--green); color: white; }
+.them { align-self: flex-start; background: #333; color: white; }
+
+/* INPUT BOX: Fixed at the very bottom */
+#inputBox {
+    padding: 10px;
+    background: #111;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #222;
+}
+
+input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background: #222;
+    color: #fff;
+    outline: none;
+    font-size: 16px; /* CRITICAL: Prevents Redmi/Android from auto-zooming */
+}
+
+.send-btn {
+    background: var(--blue);
+    border: none;
+    color: white;
+    padding: 0 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* CONTROLS: Floating over the video */
+.controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.circle-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    backdrop-filter: blur(5px);
+}
+
+/* DESKTOP RE-LAYOUT */
+@media (min-width: 900px) {
+    #container { flex-direction: row; }
+    #videoArea { height: 100%; flex: 3; flex-direction: column; }
+    video { width: 100%; height: 50%; }
+    #chatArea { flex: 1; border-top: none; border-left: 2px solid #333; }
+}
+    </style>
+</head>
+<body>
+
+    <div id="lobby" class="overlay">
+        <button onclick="startApp()" style="padding: 16px 45px; border-radius: 50px; border: none; background: var(--green); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem;">Start Video Chat</button>
+    </div>
+
+    <div id="container">
+        <div id="videoArea">
+            <video id="localVideo" autoplay muted playsinline></video>
+            <video id="remoteVideo" autoplay playsinline></video>
+            <div class="volume-meter"><div id="volumeBar"></div></div>
+            <div class="controls">
+                <button class="circle-btn" id="mBtn" onclick="toggleMic()">🎤</button>
+                <button class="circle-btn" id="vBtn" onclick="toggleVid()">📹</button>
+                <button class="circle-btn" style="background: var(--red)" onclick="location.reload()">🛑</button>
+            </div>
+        </div>
+        <div id="chatArea">
+            <div id="messages"></div>
+            <div id="inputBox">
+                <input type="text" id="chatInp" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button class="send-btn" onclick="sendChat()">Send</button>
+            </div>
+        </div>
+    </div>
+
+
+
+<script th:inline="javascript">
+    let pc, localStream, socket, isCaller = false;
+    let candidateQueue = [];
+
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    socket = new WebSocket(protocol + window.location.host + '/ws');
+
+    async function startApp() {
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ 
+                video: true, 
+                audio: { echoCancellation: true, noiseSuppression: true } 
+            });
+            document.getElementById('localVideo').srcObject = localStream;
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('container').style.display = 'flex';
+            socket.send(JSON.stringify({ type: 'find_partner' }));
+        } catch (e) { alert("Camera/Mic access is required."); }
+    }
+
+    function toggleMic() {
+        const t = localStream.getAudioTracks()[0];
+        t.enabled = !t.enabled;
+        document.getElementById('mBtn').classList.toggle('btn-off');
+        document.getElementById('mBtn').innerText = t.enabled ? '🎤' : '🔇';
+    }
+
+    function toggleVid() {
+        const t = localStream.getVideoTracks()[0];
+        t.enabled = !t.enabled;
+        document.getElementById('vBtn').classList.toggle('btn-off');
+        document.getElementById('vBtn').innerText = t.enabled ? '📹' : '❌';
+    }
+
+    function sendChat() {
+        const inp = document.getElementById('chatInp');
+        if (!inp.value.trim()) return;
+        socket.send(JSON.stringify({ type: 'chat', text: inp.value }));
+        appendUI(inp.value, 'me');
+        inp.value = '';
+    }
+
+    function appendUI(txt, side) {
+        const div = document.createElement('div');
+        div.className = `bubble ${side}`;
+        div.innerText = txt;
+        const box = document.getElementById('messages');
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    socket.onmessage = async (msg) => {
+        const data = JSON.parse(msg.data);
+        if (data.type === 'match_found') { isCaller = true; initWebRTC(); }
+        else if (data.type === 'offer') {
+            if (!pc) initWebRTC();
+            if (pc.signalingState !== "stable") return;
+            await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            const ans = await pc.createAnswer();
+            await pc.setLocalDescription(ans);
+            socket.send(JSON.stringify({ type: 'answer', sdp: ans }));
+            processQueue();
+        } else if (data.type === 'answer') {
+            if (pc.signalingState === "have-local-offer") {
+                await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                processQueue();
+            }
+        } else if (data.type === 'ice') {
+            const cand = new RTCIceCandidate(data.candidate);
+            if (!pc || !pc.remoteDescription) candidateQueue.push(cand);
+            else pc.addIceCandidate(cand).catch(e => {});
+        } else if (data.type === 'chat') { appendUI(data.text, 'them'); }
+        else if (data.type === 'partner_left') { alert("Partner left"); location.reload(); }
+    };
+
+    function processQueue() {
+        while (candidateQueue.length > 0) pc.addIceCandidate(candidateQueue.shift());
+    }
+
+    function initWebRTC() {
+        pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+        localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+        pc.ontrack = e => {
+            const rv = document.getElementById('remoteVideo');
+            if (rv.srcObject !== e.streams[0]) {
+                rv.srcObject = e.streams[0];
+                rv.muted = false;
+                rv.play().catch(() => {
+                    document.body.addEventListener('click', () => { rv.play(); }, {once: true});
+                });
+                startVolumeMeter(e.streams[0]);
+            }
+        };
+
+        pc.onicecandidate = e => { if (e.candidate) socket.send(JSON.stringify({ type: 'ice', candidate: e.candidate })); };
+
+        if (isCaller) {
+            pc.onnegotiationneeded = async () => {
+                if (pc.signalingState !== "stable") return;
+                const off = await pc.createOffer();
+                await pc.setLocalDescription(off);
+                socket.send(JSON.stringify({ type: 'offer', sdp: off }));
+            };
+        }
+    }
+
+    function startVolumeMeter(stream) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = ctx.createMediaStreamSource(stream);
+        const ans = ctx.createAnalyser();
+        ans.fftSize = 256;
+        src.connect(ans);
+        const data = new Uint8Array(ans.frequencyBinCount);
+        const bar = document.getElementById('volumeBar');
+        
+        function update() {
+            ans.getByteFrequencyData(data);
+            let sum = data.reduce((a, b) => a + b, 0);
+            bar.style.width = Math.min((sum / data.length) * 2.5, 100) + "%";
+            requestAnimationFrame(update);
+        }
+        document.body.addEventListener('click', () => ctx.resume(), {once: true});
+        update();
+    }
+</script>
+</body>
+</html>

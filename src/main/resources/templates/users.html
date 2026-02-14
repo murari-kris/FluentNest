@@ -2,126 +2,211 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>EngliChat - Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
         body {
-            background: linear-gradient(
-                to top right,
-                #4EB5A9 0%,        
-                #0a001a 30%,       
-                #0a001a 70%,      
-                #6157E1 100%       
-            ); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+            background-attachment: fixed;
             color: white;
+            min-height: 100vh;
+            padding-bottom: 50px;
         }
-        .btn {
-            background: #7928ca;
+
+        h2 {
+            font-weight: 800;
+            letter-spacing: -1px;
         }
+
+        /* ---------- SEARCH BOX RESPONSIVE ---------- */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-box input[type="text"] {
+            border-radius: 25px 0 0 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            color: white;
+            outline: none;
+            flex-grow: 1;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-box button {
+            border-radius: 0 25px 25px 0;
+            border: none;
+            padding: 0 25px;
+            background: linear-gradient(135deg, #ff0080, #7928ca);
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        /* ---------- USER CARD REFINEMENT ---------- */
+        .card {
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #4EB5A9;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        .card-img-top {
+            border-radius: 50%;
+            height: 110px;
+            width: 110px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #7928ca;
+            padding: 3px;
+            background: white;
+        }
+
         .status-dot {
-            height: 12px;
-            width: 12px;
+            height: 10px;
+            width: 10px;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 6px;
+            margin-right: 8px;
+            box-shadow: 0 0 8px currentColor;
         }
-        .online {
-            background-color: #28a745;
+
+        .online { background-color: #28a745; color: #28a745; }
+        .offline { background-color: #6c757d; color: #6c757d; }
+
+        /* ---------- CHAT BUTTON ---------- */
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0080, #7928ca);
+            border: none;
+            font-weight: 700;
+            padding: 10px 30px;
+            border-radius: 50px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            width: 100%;
         }
-        .offline {
-            background-color: #6c757d;
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 0, 128, 0.4);
         }
-        /* Toast container */
-        #toastContainer {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 2000;
+
+        /* ---------- PAGINATION GLASS ---------- */
+        .pagination .page-link {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            margin: 0 3px;
+            border-radius: 10px;
+        }
+
+        .pagination .active .page-link {
+            background: #7928ca;
+            border-color: #7928ca;
+        }
+
+        .pagination .disabled .page-link {
+            background: transparent;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .header-row {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .search-box {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body class="container mt-4">
 
-    <h2 class="mb-4">Available Users</h2>
+    <div class="header-row d-flex justify-content-between align-items-center mb-5">
+        <h2>Available Users</h2>
+        <form th:action="@{/users}" method="get" class="search-box">
+            <input type="text" name="search" placeholder="Search username..." 
+                   th:value="${search}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
 
-    <div class="row" th:if="${users.size() > 0}">
-        <div class="col-md-4 mb-3" th:each="u : ${users}">
-            <div class="card shadow-sm">
-
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-lg-4 mb-4" th:each="u : ${users}">
+            <div class="card shadow-sm text-center">
+                
                 <img th:if="${u.profileImage != null}" 
                      th:src="@{'/uploads/' + ${u.profileImage}}" 
                      class="card-img-top" 
-                     alt="Profile Image" 
-                     style="height:200px; object-fit:cover;">
+                     alt="Profile Image">
                 <img th:if="${u.profileImage == null}" 
                      src="/images/default-profile.png" 
                      class="card-img-top" 
-                     alt="Default Profile Image" 
-                     style="height:200px; object-fit:cover;">
+                     alt="Default Profile Image">
 
-                <div class="card-body text-center">
-                    <h5 class="card-title">
-                        <span th:classappend="${activeUsers.contains(u.username)} ? 'status-dot online' : 'status-dot offline'"></span>
-                        <span th:text="${u.username}"></span>
-                    </h5>
-                    <a th:href="@{'/chat/' + ${u.username}}" class="btn">Chat with Co-learner</a>
-                </div>
+                <h5 class="card-title mt-2">
+                    <span th:classappend="${activeUsers.contains(u.username)} ? 'status-dot online' : 'status-dot offline'"></span>
+                    <span th:text="${u.username}" style="font-weight: 600;"></span>
+                </h5>
+
+                <a th:href="@{'/chat/' + ${u.username}}" class="btn btn-primary mt-3">
+                    Open Chat
+                </a>
             </div>
         </div>
     </div>
 
-    <div th:if="${users.size() == 0}">
-        <div class="alert alert-info">No other users found.</div>
-    </div>
+    <nav th:if="${totalPages > 1}" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${currentPage-1}, search=${search})}">Prev</a>
+            </li>
 
-    <!-- ✅ Toast Notification -->
-    <div id="toastContainer">
-      <div id="msgToast" class="toast align-items-center text-bg-primary border-0" role="alert">
-        <div class="d-flex">
-          <div class="toast-body" id="msgToastBody">New message</div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-      </div>
-    </div>
+            <li class="page-item d-none d-sm-inline-block" th:each="i : ${#numbers.sequence(0, totalPages-1)}" 
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/users(page=${i}, search=${search})}" th:text="${i+1}"></a>
+            </li>
 
-    <!-- Hidden input for current username -->
-    <input type="hidden" id="me" th:value="${#authentication.name}" />
+            <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${currentPage+1}, search=${search})}">Next</a>
+            </li>
+        </ul>
+    </nav>
 
-    <script>
-      let stompClient = null;
-      let toastEl = document.getElementById('msgToast');
-      let toast = new bootstrap.Toast(toastEl);
-
-      function connectWs() {
-        const socket = new SockJS('/chat-websocket');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log("✅ Connected Users WS: " + frame);
-
-            stompClient.subscribe('/user/queue/messages', function (msg) {
-                let message = JSON.parse(msg.body);
-                const me = document.getElementById('me').value;
-
-                if (message.sender !== me) {
-                  // 👉 If already on chat page with this sender, skip
-                  const peerInput = document.getElementById('peer');
-                  if (peerInput && peerInput.value === message.sender) {
-                    return; 
-                  }
-
-                  // Otherwise show toast
-                  document.getElementById('msgToastBody').textContent =
-                    "📩 " + message.sender + ": " + message.content;
-                  toast.show();
-                }
-            });
-        });
-      }
-
-      connectWs();
-    </script>
 </body>
 </html>

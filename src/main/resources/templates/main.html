@@ -1,89 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FluentNest - Learning Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-     background: linear-gradient(
-  to bottom right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-);
-      margin: 0;
-      padding: 20px;
-      color: #333;
+    :root {
+      /* LIGHT MODE: Gradient Background, White Boxes */
+      --body-bg: linear-gradient(to bottom right, #4EB5A9 0%, #0a001a 30%, #0a001a 70%, #6157E1 100%);
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --heading-color: #2d2d8a;
+      --text-color: #555;
+      --shadow: rgba(0,0,0,0.2);
+      --main-title: #ffffff; /* Main Hub Title color in light mode */
     }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
+    [data-theme="dark"] {
+      /* DARK MODE: White Background, Dark Boxes */
+      --body-bg: #ffffff; 
+      --card-bg: #1e1e2e;
+      --heading-color: #a78bfa;
+      --text-color: #cbd5e1;
+      --shadow: rgba(0,0,0,0.15);
+      --main-title: #2d2d8a; /* Main Hub Title color in dark mode */
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--body-bg);
+      background-attachment: fixed;
+      margin: 0;
+      padding: 20px 10px;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .container { max-width: 1000px; margin: auto; }
+
+    /* Dark Mode Toggle Button */
+    .theme-switch {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      border: 1px solid rgba(128,128,128,0.2);
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--shadow);
+      color: var(--heading-color);
+      z-index: 1000;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     h1 {
       text-align: center;
-      color: #2d2d8a;
-      font-size: 36px;
-      margin-bottom: 40px;
+      color: var(--main-title);
+      font-size: 2rem;
+      margin-bottom: 30px;
+      line-height: 1.2;
+      transition: color 0.3s ease;
     }
 
-    .sections {
-      display: flex;
-      flex-direction: column;
-      gap: 35px;
+    .brand-text {
+      background: linear-gradient(to right, #ff0080, rgb(128, 0, 255));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
     }
+
+    @media (min-width: 600px) {
+      h1 { font-size: 3rem; }
+      .brand-text { display: inline; }
+      body { padding: 40px 20px; }
+    }
+
+    .sections { display: flex; flex-direction: column; gap: 20px; }
 
     .section {
-      background: #fff;
-      border-radius: 15px;
-      padding: 40px 30px;
-      min-height: 200px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 25px var(--shadow);
+      transition: transform 0.3s ease, background-color 0.3s ease;
     }
 
-    .section:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    @media (min-width: 768px) {
+      .section { padding: 40px; }
+      .section:hover { transform: translateY(-5px); }
     }
 
     .section h2 {
-      color: #2d2d8a;
-      font-size: 26px;
-      margin-bottom: 15px;
+      color: var(--heading-color);
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 12px;
     }
 
     .section p {
-      font-size: 16px;
-      margin-bottom: 25px;
-      color: #555;
-      line-height: 1.6;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      color: var(--text-color);
+      line-height: 1.5;
     }
 
-    .buttons {
-      margin-top: 20px;
+    .buttons { display: flex; flex-direction: column; gap: 10px; }
+
+    @media (min-width: 480px) {
+      .buttons { flex-direction: row; flex-wrap: wrap; }
     }
 
     .btn {
       display: inline-block;
-      padding: 12px 18px;
-      border-radius: 8px;
+      padding: 14px 20px;
+      border-radius: 10px;
       text-decoration: none;
-      color: #fff;
-      margin-right: 8px;
+      color: #fff !important; /* Keep text white on buttons */
       font-weight: 600;
+      text-align: center;
       transition: 0.3s;
+      border: none;
+      font-size: 0.9rem;
+      cursor: pointer;
     }
 
-    .btn:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
-    }
+    .btn:active { transform: scale(0.96); }
 
+    /* Button Colors remain untouched */
     .blue { background-color: #3b82f6; }
     .green { background-color: #10b981; }
     .yellow { background-color: #f59e0b; }
@@ -92,106 +141,131 @@
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 30px 10px;
       margin-top: 40px;
-      color: #fff;
-      font-size: 14px;
-      border-top: 1px solid #eee;
+      color: #888; /* Changed to grey to be visible on both white/gradient */
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(128,128,128,0.1);
     }
-
-    @media (max-width: 768px) {
-      .section {
-        min-height: 300px;
-        padding: 30px 20px;
-      }
-      h1 {
-        font-size: 28px;
-      }
-    }
+    
+    [data-theme="light"] footer { color: rgba(255,255,255,0.7); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1><span style="background: linear-gradient(to right, #ff0080, rgb(128, 0, 255));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</span> Learning Hub</h1>
-    <div class="sections">
 
-      <!-- Grammar -->
+  <button class="theme-switch" id="themeToggle" onclick="toggleTheme()">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+
+  <div class="container">
+    <h1><span class="brand-text">FluentNest</span> Learning Hub</h1>
+    
+    <div class="sections">
       <div class="section">
         <h2>Improve Grammar</h2>
-        <p>Strengthen your grammar foundation with easy-to-follow lessons, exercises, and quizzes that help you write and speak confidently.</p>
+        <p>Strengthen your foundation with lessons and quizzes that help you speak confidently.</p>
         <div class="buttons">
           <a th:href="@{/lesson}" class="btn purple">Start Lesson</a>
           <a th:href="@{/quiz}" class="btn green">Take Quiz</a>
         </div>
       </div>
 
-      <!-- Vocabulary -->
       <div class="section">
-        <h2>Improve Vocabulary & Job Interview Prep</h2>
-        <p>Enhance your vocabulary with daily-use words and prepare for corporate interviews with topic-wise exercises and GD practice.</p>
+        <h2>Interview Prep</h2>
+        <p>Enhance your vocabulary and prepare for corporate interviews with mock exercises.</p>
         <div class="buttons">
-          <a th:href="@{/vocabulary}" class="btn green">Learn Vocabulary</a>
+          <a th:href="@{/vocabulary}" class="btn green">Vocabulary</a>
           <a th:href="@{/interview}" class="btn purple">Mock Interview</a>
         </div>
       </div>
 
-      <!-- Co-Learner Practice -->
       <div class="section">
-        <h2>Practice with Your Co-Learner</h2>
-        <p>Connect with learners around the world through live audio and video sessions to improve your speaking fluency and confidence.</p>
+        <h2>Co-Learner Practice</h2>
+        <p>Connect with learners globally through live audio and video sessions.</p>
         <div class="buttons">
-          <a href="#" class="btn blue">Join Video</a>
-          <a href="#" class="btn yellow">Join Audio</a>
+           <button id="videoBtn" class="btn blue">Join Video Practice</button>
         </div>
+        <p id="videoStatus" style="margin-top:10px; font-weight:600; color: #3b82f6;"></p>
       </div>
 
-      <!-- Daily Conversation -->
       <div class="section">
-        <h2>Daily Conversation Practice</h2>
-        <p>Learn how to handle daily conversations at home, office, or public places. Practice common dialogues and real-world situations.</p>
+        <h2>Daily Conversation</h2>
+        <p>Master handling daily conversations at home, office, or public places.</p>
         <div class="buttons">
           <a th:href="@{/conversation}" class="btn purple">Start Conversation</a>
           <a th:href="@{/examples}" class="btn blue">View Examples</a>
         </div>
       </div>
 
-      <!-- Fluency Challenges -->
       <div class="section">
         <h2>Fluency Challenges</h2>
-        <p>Challenge yourself with short speaking prompts and timed fluency games. Build confidence to speak English without hesitation.</p>
+        <p>Challenge yourself with timed speaking prompts and building confidence.</p>
         <div class="buttons">
           <a th:href="@{/challenge}" class="btn red">Start Challenge</a>
           <a th:href="@{/leaderboard}" class="btn green">View Leaderboard</a>
         </div>
       </div>
 
-      <!-- English for Professionals -->
       <div class="section">
-        <h2> English for Professionals</h2>
-        <p>Learn how to speak professionally during meetings, client calls, and interviews. Develop business communication etiquette.</p>
+        <h2>Business English</h2>
+        <p>Develop communication etiquette for meetings, client calls, and professional emails.</p>
         <div class="buttons">
           <a th:href="@{/start}" class="btn blue">Start Lesson</a>
-          
         </div>
       </div>
 
-      <!-- Pronunciation -->
       <div class="section">
-        <h2>Pronunciation Practice</h2>
-        <p>Master pronunciation through phonetic exercises and audio-based training sessions. Practice speaking with native-like clarity.</p>
+        <h2>Pronunciation</h2>
+        <p>Master sounds through phonetic exercises and audio training sessions.</p>
         <div class="buttons">
           <a th:href="@{/pronunciation}" class="btn purple">Practice Words</a>
           <a th:href="@{/listen}" class="btn yellow">Listen & Repeat</a>
         </div>
       </div>
-
     </div>
   </div>
 
   <footer>
-    © 2025 FluentNest | Learn, Practice, and Grow Together 
+    © 2026 FluentNest | Learn, Practice, and Grow
   </footer>
+  
+  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('hub-theme', target);
+      updateIcon(target);
+    }
+
+    function updateIcon(theme) {
+      const icon = document.querySelector('#themeToggle i');
+      icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    const savedTheme = localStorage.getItem('hub-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateIcon(savedTheme);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const videoBtn = document.getElementById("videoBtn");
+      const videoStatus = document.getElementById("videoStatus");
+
+      videoBtn.addEventListener("click", () => {
+        videoBtn.disabled = true;
+        videoStatus.innerText = "Finding a co-learner...";
+        fetch("/api/practice/start", { method: "POST" })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "PAIRED") window.location.href = "/video?roomId=" + data.roomId;
+            if (data.status === "WAITING") videoStatus.innerText = "Waiting for a learner...";
+          })
+          .catch(() => {
+            videoStatus.innerText = "Error. Try again.";
+            videoBtn.disabled = false;
+          });
+      });
+    });
+  </script>
 </body>
 </html>

@@ -2,109 +2,177 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | FluentNest</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(
-  to top right,
-  #4EB5A9 0%,        
-  #0a001a 30%,       
-  #0a001a 70%,      
-   #6157E1 100%       
-); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            animation: fadeIn 1s ease-in;
+            padding: 20px;
+            color: white;
+            animation: fadeIn 0.8s ease-in;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-container {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 350px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
             text-align: center;
         }
 
-        h2 {
+        .brand-title {
             margin-bottom: 30px;
-            color: #333;
+        }
+
+        .brand-title h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .logo-text {
+            background: linear-gradient(to right, #ff0080, #7928ca);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 2.2rem;
+            display: block;
         }
 
         input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            padding: 14px 15px;
+            margin: 12px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
             transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]::placeholder, input[type="password"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #6157E1;;
-            box-shadow: 0 0 5px #6157E1;;
+            border-color: #4EB5A9;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 15px rgba(78, 181, 169, 0.3);
             outline: none;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            margin-top: 15px;
+            padding: 14px;
+            margin-top: 20px;
             border: none;
-            border-radius: 8px;
-            background: #6157E1;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff0080, #7928ca);
             color: white;
             font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         button:hover {
-            background: #6157E1;;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3);
+            filter: brightness(1.1);
         }
 
         .signup-link {
-            margin-top: 15px;
-            display: block;
-            color: #6157E1;;
+            margin-top: 25px;
+            display: inline-block;
+            color: #4EB5A9;
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
         }
 
         .signup-link:hover {
-            color: #6157E1;;
+            color: white;
+            text-shadow: 0 0 10px rgba(78, 181, 169, 0.5);
         }
 
         .error {
-            color: red;
-            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6b6b;
+            font-size: 13px;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .success {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(40, 167, 69, 0.1);
+            color: #2ecc71;
+            font-size: 13px;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        /* -------- Responsive Design -------- */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+
+            .logo-text {
+                font-size: 1.8rem;
+            }
+
+            button {
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Login <h2 style="background: linear-gradient(to right, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;">FluentNest</h2></h2>
+        <div class="brand-title">
+            <h2>Login to</h2>
+            <span class="logo-text">FluentNest</span>
+        </div>
+        
         <form th:action="@{/login}" method="post">
             <input type="text" placeholder="Username" name="username" required />
             <input type="password" placeholder="Password" name="password" required />
-            <button type="submit">Login</button>
+            <button type="submit">Login Now</button>
         </form>
-        <a href="/signup" class="signup-link">Don't have an account? Sign up</a>
+        
+        <a href="/signup" class="signup-link">Don't have an account? Create one</a>
+
         <div class="error" th:if="${param.error}" th:text="'Invalid username or password'"></div>
-        <div class="error" th:if="${param.logout}" th:text="'You have been logged out successfully'"></div>
+        <div class="success" th:if="${param.logout}" th:text="'You have been logged out successfully'"></div>
     </div>
 </body>
 </html>
