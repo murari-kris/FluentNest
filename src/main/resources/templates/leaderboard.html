@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Leaderboard | FluentNest</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <style>
@@ -15,25 +15,27 @@
         --glass-border: rgba(255, 255, 255, 0.1);
     }
 
+    * { box-sizing: border-box; }
+
     body { 
         font-family: 'Plus Jakarta Sans', sans-serif; 
         background: linear-gradient(135deg, #4EB5A9 0%, #0a001a 50%, #6157E1 100%);
         background-attachment: fixed;
         margin: 0; 
-        padding: 15px; 
+        padding: 10px; 
         color: white;
         min-height: 100vh;
+        overflow-x: hidden; /* Prevent horizontal shake on mobile */
     }
     
     header {
       text-align: center; 
-      padding: 60px 20px; 
-      margin-bottom: 20px;
+      padding: 30px 15px; 
     }
 
     header h1 {
         font-weight: 800;
-        font-size: clamp(2rem, 5vw, 3rem);
+        font-size: clamp(1.8rem, 8vw, 3rem);
         letter-spacing: -1px;
         margin: 0;
     }
@@ -45,36 +47,74 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
-      border-radius: 30px;
-      padding: 40px 30px; 
+      border-radius: 24px;
+      padding: 20px; 
       box-shadow: 0 25px 50px rgba(0,0,0,0.4); 
-      position: relative;
     }
 
-    table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    /* --- Search Bar Style --- */
+    .search-container {
+        position: relative;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary);
+        opacity: 0.8;
+    }
+
+    #leaderboardSearch {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 12px 12px 12px 42px;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    #leaderboardSearch:focus {
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* --- Table Styling --- */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto; /* Allow internal scroll only if necessary */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
     
     th { 
         text-align: left; 
-        padding: 15px; 
+        padding: 10px 15px; 
         font-size: 11px; 
         color: var(--primary); 
         text-transform: uppercase; 
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         font-weight: 800;
     }
 
     td { 
-        padding: 15px; 
+        padding: 12px 15px; 
         background: rgba(255, 255, 255, 0.03);
         border-top: 1px solid var(--glass-border);
         border-bottom: 1px solid var(--glass-border);
     }
 
-    /* Rounding the rows */
-    td:first-child { border-left: 1px solid var(--glass-border); border-radius: 15px 0 0 15px; }
-    td:last-child { border-right: 1px solid var(--glass-border); border-radius: 0 15px 15px 0; }
+    td:first-child { border-left: 1px solid var(--glass-border); border-radius: 12px 0 0 12px; }
+    td:last-child { border-right: 1px solid var(--glass-border); border-radius: 0 12px 12px 0; }
 
-    .rank-medal { font-size: 22px; filter: drop-shadow(0 0 8px currentColor); }
+    .rank-medal { font-size: 20px; filter: drop-shadow(0 0 5px currentColor); }
     .gold { color: #FFD700; } 
     .silver { color: #E5E4E2; } 
     .bronze { color: #CD7F32; }
@@ -82,25 +122,27 @@
     .wpm-badge { 
         background: linear-gradient(135deg, rgba(78, 181, 169, 0.2), rgba(121, 40, 202, 0.2));
         color: #fff; 
-        padding: 6px 14px; 
-        border-radius: 10px; 
+        padding: 5px 12px; 
+        border-radius: 8px; 
         font-weight: 800; 
         border: 1px solid var(--primary);
+        font-size: 0.9rem;
+        display: inline-block;
     }
 
-    .name-text { font-weight: 700; color: white; font-size: 1.05rem; }
+    .name-text { font-weight: 700; color: white; font-size: 1rem; white-space: nowrap; }
 
+    /* --- Action Buttons --- */
     .actions { 
         display: flex; 
-        flex-wrap: wrap;
-        justify-content: center; 
-        gap: 15px; 
-        margin-top: 40px; 
+        flex-direction: column;
+        gap: 12px; 
+        margin-top: 30px; 
     }
 
     .btn { 
-        padding: 14px 30px; 
-        border-radius: 14px; 
+        padding: 16px; 
+        border-radius: 12px; 
         text-decoration: none; 
         font-weight: 700; 
         cursor: pointer; 
@@ -109,17 +151,12 @@
         letter-spacing: 1px;
         font-size: 0.85rem;
         transition: 0.3s;
+        text-align: center;
     }
 
     .btn-main { 
         background: linear-gradient(135deg, #ff0080, #7928ca); 
         color: white; 
-        box-shadow: 0 10px 20px rgba(255, 0, 128, 0.2);
-    }
-
-    .btn-main:hover {
-        transform: scale(1.05);
-        box-shadow: 0 15px 30px rgba(255, 0, 128, 0.4);
     }
 
     .btn-outline { 
@@ -128,15 +165,27 @@
         color: #ff6b6b; 
     }
 
-    .btn-outline:hover {
-        background: #ff3b30;
-        color: white;
+    /* --- Redmi/Mobile Responsive Tweak --- */
+    @media (max-width: 600px) {
+        body { padding: 5px; }
+        main { padding: 15px 10px; border-radius: 16px; }
+        
+        /* Reduce table padding to fit on mobile */
+        td, th { padding: 10px 8px; font-size: 0.8rem; }
+        .name-text { font-size: 0.85rem; }
+        .wpm-badge { padding: 3px 8px; font-size: 0.75rem; }
+        
+        /* Hide Rank text on mobile to save space, just show medal/number */
+        th:nth-child(1) { width: 50px; }
+        /* Hide Level on tiny phones if it gets crowded */
+        th:nth-child(3), td:nth-child(3) { display: none; }
     }
 
-    @media (max-width: 600px) {
-        th:nth-child(5), td:nth-child(5) { display: none; } /* Hide words count on phones */
-        main { padding: 25px 15px; }
-        .btn { width: 100%; text-align: center; }
+    @media (min-width: 601px) {
+        .actions { flex-direction: row; justify-content: center; }
+        .btn { width: auto; padding: 14px 35px; }
+        body { padding: 20px; }
+        main { padding: 30px; }
     }
   </style>
 </head>
@@ -144,17 +193,22 @@
 
 <header>
   <h1><i class="fa-solid fa-crown" style="color: #FFD700; margin-right: 10px;"></i>Leaderboard</h1>
-  <p class="opacity-75">The fastest thinkers in the FluentNest community</p>
+  <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 5px;">The fastest thinkers in the FluentNest community</p>
 </header>
 
 <main>
+  <div class="search-container">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input type="text" id="leaderboardSearch" placeholder="Search player name..." onkeyup="filterTable()">
+  </div>
+
   <div class="table-responsive">
       <table>
         <thead>
           <tr>
             <th>Rank</th>
             <th>Player</th>
-            <th>Level</th>
+            <th class="level-col">Level</th>
             <th>Speed</th>
             <th>Total</th>
           </tr>
@@ -175,9 +229,12 @@
         const body = document.getElementById('boardBody');
         
         if(scores.length === 0) {
-            body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:60px; opacity: 0.5;">No records found. Be the first to set a score!</td></tr>';
+            body.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:60px; opacity: 0.5;">No records found.</td></tr>';
             return;
         }
+
+        // Sort scores by WPM descending
+        scores.sort((a, b) => b.wpm - a.wpm);
 
         body.innerHTML = scores.slice(0, 10).map((s, i) => {
             let rankHtml = `<span style="opacity: 0.5; font-weight: 800;">#${i + 1}</span>`;
@@ -189,7 +246,7 @@
                 <tr>
                     <td>${rankHtml}</td>
                     <td class="name-text">${s.name}</td>
-                    <td><span style="font-size: 0.85rem; opacity: 0.8;">${s.difficulty}</span></td>
+                    <td class="level-col"><span style="font-size: 0.8rem; opacity: 0.7;">${s.difficulty}</span></td>
                     <td><span class="wpm-badge">${s.wpm} <small style="font-size: 0.6rem;">WPM</small></span></td>
                     <td><span style="font-weight: 600;">${s.words}</span></td>
                 </tr>
@@ -197,12 +254,27 @@
         }).join('');
     }
 
+    function filterTable() {
+        const input = document.getElementById("leaderboardSearch");
+        const filter = input.value.toLowerCase();
+        const rows = document.getElementById("boardBody").getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            const nameColumn = rows[i].getElementsByTagName("td")[1];
+            if (nameColumn) {
+                const textValue = nameColumn.textContent || nameColumn.innerText;
+                rows[i].style.display = textValue.toLowerCase().includes(filter) ? "" : "none";
+            }
+        }
+    }
+
     function clearAll() {
-        if(confirm("This will permanently delete your local score history. Continue?")) {
+        if(confirm("Permanently delete local scores?")) {
             localStorage.removeItem('fluent_challenge_scores');
             load();
         }
     }
+    
     load();
 </script>
 </body>
