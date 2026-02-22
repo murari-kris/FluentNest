@@ -231,19 +231,24 @@
                 break;
                 
             case 'answer':
-                if (pc) {
+                if (pc && pc.signalingState === "have-local-offer") { // Only set if we are waiting for an answer
                     await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
                     processQueue();
+                } else {
+                    console.warn("Received answer in wrong state: " + pc.signalingState);
                 }
                 break;
                 
             case 'ice':
+                if (!data.candidate) return;
                 const cand = new RTCIceCandidate(data.candidate);
-                // Queue candidates if description isn't set yet (vital for Mobile Data)
-                if (!pc || !pc.remoteDescription || !pc.remoteDescription.type) {
-                    candidateQueue.push(cand);
+                
+                // Guard: Only add candidate if we have a remote description
+                if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+                    pc.addIceCandidate(cand).catch(e => console.error("ICE Error:", e));
                 } else {
-                    pc.addIceCandidate(cand).catch(e => {});
+                    // Still queue it if we aren't ready yet
+                    candidateQueue.push(cand);
                 }
                 break;
                 
