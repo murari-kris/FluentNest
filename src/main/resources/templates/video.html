@@ -129,10 +129,11 @@
  // This automatically detects if you are on Render (https) or Localhost (http)
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
     const host = window.location.host; // This will be 'fluentnest-w6wl.onrender.com'
-    const socketUrl = `${protocol}${host}/chat`;
+ // Change this line to match your Java "/ws" mapping
+    const socketUrl = `${protocol}${host}/ws`; 
 
-    console.log("Connecting to Signaling Server at: " + socketUrl);
-     socket = new WebSocket(socketUrl);
+    console.log("Connecting to: " + socketUrl);
+    socket = new WebSocket(socketUrl);
     
     // Robust ICE Configuration with your new Metered.ca Credentials
     const rtcConfig = {
