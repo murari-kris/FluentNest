@@ -7,13 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #00f5a0;
+            --accent:  #00f5a0;
             --accent2: #00d9f5;
-            --red: #ff4d6d;
-            --bg: #080c10;
-            --panel: #0e1318;
-            --border: rgba(255,255,255,0.07);
-            --glass: rgba(255,255,255,0.04);
+            --red:     #ff4d6d;
+            --bg:      #080c10;
+            --panel:   #0e1318;
+            --border:  rgba(255,255,255,0.07);
+            --glass:   rgba(255,255,255,0.04);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,24 +21,27 @@
         body, html {
             width: 100%; height: 100%;
             background: var(--bg);
-            overflow: hidden;
             font-family: 'DM Sans', sans-serif;
             color: white;
+            overflow: hidden;
+            position: fixed;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* ─── LOBBY ─── */
+        /* ══════════════════ LOBBY ══════════════════ */
         #lobby {
             position: fixed; inset: 0; z-index: 1000;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            background: radial-gradient(ellipse at 60% 30%, #00f5a015 0%, transparent 60%),
-                        radial-gradient(ellipse at 20% 80%, #00d9f510 0%, transparent 50%),
-                        var(--bg);
+            background:
+                radial-gradient(ellipse at 60% 30%, #00f5a015 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, #00d9f510 0%, transparent 50%),
+                var(--bg);
         }
 
         .lobby-card {
             text-align: center;
-            padding: 60px 48px;
+            padding: 48px 36px;
             background: var(--glass);
             border: 1px solid var(--border);
             border-radius: 28px;
@@ -49,75 +52,72 @@
 
         .logo {
             font-family: 'Space Mono', monospace;
-            font-size: 1rem;
+            font-size: 0.85rem;
             letter-spacing: 0.3em;
             color: var(--accent);
             text-transform: uppercase;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             opacity: 0.8;
         }
 
         .lobby-title {
-            font-size: 2.6rem;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.15;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 40%, #ffffff88);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #fff 40%, #ffffff80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .lobby-sub {
-            color: rgba(255,255,255,0.45);
-            font-size: 0.95rem;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9rem;
             line-height: 1.6;
-            margin-bottom: 36px;
+            margin-bottom: 32px;
         }
 
         #startBtn {
             display: inline-flex; align-items: center; gap: 10px;
-            padding: 16px 40px;
+            padding: 15px 38px;
             border-radius: 50px; border: none;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
             color: #080c10;
             font-family: 'Space Mono', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.05em;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 0 30px rgba(0,245,160,0.3);
+            -webkit-tap-highlight-color: transparent;
         }
-        #startBtn:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(0,245,160,0.45); }
-        #startBtn:active { transform: scale(0.97); }
+        #startBtn:hover  { transform: translateY(-2px); box-shadow: 0 0 45px rgba(0,245,160,0.45); }
+        #startBtn:active { transform: scale(0.96); }
         #startBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .features {
-            display: flex; gap: 24px; justify-content: center;
-            margin-top: 36px;
-        }
-
+        .features { display: flex; gap: 20px; justify-content: center; margin-top: 28px; }
         .feat {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 0.05em;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.04em;
         }
+        .feat-icon { font-size: 1.3rem; }
 
-        .feat-icon { font-size: 1.4rem; }
-
-        /* ─── STATUS OVERLAY ─── */
+        /* ══════════════════ STATUS OVERLAY ══════════════════ */
         #statusOverlay {
             display: none;
             position: fixed; inset: 0; z-index: 500;
-            background: rgba(8,12,16,0.85);
-            backdrop-filter: blur(6px);
+            background: rgba(8,12,16,0.88);
+            backdrop-filter: blur(8px);
             align-items: center; justify-content: center;
             flex-direction: column; gap: 18px;
         }
 
         .spinner {
-            width: 48px; height: 48px;
-            border: 3px solid rgba(0,245,160,0.2);
+            width: 46px; height: 46px;
+            border: 3px solid rgba(0,245,160,0.15);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -126,22 +126,27 @@
 
         #statusText {
             font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            letter-spacing: 0.1em;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
             color: var(--accent);
         }
 
-        /* ─── MAIN CONTAINER ─── */
+        /* ══════════════════ MAIN CONTAINER ══════════════════ */
         #container {
-            display: none; flex-direction: column;
-            width: 100vw; height: 100vh;
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100dvh;
+            height: 100vh; /* fallback for older browsers */
         }
 
-        /* ─── VIDEO AREA ─── */
+        /* ══════════════════ VIDEO PANEL ══════════════════ */
         #videoArea {
-            position: relative; background: #000;
-            flex-shrink: 0; height: 42vh;
-            display: flex; flex-direction: row;
+            position: relative;
+            background: #000;
+            flex: 0 0 38vh;
+            display: flex;
+            flex-direction: row;
             overflow: hidden;
         }
 
@@ -150,218 +155,279 @@
             object-fit: cover;
             background: #050810;
         }
-
         #localVideo { border-right: 1px solid var(--border); }
 
-        .vid-label {
-            position: absolute; top: 12px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border);
-            color: rgba(255,255,255,0.6);
-        }
-        .vid-label.local { left: 12px; }
-        .vid-label.remote { left: calc(50% + 12px); }
+        /* ── Mobile: PiP local video, full remote ── */
+        @media (max-width: 599px) {
+            #videoArea { flex: 0 0 30vh; }
 
-        /* ICE / connection state badge */
-        #connBadge {
-            position: absolute; top: 12px; right: 12px;
+            #remoteVideo { width: 100%; }
+
+            #localVideo {
+                position: absolute;
+                bottom: 58px; left: 8px;
+                width: 26%; height: auto;
+                aspect-ratio: 4/3;
+                border-radius: 10px;
+                border: 2px solid rgba(255,255,255,0.25);
+                z-index: 5;
+                object-fit: cover;
+            }
+
+            #remotePlaceholder { left: 0; width: 100%; }
+            .vid-label.local  { left: 8px; bottom: 44px; top: auto; font-size: 0.52rem; }
+            .vid-label.remote { left: 10px; top: 8px; }
+        }
+
+        .vid-label {
+            position: absolute; top: 10px;
             font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
-            padding: 4px 12px;
+            font-size: 0.6rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--border);
+            color: rgba(255,255,255,0.55);
+            pointer-events: none;
+        }
+        .vid-label.local  { left: 10px; }
+        .vid-label.remote { left: calc(50% + 10px); }
+
+        #connBadge {
+            position: absolute; top: 10px; right: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            padding: 3px 10px;
             border-radius: 20px;
             background: rgba(0,0,0,0.7);
             border: 1px solid var(--border);
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.4);
             transition: color 0.3s, border-color 0.3s;
+            pointer-events: none;
         }
-        #connBadge.connected { color: var(--accent); border-color: var(--accent); }
-        #connBadge.failed { color: var(--red); border-color: var(--red); }
+        #connBadge.connected { color: var(--accent); border-color: rgba(0,245,160,0.5); }
+        #connBadge.failed    { color: var(--red);    border-color: rgba(255,77,109,0.5); }
 
-        /* Waiting for remote placeholder */
         #remotePlaceholder {
             position: absolute; left: 50%; top: 0;
             width: 50%; height: 100%;
             display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 12px;
+            align-items: center; justify-content: center; gap: 10px;
             background: #050810;
             pointer-events: none;
         }
-        #remotePlaceholder .ph-icon { font-size: 3rem; opacity: 0.2; }
-        #remotePlaceholder p {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.25);
-            letter-spacing: 0.05em;
-        }
+        #remotePlaceholder .ph-icon { font-size: 2.5rem; opacity: 0.15; }
+        #remotePlaceholder p { font-size: 0.75rem; color: rgba(255,255,255,0.2); }
 
-        /* Controls */
         .controls {
-            position: absolute; bottom: 16px; left: 50%;
+            position: absolute; bottom: 10px; left: 50%;
             transform: translateX(-50%);
-            display: flex; gap: 12px; z-index: 10;
+            display: flex; gap: 10px; z-index: 10;
         }
 
         .circle-btn {
-            width: 44px; height: 44px;
-            border-radius: 50%; border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(0,0,0,0.6);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.65);
             color: white;
             backdrop-filter: blur(12px);
-            cursor: pointer; font-size: 1.1rem;
+            cursor: pointer;
+            font-size: 1rem;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
         }
-        .circle-btn:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }
-        .circle-btn:active { transform: scale(0.92); }
-        .circle-btn.muted { background: rgba(255,77,109,0.25); border-color: var(--red); }
-        .circle-btn.end { background: rgba(255,77,109,0.2); border-color: var(--red); }
+        .circle-btn:active { transform: scale(0.88); }
+        .circle-btn.muted  { background: rgba(255,77,109,0.2); border-color: rgba(255,77,109,0.5); }
+        .circle-btn.end    { background: rgba(255,77,109,0.2); border-color: rgba(255,77,109,0.5); }
 
-        /* Volume bar */
         .volume-meter {
             position: absolute; bottom: 0; left: 0;
             width: 100%; height: 3px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.04);
         }
         #volumeBar {
             height: 100%; width: 0%;
             background: linear-gradient(90deg, var(--accent), var(--accent2));
-            transition: width 0.1s;
+            transition: width 0.08s;
         }
 
-        /* ─── CHAT ─── */
+        /* ══════════════════ CHAT PANEL ══════════════════ */
         #chatArea {
-            flex: 1; display: flex; flex-direction: column;
+            flex: 1 1 0;          /* fill ALL remaining height */
+            display: flex;
+            flex-direction: column;
             background: var(--panel);
             border-top: 1px solid var(--border);
+            min-height: 0;        /* critical for flex scroll child */
             overflow: hidden;
-            min-height: 0;
         }
 
         .chat-header {
-            padding: 12px 16px;
+            flex-shrink: 0;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border);
             font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
+            font-size: 0.62rem;
             letter-spacing: 0.12em;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.28);
             text-transform: uppercase;
             display: flex; align-items: center; gap: 8px;
         }
 
         .chat-dot {
-            width: 7px; height: 7px;
+            width: 6px; height: 6px;
             border-radius: 50%;
             background: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
+            box-shadow: 0 0 7px var(--accent);
             animation: pulse 2s ease-in-out infinite;
         }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
+        /* ── Message list: scrollable, takes remaining space ── */
         #messages {
-            flex: 1; overflow-y: auto; padding: 16px;
-            display: flex; flex-direction: column; gap: 8px;
+            flex: 1 1 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 12px 12px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            min-height: 0;
         }
-
-        #messages::-webkit-scrollbar { width: 4px; }
-        #messages::-webkit-scrollbar-track { background: transparent; }
-        #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        #messages::-webkit-scrollbar { width: 3px; }
+        #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
 
         .bubble {
-            padding: 10px 14px;
+            padding: 9px 13px;
             border-radius: 16px;
-            max-width: 80%;
+            max-width: 82%;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.45;
             word-break: break-word;
         }
         .me {
             align-self: flex-end;
-            background: linear-gradient(135deg, #00b37740, #00c4d040);
-            border: 1px solid rgba(0,245,160,0.2);
+            background: linear-gradient(135deg, rgba(0,179,119,0.25), rgba(0,196,208,0.2));
+            border: 1px solid rgba(0,245,160,0.18);
             border-bottom-right-radius: 3px;
             color: rgba(255,255,255,0.9);
         }
         .them {
             align-self: flex-start;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.055);
             border: 1px solid var(--border);
             border-bottom-left-radius: 3px;
             color: rgba(255,255,255,0.85);
         }
         .sys-msg {
             align-self: center;
-            font-size: 0.72rem;
-            color: rgba(255,255,255,0.3);
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
             font-family: 'Space Mono', monospace;
-            letter-spacing: 0.05em;
-            padding: 4px 12px;
+            letter-spacing: 0.04em;
+            padding: 3px 10px;
+            text-align: center;
         }
 
+        /* ── Input row: pinned at bottom, rises with keyboard ── */
         #inputBox {
-            padding: 12px;
-            background: #080c10;
+            flex-shrink: 0;
+            padding: 10px 10px;
+            background: #06080c;
             border-top: 1px solid var(--border);
-            display: flex; gap: 10px; align-items: center;
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
         #chatInp {
-            flex: 1; padding: 12px 16px;
-            border-radius: 50px; border: 1px solid var(--border);
-            background: rgba(255,255,255,0.04);
-            color: #fff; outline: none; font-size: 14px;
+            flex: 1;
+            padding: 11px 14px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.045);
+            color: #fff;
+            outline: none;
+            /* 16px stops iOS Safari from auto-zooming the page */
+            font-size: 16px;
             font-family: 'DM Sans', sans-serif;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
         }
-        #chatInp:focus { border-color: rgba(0,245,160,0.4); }
-        #chatInp::placeholder { color: rgba(255,255,255,0.25); }
+        #chatInp:focus { border-color: rgba(0,245,160,0.35); }
+        #chatInp::placeholder { color: rgba(255,255,255,0.22); }
 
         .send-btn {
+            flex-shrink: 0;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
             border: none; color: #080c10;
-            padding: 12px 20px;
+            padding: 11px 16px;
             border-radius: 50px;
             font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
-            transition: opacity 0.2s, transform 0.2s;
+            transition: opacity 0.2s, transform 0.15s;
+            -webkit-tap-highlight-color: transparent;
         }
-        .send-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .send-btn:active { transform: scale(0.96); }
+        .send-btn:active { transform: scale(0.93); opacity: 0.85; }
 
-        /* ─── DESKTOP LAYOUT ─── */
+        /* ══════════════════ DESKTOP ≥ 900px ══════════════════ */
         @media (min-width: 900px) {
-            #container { flex-direction: row; }
-            #videoArea { height: 100%; flex: 3; flex-direction: column; }
-            video { width: 100%; height: 50%; }
-            #localVideo { border-right: none; border-bottom: 1px solid var(--border); }
-            #chatArea { flex: 1; border-top: none; border-left: 1px solid var(--border); }
+            #container { flex-direction: row; height: 100vh; }
+
+            #videoArea {
+                flex: 3 1 0;
+                height: 100%;
+                flex-direction: column;
+            }
+
+            /* reset mobile PiP */
+            #remoteVideo {
+                width: 100%; height: 50%;
+                position: static;
+            }
+            #localVideo {
+                position: static;
+                width: 100%; height: 50%;
+                border-radius: 0;
+                aspect-ratio: unset;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
             .vid-label.remote { left: 12px; top: calc(50% + 12px); }
+            .vid-label.local  { left: 12px; top: 12px; }
+
             #remotePlaceholder { left: 0; top: 50%; width: 100%; height: 50%; }
+
+            #chatArea {
+                flex: 1 1 0;
+                border-top: none;
+                border-left: 1px solid var(--border);
+                height: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- ───── LOBBY ───── -->
+<!-- ═══ LOBBY ═══ -->
 <div id="lobby">
     <div class="lobby-card">
         <div class="logo">FluentNest</div>
         <h1 class="lobby-title">Speak with Strangers.<br>Grow Together.</h1>
         <p class="lobby-sub">Get matched with a random partner worldwide and practice English through real conversation.</p>
-        <button id="startBtn" onclick="startApp()">
-            <span>▶</span> Start Practice
-        </button>
+        <button id="startBtn" onclick="startApp()">▶ &nbsp;Start Practice</button>
         <div class="features">
             <div class="feat"><span class="feat-icon">🎙️</span>Voice + Video</div>
             <div class="feat"><span class="feat-icon">💬</span>Live Chat</div>
@@ -370,19 +436,19 @@
     </div>
 </div>
 
-<!-- ───── STATUS OVERLAY ───── -->
+<!-- ═══ STATUS OVERLAY ═══ -->
 <div id="statusOverlay">
     <div class="spinner"></div>
     <div id="statusText">SEARCHING FOR PARTNER…</div>
 </div>
 
-<!-- ───── MAIN APP ───── -->
+<!-- ═══ MAIN APP ═══ -->
 <div id="container">
-    <div id="videoArea">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <video id="remoteVideo" autoplay playsinline></video>
 
-        <!-- Waiting placeholder (hidden once remote arrives) -->
+    <div id="videoArea">
+        <video id="localVideo"  autoplay muted    playsinline></video>
+        <video id="remoteVideo" autoplay          playsinline></video>
+
         <div id="remotePlaceholder">
             <div class="ph-icon">👤</div>
             <p>Waiting for partner…</p>
@@ -395,9 +461,9 @@
         <div class="volume-meter"><div id="volumeBar"></div></div>
 
         <div class="controls">
-            <button class="circle-btn" id="mBtn" onclick="toggleMic()" title="Mute">🎤</button>
-            <button class="circle-btn" id="vBtn" onclick="toggleVid()" title="Camera">📹</button>
-            <button class="circle-btn end" onclick="location.reload()" title="End call">🛑</button>
+            <button class="circle-btn" id="mBtn" onclick="toggleMic()">🎤</button>
+            <button class="circle-btn" id="vBtn" onclick="toggleVid()">📹</button>
+            <button class="circle-btn end" onclick="location.reload()">🛑</button>
         </div>
     </div>
 
@@ -408,391 +474,403 @@
         </div>
         <div id="messages"></div>
         <div id="inputBox">
-            <input type="text" id="chatInp" placeholder="Type a message…"
-                   autocomplete="off"
-                   onkeypress="if(event.key==='Enter') sendChat()">
+            <input
+                type="text"
+                id="chatInp"
+                placeholder="Type a message…"
+                autocomplete="off"
+                enterkeyhint="send"
+                onkeypress="if(event.key==='Enter') sendChat()"
+            >
             <button class="send-btn" onclick="sendChat()">Send</button>
         </div>
     </div>
+
 </div>
 
 <script th:inline="javascript">
-    /* ════════════════════════════════════════════════════════════
-       STATE
-    ════════════════════════════════════════════════════════════ */
-    let pc, localStream, socket;
-    let isCaller = false;
-    let candidateQueue = [];
-    let reconnectTimer = null;
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+let pc, localStream, socket;
+let isCaller       = false;
+let candidateQueue = [];
+let offerSent      = false;
 
-    /* ════════════════════════════════════════════════════════════
-       ICE / STUN / TURN CONFIG
-       ┌─────────────────────────────────────────────────────┐
-       │  HOW CANDIDATE TYPES WORK:                          │
-       │  • host    → local LAN IP  (same WiFi/network)      │
-       │  • srflx   → public IP via STUN (different network) │
-       │  • relay   → TURN relay (firewalls, symmetric NAT)  │
-       │  WebRTC tries ALL types and picks the best path.    │
-       └─────────────────────────────────────────────────────┘
-    ════════════════════════════════════════════════════════════ */
-    const rtcConfig = {
-        iceServers: [
-            // ── Public STUN (discovers public IP for remote users) ──
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun3.l.google.com:19302' },
-            { urls: 'stun:stun4.l.google.com:19302' },
-            { urls: 'stun:stun.cloudflare.com:3478' },
+/* ════════════════════════════════════════════════════════
+   ICE / STUN / TURN CONFIG
+   ────────────────────────────────────────────────────────
+   THREE candidate types — all needed for every scenario:
 
-            // ── OpenRelay TURN (handles firewalls & mobile networks) ──
-            {
-                urls: 'turn:openrelay.metered.ca:80',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-            },
-            {
-                urls: 'turn:openrelay.metered.ca:443',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-            },
-            {
-                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-            },
-            {
-                urls: 'turn:openrelay.metered.ca:80?transport=tcp',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
+   ① host  → LAN IP   Works on same WiFi with NO servers
+   ② srflx → public IP via STUN. Works across home routers.
+   ③ relay → traffic routed through TURN. Required when:
+              - One user is on mobile data (4G/5G)
+              - Corporate / university firewall
+              - Carrier-grade NAT (many ISPs in India, etc.)
+
+   Without relay, mobile ↔ WiFi ALWAYS fails.
+   iceTransportPolicy must stay 'all' (never 'relay') so
+   same-network still uses the faster host path.
+════════════════════════════════════════════════════════ */
+const ICE = {
+    iceServers: [
+        /* STUN — public IP discovery */
+        { urls: 'stun:stun.l.google.com:19302'  },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun.cloudflare.com:3478' },
+
+        /* TURN — OpenRelay (always free, no sign-up) */
+        {
+            urls:       'turn:openrelay.metered.ca:80',
+            username:   'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls:       'turn:openrelay.metered.ca:80?transport=tcp',
+            username:   'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls:       'turn:openrelay.metered.ca:443',
+            username:   'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls:       'turn:openrelay.metered.ca:443?transport=tcp',
+            username:   'openrelayproject',
+            credential: 'openrelayproject'
+        },
+
+        /* TURN — Numb/Viagenie (free public fallback) */
+        {
+            urls:       'turn:numb.viagenie.ca',
+            username:   'webrtc@live.com',
+            credential: 'muazkh'
+        },
+        {
+            urls:       'turn:numb.viagenie.ca?transport=tcp',
+            username:   'webrtc@live.com',
+            credential: 'muazkh'
+        }
+    ],
+    iceTransportPolicy:  'all',     /* MUST be 'all' — never 'relay' */
+    iceCandidatePoolSize: 10,       /* pre-gather candidates early    */
+    bundlePolicy:        'max-bundle',
+    rtcpMuxPolicy:       'require'
+};
+
+/* ════════════════════════════════════════════════════════
+   WEBSOCKET — auto-reconnects on drop
+════════════════════════════════════════════════════════ */
+const WS_URL = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`;
+console.log('[WS] connecting →', WS_URL);
+
+function createSocket() {
+    const ws = new WebSocket(WS_URL);
+    ws.onopen    = () => console.log('[WS] open');
+    ws.onerror   = e  => console.error('[WS] error', e);
+    ws.onclose   = ()  => {
+        console.warn('[WS] closed — retry in 3 s');
+        setTimeout(() => { socket = createSocket(); }, 3000);
+    };
+    ws.onmessage = onSignal;
+    return ws;
+}
+socket = createSocket();
+
+/* ════════════════════════════════════════════════════════
+   SIGNALING HANDLER
+════════════════════════════════════════════════════════ */
+async function onSignal(ev) {
+    let d;
+    try { d = JSON.parse(ev.data); } catch { return; }
+    console.log('[SIG] ←', d.type);
+
+    switch (d.type) {
+
+        case 'match_found':
+            /* We are the CALLER */
+            isCaller = true; offerSent = false;
+            hideStatus();
+            appendSys('Partner found — establishing connection…');
+            initWebRTC();
+            /* Delay 500 ms so callee's initWebRTC() has run.
+               Without this, same-network offer arrives before
+               callee is ready → silent failure.               */
+            setTimeout(doOffer, 500);
+            break;
+
+        case 'matched':
+            /* We are the CALLEE */
+            isCaller = false;
+            hideStatus();
+            appendSys('Partner found — waiting for connection…');
+            initWebRTC();
+            break;
+
+        case 'offer':
+            if (!pc) initWebRTC();
+            try {
+                await pc.setRemoteDescription(new RTCSessionDescription(d.sdp));
+                const ans = await pc.createAnswer();
+                await pc.setLocalDescription(ans);
+                wsSend({ type: 'answer', sdp: pc.localDescription });
+                drainQueue();
+            } catch(e) { console.error('[offer]', e); }
+            break;
+
+        case 'answer':
+            if (pc && pc.signalingState === 'have-local-offer') {
+                try {
+                    await pc.setRemoteDescription(new RTCSessionDescription(d.sdp));
+                    drainQueue();
+                } catch(e) { console.error('[answer]', e); }
             }
-        ],
-        iceCandidatePoolSize: 10,
-        bundlePolicy: 'max-bundle',
-        rtcpMuxPolicy: 'require'
-        // NOTE: Do NOT set iceTransportPolicy:'relay' — that would
-        // block host candidates and break same-network connections!
+            break;
+
+        case 'ice':
+            if (!d.candidate) return;
+            const c = new RTCIceCandidate(d.candidate);
+            if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+                pc.addIceCandidate(c).catch(e => console.warn('[ICE add]', e));
+            } else {
+                /* Queue until remote description arrives */
+                candidateQueue.push(c);
+            }
+            break;
+
+        case 'chat':
+            appendMsg(d.text, 'them');
+            break;
+
+        case 'partner_left':
+            appendSys('Partner disconnected.');
+            badge('failed', '⬤ OFFLINE');
+            document.getElementById('remotePlaceholder').style.display = 'flex';
+            if (pc) { pc.close(); pc = null; }
+            break;
+    }
+}
+
+/* ════════════════════════════════════════════════════════
+   START APP
+════════════════════════════════════════════════════════ */
+async function startApp() {
+    const btn = document.getElementById('startBtn');
+    btn.disabled = true;
+    btn.textContent = 'Starting…';
+
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        });
+    } catch(e) {
+        alert('Camera/microphone access required.\nPlease allow permission and reload.');
+        btn.disabled = false;
+        btn.textContent = '▶  Start Practice';
+        return;
+    }
+
+    document.getElementById('localVideo').srcObject = localStream;
+    document.getElementById('lobby').style.display  = 'none';
+    document.getElementById('container').style.display = 'flex';
+    showStatus('SEARCHING FOR PARTNER…');
+
+    const find = () => wsSend({ type: 'find_partner' });
+    socket.readyState === WebSocket.OPEN
+        ? find()
+        : socket.addEventListener('open', find, { once: true });
+}
+
+/* ════════════════════════════════════════════════════════
+   WEBRTC SETUP
+════════════════════════════════════════════════════════ */
+function initWebRTC() {
+    if (pc) pc.close();
+    pc = new RTCPeerConnection(ICE);
+
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+    pc.ontrack = ({ streams }) => {
+        const rv = document.getElementById('remoteVideo');
+        if (rv.srcObject !== streams[0]) {
+            rv.srcObject = streams[0];
+            document.getElementById('remotePlaceholder').style.display = 'none';
+            startVolumeMeter(streams[0]);
+            appendSys('✓ Video connected');
+        }
     };
 
-    /* ════════════════════════════════════════════════════════════
-       WEBSOCKET SETUP
-    ════════════════════════════════════════════════════════════ */
-    const protocol  = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const socketUrl = `${protocol}${window.location.host}/ws`;
-    console.log('[WS] Connecting to:', socketUrl);
+    /* Send ICE candidates to partner via WebSocket */
+    pc.onicecandidate = ({ candidate }) => {
+        if (candidate) wsSend({ type: 'ice', candidate });
+    };
 
-    function createSocket() {
-        const ws = new WebSocket(socketUrl);
+    pc.onicegatheringstatechange = () =>
+        console.log('[ICE gather]', pc.iceGatheringState);
 
-        ws.onopen = () => console.log('[WS] Connected');
-
-        ws.onclose = () => {
-            console.warn('[WS] Disconnected — retrying in 3 s');
-            reconnectTimer = setTimeout(() => {
-                socket = createSocket();
-            }, 3000);
-        };
-
-        ws.onerror = (e) => console.error('[WS] Error:', e);
-
-        ws.onmessage = handleSignal;
-        return ws;
-    }
-
-    socket = createSocket();
-
-    /* ════════════════════════════════════════════════════════════
-       SIGNALING HANDLER
-    ════════════════════════════════════════════════════════════ */
-    async function handleSignal(msg) {
-        let data;
-        try { data = JSON.parse(msg.data); } catch { return; }
-        console.log('[SIGNAL] ←', data.type);
-
-        switch (data.type) {
-
-            case 'match_found':
-                // We are the CALLER — we create the offer
-                isCaller = true;
-                hideStatus();
-                appendSys('Partner found! Connecting…');
-                initWebRTC();
+    /* Connection state → update badge */
+    pc.oniceconnectionstatechange = () => {
+        const s = pc.iceConnectionState;
+        console.log('[ICE conn]', s);
+        switch (s) {
+            case 'checking':
+                badge('', '⬤ CHECKING'); break;
+            case 'connected':
+            case 'completed':
+                badge('connected', '⬤ CONNECTED'); break;
+            case 'disconnected':
+                badge('', '⬤ RECONNECTING');
+                appendSys('Connection interrupted, recovering…');
                 break;
-
-            case 'matched':
-                // We are the CALLEE — wait for offer
-                isCaller = false;
-                hideStatus();
-                appendSys('Partner found! Connecting…');
-                if (!pc) initWebRTC();
-                break;
-
-            case 'offer':
-                if (!pc) initWebRTC();
-                try {
-                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-                    const ans = await pc.createAnswer();
-                    await pc.setLocalDescription(ans);
-                    send({ type: 'answer', sdp: ans });
-                    drainQueue();
-                } catch(e) { console.error('[OFFER]', e); }
-                break;
-
-            case 'answer':
-                if (pc && pc.signalingState === 'have-local-offer') {
-                    try {
-                        await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-                        drainQueue();
-                    } catch(e) { console.error('[ANSWER]', e); }
-                } else {
-                    console.warn('[ANSWER] wrong state:', pc && pc.signalingState);
+            case 'failed':
+                badge('failed', '⬤ FAILED');
+                appendSys('Connection failed — retrying with relay…');
+                /* ICE restart forces TURN relay path — fixes
+                   mobile data ↔ WiFi failures automatically.  */
+                if (isCaller && pc) {
+                    offerSent = false;
+                    pc.restartIce();
+                    doOffer(true); /* iceRestart: true */
                 }
                 break;
-
-            case 'ice':
-                if (!data.candidate) return;
-                const cand = new RTCIceCandidate(data.candidate);
-                if (pc && pc.remoteDescription && pc.remoteDescription.type) {
-                    pc.addIceCandidate(cand).catch(e => console.warn('[ICE add]', e));
-                } else {
-                    candidateQueue.push(cand);   // Queue until remote desc is ready
-                }
-                break;
-
-            case 'chat':
-                appendMsg(data.text, 'them');
-                break;
-
-            case 'partner_left':
-                appendSys('Partner disconnected.');
-                setConnBadge('failed', '⬤ OFFLINE');
-                document.getElementById('remotePlaceholder').style.display = 'flex';
-                if (pc) { pc.close(); pc = null; }
-                break;
+            case 'closed':
+                badge('failed', '⬤ CLOSED'); break;
         }
-    }
+    };
 
-    /* ════════════════════════════════════════════════════════════
-       START APP (request camera/mic → show UI → find partner)
-    ════════════════════════════════════════════════════════════ */
-    async function startApp() {
-        const btn = document.getElementById('startBtn');
-        btn.disabled = true;
-        btn.textContent = 'Starting…';
+    console.log('[RTC] peer created, isCaller:', isCaller);
+}
 
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
-                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-            });
-        } catch (e) {
-            alert('Camera / microphone access is required.\nPlease allow permission and reload.');
-            btn.disabled = false;
-            btn.textContent = 'Start Practice';
-            return;
-        }
+async function doOffer(restart = false) {
+    if (!pc || pc.signalingState === 'closed') return;
+    if (offerSent && !restart) return; /* send only once unless restarting */
+    try {
+        const offer = await pc.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true,
+            iceRestart: restart
+        });
+        if (pc.signalingState === 'closed') return;
+        await pc.setLocalDescription(offer);
+        wsSend({ type: 'offer', sdp: pc.localDescription });
+        offerSent = true;
+        console.log('[OFFER] sent, restart=', restart);
+    } catch(e) { console.error('[doOffer]', e); }
+}
 
-        document.getElementById('localVideo').srcObject = localStream;
-        document.getElementById('lobby').style.display = 'none';
-        document.getElementById('container').style.display = 'flex';
-        showStatus('SEARCHING FOR PARTNER…');
+/* ════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════ */
+function wsSend(obj) {
+    if (socket && socket.readyState === WebSocket.OPEN)
+        socket.send(JSON.stringify(obj));
+}
 
-        // Tell server we want a partner
-        if (socket.readyState === WebSocket.OPEN) {
-            send({ type: 'find_partner' });
-        } else {
-            socket.addEventListener('open', () => send({ type: 'find_partner' }), { once: true });
-        }
-    }
+function drainQueue() {
+    while (candidateQueue.length)
+        pc.addIceCandidate(candidateQueue.shift()).catch(() => {});
+}
 
-    /* ════════════════════════════════════════════════════════════
-       WEBRTC INIT
-    ════════════════════════════════════════════════════════════ */
-    function initWebRTC() {
-        if (pc) { pc.close(); }
-        pc = new RTCPeerConnection(rtcConfig);
+function sendChat() {
+    const inp  = document.getElementById('chatInp');
+    const text = inp.value.trim();
+    if (!text) return;
+    wsSend({ type: 'chat', text });
+    appendMsg(text, 'me');
+    inp.value = '';
+    inp.focus(); /* keep keyboard open on mobile */
+}
 
-        // Add all local tracks
-        localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+function appendMsg(txt, side) {
+    const d = document.createElement('div');
+    d.className   = `bubble ${side}`;
+    d.textContent = txt;
+    const box = document.getElementById('messages');
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+}
 
-        // Remote video arrives
-        pc.ontrack = e => {
-            const rv = document.getElementById('remoteVideo');
-            if (rv.srcObject !== e.streams[0]) {
-                rv.srcObject = e.streams[0];
-                document.getElementById('remotePlaceholder').style.display = 'none';
-                startVolumeMeter(e.streams[0]);
-                appendSys('Video connected!');
-            }
-        };
+function appendSys(txt) {
+    const d = document.createElement('div');
+    d.className   = 'sys-msg';
+    d.textContent = txt;
+    const box = document.getElementById('messages');
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+}
 
-        // Send our ICE candidates to the signaling server
-        pc.onicecandidate = e => {
-            if (e.candidate) {
-                send({ type: 'ice', candidate: e.candidate });
-            }
-        };
+function badge(cls, label) {
+    const b = document.getElementById('connBadge');
+    b.className   = cls;
+    b.textContent = label;
+}
 
-        // Monitor ICE connection state for UI feedback
-        pc.oniceconnectionstatechange = () => {
-            const s = pc.iceConnectionState;
-            console.log('[ICE]', s);
-            switch(s) {
-                case 'checking':
-                    setConnBadge('', '⬤ CHECKING');
-                    break;
-                case 'connected':
-                case 'completed':
-                    setConnBadge('connected', '⬤ CONNECTED');
-                    appendSys('Encrypted connection established.');
-                    break;
-                case 'disconnected':
-                    setConnBadge('', '⬤ RECONNECTING');
-                    appendSys('Connection interrupted…');
-                    break;
-                case 'failed':
-                    setConnBadge('failed', '⬤ FAILED');
-                    appendSys('Connection failed. Check your network.');
-                    // Try ICE restart
-                    if (isCaller && pc) {
-                        pc.restartIce();
-                    }
-                    break;
-                case 'closed':
-                    setConnBadge('failed', '⬤ CLOSED');
-                    break;
-            }
-        };
+function showStatus(t) {
+    document.getElementById('statusText').textContent = t;
+    document.getElementById('statusOverlay').style.display = 'flex';
+}
+function hideStatus() {
+    document.getElementById('statusOverlay').style.display = 'none';
+}
 
-        // Caller creates the offer.
-        // IMPORTANT: We delay by 400ms instead of relying solely on
-        // onnegotiationneeded, which can fire before the callee's
-        // initWebRTC() runs — causing the offer to be ignored.
-        // This is the #1 cause of failure on same-network connections.
-        if (isCaller) {
-            setTimeout(createAndSendOffer, 400);
+/* ════════════════════════════════════════════════════════
+   MEDIA CONTROLS
+════════════════════════════════════════════════════════ */
+function toggleMic() {
+    if (!localStream) return;
+    const t = localStream.getAudioTracks()[0];
+    t.enabled = !t.enabled;
+    const b = document.getElementById('mBtn');
+    b.textContent = t.enabled ? '🎤' : '🔇';
+    b.classList.toggle('muted', !t.enabled);
+}
 
-            // Handle renegotiation (ICE restart etc.) after first handshake
-            pc.onnegotiationneeded = async () => {
-                if (pc.signalingState !== 'stable') return;
-                if (!pc.remoteDescription) return; // first offer handled above
-                await createAndSendOffer();
-            };
-        }
-    }
+function toggleVid() {
+    if (!localStream) return;
+    const t = localStream.getVideoTracks()[0];
+    t.enabled = !t.enabled;
+    const b = document.getElementById('vBtn');
+    b.textContent = t.enabled ? '📹' : '❌';
+    b.classList.toggle('muted', !t.enabled);
+}
 
-    async function createAndSendOffer() {
-        if (!pc || pc.signalingState === 'closed') return;
-        try {
-            const offer = await pc.createOffer({
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: true
-            });
-            if (pc.signalingState === 'closed') return;
-            await pc.setLocalDescription(offer);
-            send({ type: 'offer', sdp: pc.localDescription });
-            console.log('[OFFER] sent, state:', pc.signalingState);
-        } catch(e) { console.error('[OFFER create]', e); }
-    }
+/* ════════════════════════════════════════════════════════
+   VOLUME METER  (partner's speaking level)
+════════════════════════════════════════════════════════ */
+function startVolumeMeter(stream) {
+    try {
+        const ctx      = new (window.AudioContext || window.webkitAudioContext)();
+        const src      = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        src.connect(analyser);
+        const buf = new Uint8Array(analyser.frequencyBinCount);
+        const bar = document.getElementById('volumeBar');
+        (function tick() {
+            analyser.getByteFrequencyData(buf);
+            const avg = buf.reduce((a, b) => a + b, 0) / buf.length;
+            bar.style.width = Math.min(avg * 3, 100) + '%';
+            requestAnimationFrame(tick);
+        })();
+    } catch(e) { console.warn('[VolumeMeter]', e); }
+}
 
-    /* ════════════════════════════════════════════════════════════
-       HELPERS
-    ════════════════════════════════════════════════════════════ */
-    function send(obj) {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify(obj));
-        }
-    }
-
-    function drainQueue() {
-        while (candidateQueue.length > 0) {
-            pc.addIceCandidate(candidateQueue.shift()).catch(() => {});
-        }
-    }
-
-    function sendChat() {
-        const inp = document.getElementById('chatInp');
-        const text = inp.value.trim();
-        if (!text) return;
-        send({ type: 'chat', text });
-        appendMsg(text, 'me');
-        inp.value = '';
-    }
-
-    function appendMsg(txt, side) {
-        const d = document.createElement('div');
-        d.className = `bubble ${side}`;
-        d.textContent = txt;
+/* ════════════════════════════════════════════════════════
+   MOBILE KEYBOARD FIX
+   When the soft keyboard opens, the viewport shrinks.
+   Scroll messages to bottom so they stay visible and the
+   input box rises naturally above the keyboard.
+════════════════════════════════════════════════════════ */
+document.getElementById('chatInp').addEventListener('focus', () => {
+    setTimeout(() => {
         const box = document.getElementById('messages');
-        box.appendChild(d);
         box.scrollTop = box.scrollHeight;
-    }
-
-    function appendSys(txt) {
-        const d = document.createElement('div');
-        d.className = 'sys-msg';
-        d.textContent = txt;
-        const box = document.getElementById('messages');
-        box.appendChild(d);
-        box.scrollTop = box.scrollHeight;
-    }
-
-    function setConnBadge(cls, label) {
-        const b = document.getElementById('connBadge');
-        b.className = cls;
-        b.textContent = label;
-    }
-
-    function showStatus(text) {
-        document.getElementById('statusText').textContent = text;
-        document.getElementById('statusOverlay').style.display = 'flex';
-    }
-
-    function hideStatus() {
-        document.getElementById('statusOverlay').style.display = 'none';
-    }
-
-    /* ════════════════════════════════════════════════════════════
-       MEDIA CONTROLS
-    ════════════════════════════════════════════════════════════ */
-    function toggleMic() {
-        if (!localStream) return;
-        const track = localStream.getAudioTracks()[0];
-        track.enabled = !track.enabled;
-        const btn = document.getElementById('mBtn');
-        btn.textContent = track.enabled ? '🎤' : '🔇';
-        btn.classList.toggle('muted', !track.enabled);
-    }
-
-    function toggleVid() {
-        if (!localStream) return;
-        const track = localStream.getVideoTracks()[0];
-        track.enabled = !track.enabled;
-        const btn = document.getElementById('vBtn');
-        btn.textContent = track.enabled ? '📹' : '❌';
-        btn.classList.toggle('muted', !track.enabled);
-    }
-
-    /* ════════════════════════════════════════════════════════════
-       VOLUME METER (partner's audio)
-    ════════════════════════════════════════════════════════════ */
-    function startVolumeMeter(stream) {
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const src = ctx.createMediaStreamSource(stream);
-            const analyser = ctx.createAnalyser();
-            analyser.fftSize = 256;
-            src.connect(analyser);
-            const data = new Uint8Array(analyser.frequencyBinCount);
-            const bar  = document.getElementById('volumeBar');
-            (function tick() {
-                analyser.getByteFrequencyData(data);
-                const avg = data.reduce((a, b) => a + b, 0) / data.length;
-                bar.style.width = Math.min(avg * 3, 100) + '%';
-                requestAnimationFrame(tick);
-            })();
-        } catch(e) { console.warn('[Volume meter]', e); }
-    }
+    }, 350);
+});
 </script>
 </body>
 </html>
