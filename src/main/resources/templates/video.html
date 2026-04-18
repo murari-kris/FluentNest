@@ -23,9 +23,10 @@
             background: var(--bg);
             font-family: 'DM Sans', sans-serif;
             color: white;
+            /* No position:fixed here — it prevents Android/Redmi
+               from resizing the viewport when the soft keyboard opens,
+               which permanently hides the input box under the keyboard. */
             overflow: hidden;
-            position: fixed;
-            -webkit-overflow-scrolling: touch;
         }
 
         /* ══════════════════ LOBBY ══════════════════ */
@@ -136,8 +137,13 @@
             display: none;
             flex-direction: column;
             width: 100%;
-            height: 100dvh;
-            height: 100vh; /* fallback for older browsers */
+            /* 
+              Android Chrome (Redmi/MIUI): When keyboard opens, 
+              100vh does NOT shrink — it stays at full screen height,
+              burying the input. We use --vh set by JS on resize.
+              Falls back to 100dvh (Chrome 108+) then 100vh.
+            */
+            height: calc(var(--vh, 1vh) * 100);
         }
 
         /* ══════════════════ VIDEO PANEL ══════════════════ */
@@ -337,15 +343,22 @@
             text-align: center;
         }
 
-        /* ── Input row: pinned at bottom, rises with keyboard ── */
+        /* ── Input row: always visible above Android keyboard ── */
         #inputBox {
             flex-shrink: 0;
             padding: 10px 10px;
+            /* Extra bottom padding for phones with home bar (iPhone/some Android) */
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
             background: #06080c;
             border-top: 1px solid var(--border);
             display: flex;
             gap: 8px;
             align-items: center;
+            /* sticky keeps it anchored when keyboard pushes up on Android */
+            position: sticky;
+            bottom: 0;
+            /* Ensure it's always above everything */
+            z-index: 20;
         }
 
         #chatInp {
@@ -383,7 +396,7 @@
 
         /* ══════════════════ DESKTOP ≥ 900px ══════════════════ */
         @media (min-width: 900px) {
-            #container { flex-direction: row; height: 100vh; }
+            #container { flex-direction: row; height: calc(var(--vh, 1vh) * 100); }
 
             #videoArea {
                 flex: 3 1 0;
@@ -860,16 +873,48 @@ function startVolumeMeter(stream) {
 }
 
 /* ════════════════════════════════════════════════════════
-   MOBILE KEYBOARD FIX
-   When the soft keyboard opens, the viewport shrinks.
-   Scroll messages to bottom so they stay visible and the
-   input box rises naturally above the keyboard.
+   ANDROID / REDMI KEYBOARD FIX
+   ────────────────────────────────────────────────────────
+   Problem on Redmi (MIUI) + most Android Chrome:
+   - window.innerHeight does NOT update when keyboard opens
+   - 100vh is calculated at page load and stays FIXED
+   - So the container keeps its original full height and the
+     input box gets pushed below the keyboard — invisible!
+
+   Solution: Use window.visualViewport which DOES update
+   in real-time as the keyboard appears/disappears.
+   We set a --vh CSS variable that the container uses
+   instead of vh units, so layout always fits visible area.
 ════════════════════════════════════════════════════════ */
+function setVH() {
+    // visualViewport.height = visible area ABOVE the keyboard
+    const h = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+    document.documentElement.style.setProperty('--vh', h * 0.01 + 'px');
+}
+
+// Set immediately and on every keyboard open/close/resize
+setVH();
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', setVH);
+    window.visualViewport.addEventListener('scroll', setVH);
+}
+window.addEventListener('resize', setVH);
+
+// Also scroll messages to bottom when keyboard opens
 document.getElementById('chatInp').addEventListener('focus', () => {
     setTimeout(() => {
+        setVH(); // recalculate height now keyboard is open
         const box = document.getElementById('messages');
         box.scrollTop = box.scrollHeight;
-    }, 350);
+        // On Redmi: explicitly scroll input into view
+        document.getElementById('inputBox').scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 300);
+});
+
+document.getElementById('chatInp').addEventListener('blur', () => {
+    setTimeout(setVH, 300); // restore when keyboard closes
 });
 </script>
 </body>
