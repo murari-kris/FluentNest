@@ -4,318 +4,794 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FluentNest | Video Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --green: #2ecc71;
-            --red: #e74c3c;
-            --blue: #3498db;
-            --bg: #0b0b0b;
-            --panel: #1a1a1a;
+            --accent: #00f5a0;
+            --accent2: #00d9f5;
+            --red: #ff4d6d;
+            --bg: #080c10;
+            --panel: #0e1318;
+            --border: rgba(255,255,255,0.07);
+            --glass: rgba(255,255,255,0.04);
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: var(--bg); overflow: hidden; font-family: sans-serif;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            overflow: hidden;
+            font-family: 'DM Sans', sans-serif;
+            color: white;
         }
 
-        .overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; z-index: 1000;
+        /* ─── LOBBY ─── */
+        #lobby {
+            position: fixed; inset: 0; z-index: 1000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: radial-gradient(ellipse at 60% 30%, #00f5a015 0%, transparent 60%),
+                        radial-gradient(ellipse at 20% 80%, #00d9f510 0%, transparent 50%),
+                        var(--bg);
         }
 
-        #container { display: none; flex-direction: column; width: 100vw; height: 100%; }
+        .lobby-card {
+            text-align: center;
+            padding: 60px 48px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            backdrop-filter: blur(20px);
+            max-width: 440px;
+            width: 90%;
+        }
 
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            opacity: 0.8;
+        }
+
+        .lobby-title {
+            font-size: 2.6rem;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 40%, #ffffff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .lobby-sub {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 36px;
+        }
+
+        #startBtn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 40px;
+            border-radius: 50px; border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #080c10;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 30px rgba(0,245,160,0.3);
+        }
+        #startBtn:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(0,245,160,0.45); }
+        #startBtn:active { transform: scale(0.97); }
+        #startBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .features {
+            display: flex; gap: 24px; justify-content: center;
+            margin-top: 36px;
+        }
+
+        .feat {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.05em;
+        }
+
+        .feat-icon { font-size: 1.4rem; }
+
+        /* ─── STATUS OVERLAY ─── */
+        #statusOverlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(8,12,16,0.85);
+            backdrop-filter: blur(6px);
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 18px;
+        }
+
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid rgba(0,245,160,0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #statusText {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+        }
+
+        /* ─── MAIN CONTAINER ─── */
+        #container {
+            display: none; flex-direction: column;
+            width: 100vw; height: 100vh;
+        }
+
+        /* ─── VIDEO AREA ─── */
         #videoArea {
-            height: 40vh; position: relative; background: #000;
+            position: relative; background: #000;
+            flex-shrink: 0; height: 42vh;
             display: flex; flex-direction: row;
+            overflow: hidden;
         }
 
         video {
-            width: 50%; height: 100%; object-fit: cover;
-            background: #222; border: 1px solid #111;
+            width: 50%; height: 100%;
+            object-fit: cover;
+            background: #050810;
         }
 
+        #localVideo { border-right: 1px solid var(--border); }
+
+        .vid-label {
+            position: absolute; top: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            color: rgba(255,255,255,0.6);
+        }
+        .vid-label.local { left: 12px; }
+        .vid-label.remote { left: calc(50% + 12px); }
+
+        /* ICE / connection state badge */
+        #connBadge {
+            position: absolute; top: 12px; right: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid var(--border);
+            color: rgba(255,255,255,0.5);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        #connBadge.connected { color: var(--accent); border-color: var(--accent); }
+        #connBadge.failed { color: var(--red); border-color: var(--red); }
+
+        /* Waiting for remote placeholder */
+        #remotePlaceholder {
+            position: absolute; left: 50%; top: 0;
+            width: 50%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 12px;
+            background: #050810;
+            pointer-events: none;
+        }
+        #remotePlaceholder .ph-icon { font-size: 3rem; opacity: 0.2; }
+        #remotePlaceholder p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 0.05em;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute; bottom: 16px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 12px; z-index: 10;
+        }
+
+        .circle-btn {
+            width: 44px; height: 44px;
+            border-radius: 50%; border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            backdrop-filter: blur(12px);
+            cursor: pointer; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .circle-btn:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }
+        .circle-btn:active { transform: scale(0.92); }
+        .circle-btn.muted { background: rgba(255,77,109,0.25); border-color: var(--red); }
+        .circle-btn.end { background: rgba(255,77,109,0.2); border-color: var(--red); }
+
+        /* Volume bar */
+        .volume-meter {
+            position: absolute; bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: rgba(255,255,255,0.05);
+        }
+        #volumeBar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width 0.1s;
+        }
+
+        /* ─── CHAT ─── */
         #chatArea {
             flex: 1; display: flex; flex-direction: column;
-            background: var(--panel); border-top: 2px solid #333; overflow: hidden;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            overflow: hidden;
+            min-height: 0;
         }
 
+        .chat-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .chat-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
         #messages {
-            flex: 1; overflow-y: auto; padding: 15px;
+            flex: 1; overflow-y: auto; padding: 16px;
             display: flex; flex-direction: column; gap: 8px;
             -webkit-overflow-scrolling: touch;
         }
 
+        #messages::-webkit-scrollbar { width: 4px; }
+        #messages::-webkit-scrollbar-track { background: transparent; }
+        #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
         .bubble {
-            padding: 10px 14px; border-radius: 18px; max-width: 80%;
-            font-size: 15px; word-wrap: break-word; line-height: 1.4;
+            padding: 10px 14px;
+            border-radius: 16px;
+            max-width: 80%;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
         }
-        .me { align-self: flex-end; background: var(--green); color: white; border-bottom-right-radius: 2px; }
-        .them { align-self: flex-start; background: #333; color: white; border-bottom-left-radius: 2px; }
-
-        #inputBox { padding: 12px; background: #111; display: flex; gap: 10px; }
-
-        input {
-            flex: 1; padding: 12px; border-radius: 25px; border: none;
-            background: #222; color: #fff; outline: none; font-size: 16px;
+        .me {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #00b37740, #00c4d040);
+            border: 1px solid rgba(0,245,160,0.2);
+            border-bottom-right-radius: 3px;
+            color: rgba(255,255,255,0.9);
         }
+        .them {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 3px;
+            color: rgba(255,255,255,0.85);
+        }
+        .sys-msg {
+            align-self: center;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.3);
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 0.05em;
+            padding: 4px 12px;
+        }
+
+        #inputBox {
+            padding: 12px;
+            background: #080c10;
+            border-top: 1px solid var(--border);
+            display: flex; gap: 10px; align-items: center;
+        }
+
+        #chatInp {
+            flex: 1; padding: 12px 16px;
+            border-radius: 50px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            color: #fff; outline: none; font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s;
+        }
+        #chatInp:focus { border-color: rgba(0,245,160,0.4); }
+        #chatInp::placeholder { color: rgba(255,255,255,0.25); }
 
         .send-btn {
-            background: var(--blue); border: none; color: white;
-            padding: 0 20px; border-radius: 25px; font-weight: bold; cursor: pointer;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none; color: #080c10;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.2s;
         }
+        .send-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .send-btn:active { transform: scale(0.96); }
 
-        .controls {
-            position: absolute; bottom: 15px; left: 50%;
-            transform: translateX(-50%); display: flex; gap: 15px; z-index: 10;
-        }
-
-        .circle-btn {
-            width: 45px; height: 45px; border-radius: 50%; border: none;
-            background: rgba(255,255,255,0.15); color: white;
-            backdrop-filter: blur(8px); cursor: pointer; font-size: 1.2rem;
-            transition: 0.2s;
-        }
-        .circle-btn:active { transform: scale(0.9); }
-
-        .volume-meter {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
-            background: rgba(255,255,255,0.1);
-        }
-        #volumeBar { height: 100%; width: 0%; background: var(--green); transition: width 0.1s; }
-
+        /* ─── DESKTOP LAYOUT ─── */
         @media (min-width: 900px) {
             #container { flex-direction: row; }
             #videoArea { height: 100%; flex: 3; flex-direction: column; }
             video { width: 100%; height: 50%; }
-            #chatArea { flex: 1; border-top: none; border-left: 2px solid #333; }
+            #localVideo { border-right: none; border-bottom: 1px solid var(--border); }
+            #chatArea { flex: 1; border-top: none; border-left: 1px solid var(--border); }
+            .vid-label.remote { left: 12px; top: calc(50% + 12px); }
+            #remotePlaceholder { left: 0; top: 50%; width: 100%; height: 50%; }
         }
     </style>
 </head>
 <body>
 
-    <div id="lobby" class="overlay">
-        <h2 style="color: white; margin-bottom: 20px;">Ready for Practice?</h2>
-        <button onclick="startApp()" style="padding: 16px 45px; border-radius: 50px; border: none; background: var(--green); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);">
-            Start Video Chat
+<!-- ───── LOBBY ───── -->
+<div id="lobby">
+    <div class="lobby-card">
+        <div class="logo">FluentNest</div>
+        <h1 class="lobby-title">Speak with Strangers.<br>Grow Together.</h1>
+        <p class="lobby-sub">Get matched with a random partner worldwide and practice English through real conversation.</p>
+        <button id="startBtn" onclick="startApp()">
+            <span>▶</span> Start Practice
         </button>
+        <div class="features">
+            <div class="feat"><span class="feat-icon">🎙️</span>Voice + Video</div>
+            <div class="feat"><span class="feat-icon">💬</span>Live Chat</div>
+            <div class="feat"><span class="feat-icon">🌍</span>Worldwide</div>
+        </div>
+    </div>
+</div>
+
+<!-- ───── STATUS OVERLAY ───── -->
+<div id="statusOverlay">
+    <div class="spinner"></div>
+    <div id="statusText">SEARCHING FOR PARTNER…</div>
+</div>
+
+<!-- ───── MAIN APP ───── -->
+<div id="container">
+    <div id="videoArea">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+
+        <!-- Waiting placeholder (hidden once remote arrives) -->
+        <div id="remotePlaceholder">
+            <div class="ph-icon">👤</div>
+            <p>Waiting for partner…</p>
+        </div>
+
+        <span class="vid-label local">You</span>
+        <span class="vid-label remote">Partner</span>
+        <span id="connBadge">⬤ CONNECTING</span>
+
+        <div class="volume-meter"><div id="volumeBar"></div></div>
+
+        <div class="controls">
+            <button class="circle-btn" id="mBtn" onclick="toggleMic()" title="Mute">🎤</button>
+            <button class="circle-btn" id="vBtn" onclick="toggleVid()" title="Camera">📹</button>
+            <button class="circle-btn end" onclick="location.reload()" title="End call">🛑</button>
+        </div>
     </div>
 
-    <div id="container">
-        <div id="videoArea">
-            <video id="localVideo" autoplay muted playsinline></video>
-            <video id="remoteVideo" autoplay playsinline></video>
-            <div class="volume-meter"><div id="volumeBar"></div></div>
-            <div class="controls">
-                <button class="circle-btn" id="mBtn" onclick="toggleMic()">🎤</button>
-                <button class="circle-btn" id="vBtn" onclick="toggleVid()">📹</button>
-                <button class="circle-btn" style="background: var(--red)" onclick="location.reload()">🛑</button>
-            </div>
+    <div id="chatArea">
+        <div class="chat-header">
+            <div class="chat-dot"></div>
+            Live Chat
         </div>
-        <div id="chatArea">
-            <div id="messages"></div>
-            <div id="inputBox">
-                <input type="text" id="chatInp" placeholder="Type a message..." autocomplete="off" onkeypress="if(event.key==='Enter') sendChat()">
-                <button class="send-btn" onclick="sendChat()">Send</button>
-            </div>
+        <div id="messages"></div>
+        <div id="inputBox">
+            <input type="text" id="chatInp" placeholder="Type a message…"
+                   autocomplete="off"
+                   onkeypress="if(event.key==='Enter') sendChat()">
+            <button class="send-btn" onclick="sendChat()">Send</button>
         </div>
     </div>
+</div>
 
 <script th:inline="javascript">
-    let pc, localStream, socket, isCaller = false;
+    /* ════════════════════════════════════════════════════════════
+       STATE
+    ════════════════════════════════════════════════════════════ */
+    let pc, localStream, socket;
+    let isCaller = false;
     let candidateQueue = [];
+    let reconnectTimer = null;
 
- // This automatically detects if you are on Render (https) or Localhost (http)
-    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const host = window.location.host; // This will be 'fluentnest-w6wl.onrender.com'
- // Change this line to match your Java "/ws" mapping
-    const socketUrl = `${protocol}${host}/ws`; 
-
-    console.log("Connecting to: " + socketUrl);
-    socket = new WebSocket(socketUrl);
-    
-    // Robust ICE Configuration with your new Metered.ca Credentials
+    /* ════════════════════════════════════════════════════════════
+       ICE / STUN / TURN CONFIG
+       ┌─────────────────────────────────────────────────────┐
+       │  HOW CANDIDATE TYPES WORK:                          │
+       │  • host    → local LAN IP  (same WiFi/network)      │
+       │  • srflx   → public IP via STUN (different network) │
+       │  • relay   → TURN relay (firewalls, symmetric NAT)  │
+       │  WebRTC tries ALL types and picks the best path.    │
+       └─────────────────────────────────────────────────────┘
+    ════════════════════════════════════════════════════════════ */
     const rtcConfig = {
         iceServers: [
-            { urls: "stun:global.relay.metered.ca:80" }, 
+            // ── Public STUN (discovers public IP for remote users) ──
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun3.l.google.com:19302' },
+            { urls: 'stun:stun4.l.google.com:19302' },
+            { urls: 'stun:stun.cloudflare.com:3478' },
+
+            // ── OpenRelay TURN (handles firewalls & mobile networks) ──
             {
-                urls: "turn:global.relay.metered.ca:80",
-                username: "6af35a1cd09352e783afbf32",
-                credential: "CKbwyCRM/3ArXR8X"
+                urls: 'turn:openrelay.metered.ca:80',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
             },
             {
-                urls: "turn:global.relay.metered.ca:443",
-                username: "6af35a1cd09352e783afbf32",
-                credential: "CKbwyCRM/3ArXR8X"
+                urls: 'turn:openrelay.metered.ca:443',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
             },
             {
-                urls: "turn:global.relay.metered.ca:443?transport=tcp",
-                username: "6af35a1cd09352e783afbf32",
-                credential: "CKbwyCRM/3ArXR8X"
+                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+            },
+            {
+                urls: 'turn:openrelay.metered.ca:80?transport=tcp',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
             }
         ],
-        iceCandidatePoolSize: 10
+        iceCandidatePoolSize: 10,
+        bundlePolicy: 'max-bundle',
+        rtcpMuxPolicy: 'require'
+        // NOTE: Do NOT set iceTransportPolicy:'relay' — that would
+        // block host candidates and break same-network connections!
     };
 
-    async function startApp() {
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ 
-                video: true, 
-                audio: { echoCancellation: true, noiseSuppression: true } 
-            });
-            document.getElementById('localVideo').srcObject = localStream;
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('container').style.display = 'flex';
-            
-            // Signal to server that we are ready
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: 'find_partner' }));
-            }
-        } catch (e) { 
-            console.error(e);
-            alert("Camera/Mic access is required to join the practice session."); 
+    /* ════════════════════════════════════════════════════════════
+       WEBSOCKET SETUP
+    ════════════════════════════════════════════════════════════ */
+    const protocol  = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const socketUrl = `${protocol}${window.location.host}/ws`;
+    console.log('[WS] Connecting to:', socketUrl);
+
+    function createSocket() {
+        const ws = new WebSocket(socketUrl);
+
+        ws.onopen = () => console.log('[WS] Connected');
+
+        ws.onclose = () => {
+            console.warn('[WS] Disconnected — retrying in 3 s');
+            reconnectTimer = setTimeout(() => {
+                socket = createSocket();
+            }, 3000);
+        };
+
+        ws.onerror = (e) => console.error('[WS] Error:', e);
+
+        ws.onmessage = handleSignal;
+        return ws;
+    }
+
+    socket = createSocket();
+
+    /* ════════════════════════════════════════════════════════════
+       SIGNALING HANDLER
+    ════════════════════════════════════════════════════════════ */
+    async function handleSignal(msg) {
+        let data;
+        try { data = JSON.parse(msg.data); } catch { return; }
+        console.log('[SIGNAL] ←', data.type);
+
+        switch (data.type) {
+
+            case 'match_found':
+                // We are the CALLER — we create the offer
+                isCaller = true;
+                hideStatus();
+                appendSys('Partner found! Connecting…');
+                initWebRTC();
+                break;
+
+            case 'matched':
+                // We are the CALLEE — wait for offer
+                isCaller = false;
+                hideStatus();
+                appendSys('Partner found! Connecting…');
+                if (!pc) initWebRTC();
+                break;
+
+            case 'offer':
+                if (!pc) initWebRTC();
+                try {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    const ans = await pc.createAnswer();
+                    await pc.setLocalDescription(ans);
+                    send({ type: 'answer', sdp: ans });
+                    drainQueue();
+                } catch(e) { console.error('[OFFER]', e); }
+                break;
+
+            case 'answer':
+                if (pc && pc.signalingState === 'have-local-offer') {
+                    try {
+                        await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                        drainQueue();
+                    } catch(e) { console.error('[ANSWER]', e); }
+                } else {
+                    console.warn('[ANSWER] wrong state:', pc && pc.signalingState);
+                }
+                break;
+
+            case 'ice':
+                if (!data.candidate) return;
+                const cand = new RTCIceCandidate(data.candidate);
+                if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+                    pc.addIceCandidate(cand).catch(e => console.warn('[ICE add]', e));
+                } else {
+                    candidateQueue.push(cand);   // Queue until remote desc is ready
+                }
+                break;
+
+            case 'chat':
+                appendMsg(data.text, 'them');
+                break;
+
+            case 'partner_left':
+                appendSys('Partner disconnected.');
+                setConnBadge('failed', '⬤ OFFLINE');
+                document.getElementById('remotePlaceholder').style.display = 'flex';
+                if (pc) { pc.close(); pc = null; }
+                break;
         }
     }
 
+    /* ════════════════════════════════════════════════════════════
+       START APP (request camera/mic → show UI → find partner)
+    ════════════════════════════════════════════════════════════ */
+    async function startApp() {
+        const btn = document.getElementById('startBtn');
+        btn.disabled = true;
+        btn.textContent = 'Starting…';
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({
+                video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+            });
+        } catch (e) {
+            alert('Camera / microphone access is required.\nPlease allow permission and reload.');
+            btn.disabled = false;
+            btn.textContent = 'Start Practice';
+            return;
+        }
+
+        document.getElementById('localVideo').srcObject = localStream;
+        document.getElementById('lobby').style.display = 'none';
+        document.getElementById('container').style.display = 'flex';
+        showStatus('SEARCHING FOR PARTNER…');
+
+        // Tell server we want a partner
+        if (socket.readyState === WebSocket.OPEN) {
+            send({ type: 'find_partner' });
+        } else {
+            socket.addEventListener('open', () => send({ type: 'find_partner' }), { once: true });
+        }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       WEBRTC INIT
+    ════════════════════════════════════════════════════════════ */
     function initWebRTC() {
+        if (pc) { pc.close(); }
         pc = new RTCPeerConnection(rtcConfig);
-        
-        // Add local tracks to the connection
+
+        // Add all local tracks
         localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
 
-        // When remote video arrives
+        // Remote video arrives
         pc.ontrack = e => {
             const rv = document.getElementById('remoteVideo');
             if (rv.srcObject !== e.streams[0]) {
                 rv.srcObject = e.streams[0];
+                document.getElementById('remotePlaceholder').style.display = 'none';
                 startVolumeMeter(e.streams[0]);
+                appendSys('Video connected!');
             }
         };
 
-        // Send our network info (ICE) to the partner
+        // Send our ICE candidates to the signaling server
         pc.onicecandidate = e => {
-            if (e.candidate && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: 'ice', candidate: e.candidate }));
+            if (e.candidate) {
+                send({ type: 'ice', candidate: e.candidate });
             }
         };
 
+        // Monitor ICE connection state for UI feedback
+        pc.oniceconnectionstatechange = () => {
+            const s = pc.iceConnectionState;
+            console.log('[ICE]', s);
+            switch(s) {
+                case 'checking':
+                    setConnBadge('', '⬤ CHECKING');
+                    break;
+                case 'connected':
+                case 'completed':
+                    setConnBadge('connected', '⬤ CONNECTED');
+                    appendSys('Encrypted connection established.');
+                    break;
+                case 'disconnected':
+                    setConnBadge('', '⬤ RECONNECTING');
+                    appendSys('Connection interrupted…');
+                    break;
+                case 'failed':
+                    setConnBadge('failed', '⬤ FAILED');
+                    appendSys('Connection failed. Check your network.');
+                    // Try ICE restart
+                    if (isCaller && pc) {
+                        pc.restartIce();
+                    }
+                    break;
+                case 'closed':
+                    setConnBadge('failed', '⬤ CLOSED');
+                    break;
+            }
+        };
+
+        // Caller creates the offer.
+        // IMPORTANT: We delay by 400ms instead of relying solely on
+        // onnegotiationneeded, which can fire before the callee's
+        // initWebRTC() runs — causing the offer to be ignored.
+        // This is the #1 cause of failure on same-network connections.
         if (isCaller) {
+            setTimeout(createAndSendOffer, 400);
+
+            // Handle renegotiation (ICE restart etc.) after first handshake
             pc.onnegotiationneeded = async () => {
-                try {
-                    if (pc.signalingState !== "stable") return;
-                    const off = await pc.createOffer();
-                    await pc.setLocalDescription(off);
-                    socket.send(JSON.stringify({ type: 'offer', sdp: off }));
-                } catch (err) { console.error(err); }
+                if (pc.signalingState !== 'stable') return;
+                if (!pc.remoteDescription) return; // first offer handled above
+                await createAndSendOffer();
             };
         }
     }
 
-    socket.onmessage = async (msg) => {
-        const data = JSON.parse(msg.data);
-        
-        switch(data.type) {
-            case 'match_found':
-                isCaller = true;
-                initWebRTC();
-                break;
-                
-            case 'offer':
-                if (!pc) initWebRTC();
-                await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-                const ans = await pc.createAnswer();
-                await pc.setLocalDescription(ans);
-                socket.send(JSON.stringify({ type: 'answer', sdp: ans }));
-                processQueue();
-                break;
-                
-            case 'answer':
-                if (pc && pc.signalingState === "have-local-offer") { // Only set if we are waiting for an answer
-                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-                    processQueue();
-                } else {
-                    console.warn("Received answer in wrong state: " + pc.signalingState);
-                }
-                break;
-                
-            case 'ice':
-                if (!data.candidate) return;
-                const cand = new RTCIceCandidate(data.candidate);
-                
-                // Guard: Only add candidate if we have a remote description
-                if (pc && pc.remoteDescription && pc.remoteDescription.type) {
-                    pc.addIceCandidate(cand).catch(e => console.error("ICE Error:", e));
-                } else {
-                    // Still queue it if we aren't ready yet
-                    candidateQueue.push(cand);
-                }
-                break;
-                
-            case 'chat':
-                appendUI(data.text, 'them');
-                break;
-                
-            case 'partner_left':
-                alert("Your partner has disconnected.");
-                location.reload();
-                break;
-        }
-    };
+    async function createAndSendOffer() {
+        if (!pc || pc.signalingState === 'closed') return;
+        try {
+            const offer = await pc.createOffer({
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true
+            });
+            if (pc.signalingState === 'closed') return;
+            await pc.setLocalDescription(offer);
+            send({ type: 'offer', sdp: pc.localDescription });
+            console.log('[OFFER] sent, state:', pc.signalingState);
+        } catch(e) { console.error('[OFFER create]', e); }
+    }
 
-    function processQueue() {
+    /* ════════════════════════════════════════════════════════════
+       HELPERS
+    ════════════════════════════════════════════════════════════ */
+    function send(obj) {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify(obj));
+        }
+    }
+
+    function drainQueue() {
         while (candidateQueue.length > 0) {
-            pc.addIceCandidate(candidateQueue.shift()).catch(e => {});
+            pc.addIceCandidate(candidateQueue.shift()).catch(() => {});
         }
     }
 
     function sendChat() {
         const inp = document.getElementById('chatInp');
         const text = inp.value.trim();
-        if (!text || socket.readyState !== WebSocket.OPEN) return;
-        socket.send(JSON.stringify({ type: 'chat', text: text }));
-        appendUI(text, 'me');
+        if (!text) return;
+        send({ type: 'chat', text });
+        appendMsg(text, 'me');
         inp.value = '';
     }
 
-    function appendUI(txt, side) {
-        const div = document.createElement('div');
-        div.className = `bubble ${side}`;
-        div.innerText = txt;
+    function appendMsg(txt, side) {
+        const d = document.createElement('div');
+        d.className = `bubble ${side}`;
+        d.textContent = txt;
         const box = document.getElementById('messages');
-        box.appendChild(div);
+        box.appendChild(d);
         box.scrollTop = box.scrollHeight;
     }
 
+    function appendSys(txt) {
+        const d = document.createElement('div');
+        d.className = 'sys-msg';
+        d.textContent = txt;
+        const box = document.getElementById('messages');
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function setConnBadge(cls, label) {
+        const b = document.getElementById('connBadge');
+        b.className = cls;
+        b.textContent = label;
+    }
+
+    function showStatus(text) {
+        document.getElementById('statusText').textContent = text;
+        document.getElementById('statusOverlay').style.display = 'flex';
+    }
+
+    function hideStatus() {
+        document.getElementById('statusOverlay').style.display = 'none';
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       MEDIA CONTROLS
+    ════════════════════════════════════════════════════════════ */
     function toggleMic() {
-        const t = localStream.getAudioTracks()[0];
-        t.enabled = !t.enabled;
-        document.getElementById('mBtn').innerText = t.enabled ? '🎤' : '🔇';
+        if (!localStream) return;
+        const track = localStream.getAudioTracks()[0];
+        track.enabled = !track.enabled;
+        const btn = document.getElementById('mBtn');
+        btn.textContent = track.enabled ? '🎤' : '🔇';
+        btn.classList.toggle('muted', !track.enabled);
     }
 
     function toggleVid() {
-        const t = localStream.getVideoTracks()[0];
-        t.enabled = !t.enabled;
-        document.getElementById('vBtn').innerText = t.enabled ? '📹' : '❌';
+        if (!localStream) return;
+        const track = localStream.getVideoTracks()[0];
+        track.enabled = !track.enabled;
+        const btn = document.getElementById('vBtn');
+        btn.textContent = track.enabled ? '📹' : '❌';
+        btn.classList.toggle('muted', !track.enabled);
     }
 
+    /* ════════════════════════════════════════════════════════════
+       VOLUME METER (partner's audio)
+    ════════════════════════════════════════════════════════════ */
     function startVolumeMeter(stream) {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const src = ctx.createMediaStreamSource(stream);
-            const ans = ctx.createAnalyser();
-            ans.fftSize = 256;
-            src.connect(ans);
-            const data = new Uint8Array(ans.frequencyBinCount);
-            const bar = document.getElementById('volumeBar');
-            function update() {
-                ans.getByteFrequencyData(data);
-                let sum = data.reduce((a, b) => a + b, 0);
-                bar.style.width = Math.min((sum / data.length) * 3, 100) + "%";
-                requestAnimationFrame(update);
-            }
-            update();
-        } catch (e) { console.warn("Audio meter failed"); }
+            const analyser = ctx.createAnalyser();
+            analyser.fftSize = 256;
+            src.connect(analyser);
+            const data = new Uint8Array(analyser.frequencyBinCount);
+            const bar  = document.getElementById('volumeBar');
+            (function tick() {
+                analyser.getByteFrequencyData(data);
+                const avg = data.reduce((a, b) => a + b, 0) / data.length;
+                bar.style.width = Math.min(avg * 3, 100) + '%';
+                requestAnimationFrame(tick);
+            })();
+        } catch(e) { console.warn('[Volume meter]', e); }
     }
 </script>
 </body>
